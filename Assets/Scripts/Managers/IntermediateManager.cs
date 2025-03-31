@@ -45,7 +45,7 @@ public class IntermediateManager : MonoBehaviour
     [Header("Cart Item Filter")]
     [SerializeField] private List<Item> itemsToExclude; // 인스펙터에서 제외할 아이템 설정
 
-    
+
     private void Awake()
     {
        
@@ -73,6 +73,7 @@ public class IntermediateManager : MonoBehaviour
     [SerializeField] private CartUI cartUI; // CartUI 참조 추가
 
     // IntermediateManager.cs
+    // IntermediateManager.cs
     private void OnEnable()
     {
         if (GameManager.Instance != null)
@@ -89,11 +90,37 @@ public class IntermediateManager : MonoBehaviour
             GameManager.Instance.OnGameScreenChanged -= OnGameScreenChanged;
         }
     }
+
+    // TryPickItemFromCart 메서드 (CartUI.cs에서 호출됨)
+    public void AddPickedItem(Item item)
+    {
+        if (!requiredPickedItems.Contains(item))
+        {
+            requiredPickedItems.Add(item);
+            Debug.Log($"Added picked item: {item.itemName}");
+        }
+
+        List<Item> cartItems = InteractionManager.Instance.GetCartItems();
+    }
+
+    // 이 메서드를 수정하여 모든 필수 아이템이 선택되었는지 확인
+    public bool AreAllRequiredItemsPicked()
+    {
+        return requiredItems.requiredItems.Where(ri => !ri.isOptional)
+            .All(ri => requiredPickedItems.Any(picked => picked.itemId == ri.item.itemId));
+    }
+
+    // 인터미디어트 매니저에 아이템이 필요한지 확인하는 메서드 추가
+    public bool IsRequiredItem(Item item)
+    {
+        return requiredItems.requiredItems.Any(ri => ri.item == item);
+    }
+
     private void OnGameScreenChanged(GameManager.GameScreen newState)
     {
-       
-            
-
+        if (GameManager.Instance.CurrentGameScreen == GameManager.GameScreen.INTERMEDIATE)
+        {
+            // Intermediate 화면으로 전환 시
             // 현재 카트의 아이템들을 가져옴
             List<Item> currentCartItems = InteractionManager.Instance.GetCartItems();
 
@@ -109,21 +136,12 @@ public class IntermediateManager : MonoBehaviour
                 }
             }
 
-        if (GameManager.Instance.CurrentGameScreen == GameManager.GameScreen.INTERMEDIATE)
-        { cartUI.OpenCart(); }
-
-
-
-
+            // 카트 자동으로 열기
+            cartUI.OpenCart();
+        }
     }
 
-        
 
-    public bool AreAllRequiredItemsPicked()
-    {
-        return requiredItems.requiredItems.Where(ri => !ri.isOptional)
-            .All(ri => requiredPickedItems.Any(picked => picked.itemId == ri.item.itemId));
-    }
 
 
 
@@ -175,26 +193,8 @@ public class IntermediateManager : MonoBehaviour
 
    
 
-    public bool IsRequiredItem(Item item)
-    {
-        return requiredItems.requiredItems.Any(ri => ri.item == item);
-    }
-
-    public void AddPickedItem(Item item)
-    {
-        if (!requiredPickedItems.Contains(item))
-        {
-            requiredPickedItems.Add(item);
-            Debug.Log($"Added picked item: {item.itemName}");
-        }
-
-        List<Item> cartItems = InteractionManager.Instance.GetCartItems();
-
-       
-
-    }
-
-
+   
+    
 
 
 }

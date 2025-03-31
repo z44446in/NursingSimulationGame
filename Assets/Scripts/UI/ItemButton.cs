@@ -30,4 +30,10 @@ public class ItemButton : MonoBehaviour, IPointerClickHandler
         
         onItemClicked?.Invoke(currentItem);
     }
+
+    // ItemButton.cs에 다음 메서드 추가
+    public Item GetCurrentItem()
+    {
+        return currentItem;
+    }
 }

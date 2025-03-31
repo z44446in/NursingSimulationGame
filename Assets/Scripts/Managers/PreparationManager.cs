@@ -8,66 +8,66 @@ using DG.Tweening;
 
 public class PreparationManager : MonoBehaviour
 {
-   private static PreparationManager instance;
-   public static PreparationManager Instance => instance;
+    private static PreparationManager instance;
+    public static PreparationManager Instance => instance;
 
-   [Header("Popup Parents")]
-   [SerializeField] private Transform popupParent; // 기존 팝업용
-   [SerializeField] private Transform dialogueParent; // 대화창 전용
+    [Header("Popup Parents")]
+    [SerializeField] private Transform popupParent; // 기존 팝업용
+    [SerializeField] private Transform dialogueParent; // 대화창 전용
 
-   [Header("UI References")]
-   [SerializeField] private Button prepareCompleteButton;
-   [SerializeField] private GameObject itemSelectionPopupPrefab;
-   [SerializeField] private GameObject confirmationPopupPrefab;
-   [SerializeField] private CartUI cartUI;
+    [Header("UI References")]
+    [SerializeField] private Button prepareCompleteButton;
+    [SerializeField] private GameObject itemSelectionPopupPrefab;
+    [SerializeField] private GameObject confirmationPopupPrefab;
+    [SerializeField] private CartUI cartUI;
     [SerializeField] private DialogueManager dialogueManager;
 
     [Header("Screen References")]
-   [SerializeField] private GameObject prepareScreen;
-   [SerializeField] private GameObject intermediateScreen;
-   [SerializeField] private GameObject gameScreen;
+    [SerializeField] private GameObject prepareScreen;
+    [SerializeField] private GameObject intermediateScreen;
+    [SerializeField] private GameObject gameScreen;
 
     [System.Serializable]
-public class AreaItems
-{
-    public PreparationAreaType area;
-    public List<Item> items;
-}
-   [Header("Area Setup")]
-   [SerializeField] private List<AreaItems> areaItems;
-   
-   [Header("Required Items")]
-   [SerializeField] private ProcedureRequiredItems currentProcedureItems;
-   [SerializeField] private List<ProcedureRequiredItems> ItemListForEachProcedure;
+    public class AreaItems
+    {
+        public PreparationAreaType area;
+        public List<Item> items;
+    }
+    [Header("Area Setup")]
+    [SerializeField] private List<AreaItems> areaItems;
 
-   // 현재 선택된 아이템 관리
-   private List<Item> selectedItems = new List<Item>();
-   private Queue<Item> optionalItemsToExplain = new Queue<Item>();
-   private bool isShowingOptionalItems = false;
+    [Header("Required Items")]
+    [SerializeField] private ProcedureRequiredItems currentProcedureItems;
+    [SerializeField] private List<ProcedureRequiredItems> ItemListForEachProcedure;
 
-   // ItemSelectionPopup 참조
-   private ItemSelectionPopup currentPopup;
+    // 현재 선택된 아이템 관리
+    private List<Item> selectedItems = new List<Item>();
+    private Queue<Item> optionalItemsToExplain = new Queue<Item>();
+    private bool isShowingOptionalItems = false;
 
-   private void Awake()
-   {
-       if (instance == null)
-       {
-           instance = this;
-       }
-       else
-       {
-           Destroy(gameObject);
-           return;
-       }
+    // ItemSelectionPopup 참조
+    private ItemSelectionPopup currentPopup;
 
-       
-       GameManager.Instance.DebugforPrepare();
-        
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+
+        GameManager.Instance.DebugforPrepare();
+
     }
 
     private void Start()
     {
-      
+
         InitializeUI();
 
         // 카트 초기화
@@ -84,93 +84,94 @@ public class AreaItems
     }
 
     private void InitializeUI()
-   {
-       if (prepareCompleteButton != null)
-       {
-           prepareCompleteButton.onClick.AddListener(CheckPrepareComplete);
-       }
+    {
+        if (prepareCompleteButton != null)
+        {
+            prepareCompleteButton.onClick.AddListener(CheckPrepareComplete);
+        }
 
-       if (popupParent == null)
-       {
-           Canvas canvas = FindObjectOfType<Canvas>();
-           if (canvas != null)
-           {
-               popupParent = canvas.transform;
-           }
-       }
-   }
+        if (popupParent == null)
+        {
+            Canvas canvas = FindObjectOfType<Canvas>();
+            if (canvas != null)
+            {
+                popupParent = canvas.transform;
+            }
+        }
+    }
 
-   public void OnAreaClicked(PreparationAreaType area)
-   {
-       ShowItemSelectionPopup(area);
-   }
+    public void OnAreaClicked(PreparationAreaType area)
+    {
+        ShowItemSelectionPopup(area);
+    }
 
-   private void ShowItemSelectionPopup(PreparationAreaType area)
-   {
-       if (currentPopup != null)
-       {
-           Destroy(currentPopup.gameObject);
-       }
+    private void ShowItemSelectionPopup(PreparationAreaType area)
+    {
+        if (currentPopup != null)
+        {
+            Destroy(currentPopup.gameObject);
+        }
 
-       var items = GetItemsForArea(area);
-       if (items == null || items.Count == 0)
-       {
-           DialogueManager.Instance.ShowSmallDialogue("이 구역에는 사용 가능한 아이템이 없습니다.");
-           return;
-       }
+        var items = GetItemsForArea(area);
+        if (items == null || items.Count == 0)
+        {
+            DialogueManager.Instance.ShowSmallDialogue("이 구역에는 사용 가능한 아이템이 없습니다.");
+            return;
+        }
 
-       var popup = InstantiatePopup<ItemSelectionPopup>(itemSelectionPopupPrefab, popupParent);
-       if (popup != null)
-       {
-           currentPopup = popup;
-           popup.Initialize(area, items, OnItemSelected);
-       }
-   }
+        var popup = InstantiatePopup<ItemSelectionPopup>(itemSelectionPopupPrefab, popupParent);
+        if (popup != null)
+        {
+            currentPopup = popup;
+            popup.Initialize(area, items, OnItemSelected);
+        }
+    }
 
-   private void OnItemSelected(Item item)
-   {
-       if (item == null) return;
+    private void OnItemSelected(Item item)
+    {
+        if (item == null) return;
 
-       // 이미 카트에 있는 아이템인지 확인
-       if (selectedItems.Any(selectedItem => selectedItem.itemId == item.itemId))
-       {
-           DialogueManager.Instance.ShowSmallDialogue("이건 이미 있어", false);
-           return;
-       }
-       var popup = InstantiatePopup<ConfirmationPopup>(confirmationPopupPrefab, popupParent);
-       if (popup != null)
-       {
-           popup.Initialize(
-               item,
-               () => {
-                   AddItemToCart(item);
-               },
-               () => Destroy(popup.gameObject)
-           );
-       }
-   }
+        // 이미 카트에 있는 아이템인지 확인
+        if (selectedItems.Any(selectedItem => selectedItem.itemId == item.itemId))
+        {
+            DialogueManager.Instance.ShowSmallDialogue("이건 이미 있어", false);
+            return;
+        }
+        var popup = InstantiatePopup<ConfirmationPopup>(confirmationPopupPrefab, popupParent);
+        if (popup != null)
+        {
+            popup.Initialize(
+                item,
+                () =>
+                {
+                    AddItemToCart(item);
+                },
+                () => Destroy(popup.gameObject)
+            );
+        }
+    }
 
-   private void AddItemToCart(Item item)
-   {
-       if (item == null || InteractionManager.Instance == null) return;
+    private void AddItemToCart(Item item)
+    {
+        if (item == null || InteractionManager.Instance == null) return;
 
-       if (InteractionManager.Instance.AddItemToCart(item))
-       {
-           selectedItems.Add(item);
-           cartUI?.UpdateCartDisplay();
-       }
-   }
+        if (InteractionManager.Instance.AddItemToCart(item))
+        {
+            selectedItems.Add(item);
+            cartUI?.UpdateCartDisplay();
+        }
+    }
 
-   public void RemoveItemFromCart(Item item)
-   {
-       if (item == null || InteractionManager.Instance == null) return;
+    public void RemoveItemFromCart(Item item)
+    {
+        if (item == null || InteractionManager.Instance == null) return;
 
-       if (InteractionManager.Instance.RemoveItemFromCart(item))
-       {
-           selectedItems.Remove(item);
-           cartUI?.UpdateCartDisplay();
-       }
-   }
+        if (InteractionManager.Instance.RemoveItemFromCart(item))
+        {
+            selectedItems.Remove(item);
+            cartUI?.UpdateCartDisplay();
+        }
+    }
 
 
     private void ProcessOptionalItems(List<RequiredItem> optionalItems)
@@ -187,7 +188,8 @@ public class AreaItems
         }
         else
         {
-            DialogueManager.Instance.ShowSmallDialogue("준비 잘했어!", false, () => {
+            DialogueManager.Instance.ShowSmallDialogue("준비 잘했어!", false, () =>
+            {
                 GoToIntermediateScreen();
             });
         }
@@ -215,24 +217,24 @@ public class AreaItems
     }
 
     private void ShowMissingItemsDialogue(List<RequiredItem> missingItems)
-   {
-       string message = "지금 부족한 물건은 다음과 같아.\n\n";
-       for (int i = 0; i < missingItems.Count; i++)
-       {
-           message += $"{i + 1}) ? : {missingItems[i].item.description}\n";
-       }
-       DialogueManager.Instance.ShowLargeDialogue(message);
-   }
+    {
+        string message = "지금 부족한 물건은 다음과 같아.\n\n";
+        for (int i = 0; i < missingItems.Count; i++)
+        {
+            message += $"{i + 1}) ? : {missingItems[i].item.description}\n";
+        }
+        DialogueManager.Instance.ShowLargeDialogue(message);
+    }
 
-   private void ShowExtraItemsDialogue(List<Item> extraItems)
-   {
-       string message = "다음 물건은 필요없어.\n\n";
-       for (int i = 0; i < extraItems.Count; i++)
-       {
-           message += $"{i + 1}) {extraItems[i].itemName} : {extraItems[i].description}\n";
-       }
-       DialogueManager.Instance.ShowLargeDialogue(message);
-   }
+    private void ShowExtraItemsDialogue(List<Item> extraItems)
+    {
+        string message = "다음 물건은 필요없어.\n\n";
+        for (int i = 0; i < extraItems.Count; i++)
+        {
+            message += $"{i + 1}) {extraItems[i].itemName} : {extraItems[i].description}\n";
+        }
+        DialogueManager.Instance.ShowLargeDialogue(message);
+    }
 
     private bool isProcessingDialogue = false;
 
@@ -263,49 +265,49 @@ public class AreaItems
         ProcessOptionalItems(optionalItems);
     }
     private List<RequiredItem> GetMissingItems()
-   {
-       if (currentProcedureItems == null) return new List<RequiredItem>();
-       
-       return currentProcedureItems.requiredItems
-           .Where(required => !required.isOptional && 
-                  !selectedItems.Any(selected => selected.itemId == required.item.itemId))
-           .ToList();
-   }
+    {
+        if (currentProcedureItems == null) return new List<RequiredItem>();
 
-   private List<Item> GetExtraItems()
-   {
-       if (currentProcedureItems == null) return new List<Item>();
+        return currentProcedureItems.requiredItems
+            .Where(required => !required.isOptional &&
+                   !selectedItems.Any(selected => selected.itemId == required.item.itemId))
+            .ToList();
+    }
 
-       return selectedItems
-           .Where(selected => !currentProcedureItems.requiredItems
-               .Any(required => required.item.itemId == selected.itemId))
-           .ToList();
-   }
+    private List<Item> GetExtraItems()
+    {
+        if (currentProcedureItems == null) return new List<Item>();
 
-   private List<RequiredItem> GetOptionalItems()
-   {
-       if (currentProcedureItems == null) return new List<RequiredItem>();
+        return selectedItems
+            .Where(selected => !currentProcedureItems.requiredItems
+                .Any(required => required.item.itemId == selected.itemId))
+            .ToList();
+    }
 
-       return currentProcedureItems.requiredItems
-           .Where(required => required.isOptional &&
-                  selectedItems.Any(selected => selected.itemId == required.item.itemId))
-           .ToList();
-   }
+    private List<RequiredItem> GetOptionalItems()
+    {
+        if (currentProcedureItems == null) return new List<RequiredItem>();
 
-   public void SetCurrentProcedure(NursingProcedureType procedureType)
-   {
-       currentProcedureItems = ItemListForEachProcedure.Find(x => x.procedureType == procedureType);
-       if (currentProcedureItems == null)
-       {
-           Debug.LogError($"No procedure items found for {procedureType}");
-       }
-   }
+        return currentProcedureItems.requiredItems
+            .Where(required => required.isOptional &&
+                   selectedItems.Any(selected => selected.itemId == required.item.itemId))
+            .ToList();
+    }
 
-   private List<Item> GetItemsForArea(PreparationAreaType area)
-   {
-       var areaItem = areaItems?.Find(x => x.area == area);
-       return areaItem?.items ?? new List<Item>();
-   }
+    public void SetCurrentProcedure(NursingProcedureType procedureType)
+    {
+        currentProcedureItems = ItemListForEachProcedure.Find(x => x.procedureType == procedureType);
+        if (currentProcedureItems == null)
+        {
+            Debug.LogError($"No procedure items found for {procedureType}");
+        }
+    }
+
+    private List<Item> GetItemsForArea(PreparationAreaType area)
+    {
+        var areaItem = areaItems?.Find(x => x.area == area);
+        return areaItem?.items ?? new List<Item>();
+    }
 
     public void GoToIntermediateScreen()
     {
@@ -313,10 +315,10 @@ public class AreaItems
         {
             StartCoroutine(SwitchToIntermediateScreen());
         }
-        
+
     }
 
-    
+
 
 
     private IEnumerator SwitchToIntermediateScreen()
@@ -333,7 +335,7 @@ public class AreaItems
         // Intermediate Screen 활성화
         intermediateScreen.SetActive(true);
 
-        
+
 
         // 상태 변경
         GameManager.Instance.GoToIntermediate();
@@ -343,40 +345,40 @@ public class AreaItems
 
 
 
-   
 
-   private T InstantiatePopup<T>(GameObject prefab, Transform parent) where T : Component
-   {
-       if (prefab == null)
-       {
-           Debug.LogError("Prefab is null.");
-           return null;
-       }
 
-       var popupObject = Instantiate(prefab, parent);
-       var popupComponent = popupObject.GetComponent<T>();
-       
-       if (popupComponent == null)
-       {
-           Debug.LogError($"The prefab does not contain a {typeof(T).Name} component.");
-           Destroy(popupObject);
-       }
+    private T InstantiatePopup<T>(GameObject prefab, Transform parent) where T : Component
+    {
+        if (prefab == null)
+        {
+            Debug.LogError("Prefab is null.");
+            return null;
+        }
 
-       return popupComponent;
-   }
+        var popupObject = Instantiate(prefab, parent);
+        var popupComponent = popupObject.GetComponent<T>();
 
-   
+        if (popupComponent == null)
+        {
+            Debug.LogError($"The prefab does not contain a {typeof(T).Name} component.");
+            Destroy(popupObject);
+        }
 
-   private void OnDestroy()
-   {
-       if (prepareCompleteButton != null)
-           prepareCompleteButton.onClick.RemoveListener(CheckPrepareComplete);
-       
-       if (currentPopup != null)
-           Destroy(currentPopup.gameObject);
-   }
+        return popupComponent;
+    }
 
-    
+
+
+    private void OnDestroy()
+    {
+        if (prepareCompleteButton != null)
+            prepareCompleteButton.onClick.RemoveListener(CheckPrepareComplete);
+
+        if (currentPopup != null)
+            Destroy(currentPopup.gameObject);
+    }
+
+
     // 디버그용 코드 
 
 
@@ -401,7 +403,7 @@ public class AreaItems
                 if (InteractionManager.Instance.AddItemToCart(requiredItem.item))
                 {
                     selectedItems.Add(requiredItem.item);
-                    
+
                 }
             }
         }
@@ -411,4 +413,5 @@ public class AreaItems
 
         Debug.Log("[DEBUG] All required items have been added to cart");
     }
+
 }

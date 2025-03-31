@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using System.Collections;
+using System.Linq; // 이 부분을 추가해주세요
 
 public class CartUI : MonoBehaviour
 {
@@ -113,6 +114,7 @@ public class CartUI : MonoBehaviour
         }
     }
 
+    // CartUI.cs의 OpenCart 메서드 수정
     public void OpenCart()
     {
         if (cartPanel == null)
@@ -123,8 +125,53 @@ public class CartUI : MonoBehaviour
 
         cartPanel.SetActive(true);
         UpdateToggleButtonText(true);
-        UpdateCartDisplay();
+
+        // Intermediate 화면일 때는 선택된 아이템을 표시하기 위해 특별히 처리
+        if (GameManager.Instance.CurrentGameScreen == GameManager.GameScreen.INTERMEDIATE &&
+            IntermediateManager.Instance != null)
+        {
+            // 먼저 카트 UI를 업데이트
+            UpdateCartDisplay();
+
+            // 그런 다음 선택된 아이템들에 대한 시각적 표시를 추가
+            foreach (Transform child in itemContainer)
+            {
+                ItemButton itemButton = child.GetComponent<ItemButton>();
+                if (itemButton != null)
+                {
+                    // 현재는 아이템에 직접 접근할 방법이 없으므로, 
+                    // ItemButton 클래스에 GetCurrentItem 메서드를 추가해야 합니다.
+
+                    // 아래 방법은 임시 방편입니다. 
+                    // 실제로는 ItemButton에 GetCurrentItem 메서드를 추가하세요.
+                    Item buttonItem = GetItemFromButton(itemButton);
+
+                    if (buttonItem != null &&
+                        IntermediateManager.Instance.requiredPickedItems.Any(item => item.itemId == buttonItem.itemId))
+                    {
+                        // 선택된 아이템 시각적 표시
+                        Image itemBg = child.GetComponent<Image>();
+                        if (itemBg != null)
+                        {
+                            itemBg.color = new Color(0.7f, 1f, 0.7f); // 연한 녹색
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            // 다른 화면에서는 일반적인 업데이트만 수행
+            UpdateCartDisplay();
+        }
+
         UpdateCartInstruction();
+    }
+
+    // ItemButton에서 Item을 가져오는 임시 메서드
+    private Item GetItemFromButton(ItemButton itemButton)
+    {
+        return itemButton.GetCurrentItem();
     }
 
     // CartUI.cs의 ToggleCart 메서드
@@ -208,12 +255,31 @@ public class CartUI : MonoBehaviour
         }
     }
 
- 
+
+    // CartUI.cs 수정사항
+
+    // HandleIntermediateItemClick 메서드 수정
     private void HandleIntermediateItemClick(Item item)
     {
         ShowConfirmationPopup(item, INTERMEDIATE_CONFIRMATION_MESSAGE, TryPickItemFromCart);
     }
 
+    // TryPickItemFromCart 메서드 수정
+    private void TryPickItemFromCart(Item item)
+    {
+        if (IntermediateManager.Instance.IsRequiredItem(item))
+        {
+            InteractionManager.Instance.RemoveItemFromCart(item);
+            IntermediateManager.Instance.AddPickedItem(item);
+            UpdateCartDisplay();
+        }
+        else
+        {
+            DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
+        }
+    }
+
+    // OpenCart 메서드는 그대로 두고, 카트 UI 업데이트를 위한 메서드를 적절히 호출
     private void HandlePrepareScreenItemClick(Item item)
     {
         ShowConfirmationPopup(item, PREPARE_CONFIRMATION_MESSAGE, RemoveItemFromCart);
@@ -240,19 +306,6 @@ public class CartUI : MonoBehaviour
     }
 
 
-    private void TryPickItemFromCart(Item item)
-    {
-        if (IntermediateManager.Instance.IsRequiredItem(item))
-        {
-            InteractionManager.Instance.RemoveItemFromCart(item);
-            IntermediateManager.Instance.AddPickedItem(item);
-            UpdateCartDisplay();
-        }
-        else
-        {
-            DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
-        }
-    }
 
     private void RemoveItemFromCart(Item item)
     {
