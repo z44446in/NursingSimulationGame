@@ -91,6 +91,45 @@ public class IntermediateManager : MonoBehaviour
         }
     }
 
+    // OnGameScreenChanged 메서드 수정 (또는 추가)
+    private void OnGameScreenChanged(GameManager.GameScreen newState)
+    {
+        // 인터미디에이트 화면으로 전환될 때
+        if (newState == GameManager.GameScreen.INTERMEDIATE)
+        {
+            // 현재 카트의 아이템들을 가져옴
+            List<Item> currentCartItems = InteractionManager.Instance.GetCartItems();
+
+            // 카트 초기화
+            InteractionManager.Instance.ClearCart();
+
+            // 제외할 아이템을 제외하고 다시 카트에 추가
+            foreach (var item in currentCartItems)
+            {
+                if (!itemsToExclude.Contains(item))
+                {
+                    InteractionManager.Instance.AddItemToCart(item);
+                }
+            }
+
+            // 카트 열기
+            cartUI.OpenCart();
+        }
+    }
+
+    // IntermediateManager.cs에 다음 메서드 추가
+    public void RefreshCartItems()
+    {
+        // 기존 카트 초기화
+        InteractionManager.Instance.ClearCart();
+
+        // requiredPickedItems에 있는 항목만 카트에 추가
+        foreach (var item in requiredPickedItems)
+        {
+            InteractionManager.Instance.AddItemToCart(item);
+        }
+    }
+
     // TryPickItemFromCart 메서드 (CartUI.cs에서 호출됨)
     public void AddPickedItem(Item item)
     {
@@ -116,30 +155,7 @@ public class IntermediateManager : MonoBehaviour
         return requiredItems.requiredItems.Any(ri => ri.item == item);
     }
 
-    private void OnGameScreenChanged(GameManager.GameScreen newState)
-    {
-        if (GameManager.Instance.CurrentGameScreen == GameManager.GameScreen.INTERMEDIATE)
-        {
-            // Intermediate 화면으로 전환 시
-            // 현재 카트의 아이템들을 가져옴
-            List<Item> currentCartItems = InteractionManager.Instance.GetCartItems();
-
-            // 카트 초기화
-            InteractionManager.Instance.ClearCart();
-
-            // 제외할 아이템을 제외하고 다시 카트에 추가
-            foreach (var item in currentCartItems)
-            {
-                if (!itemsToExclude.Contains(item))
-                {
-                    InteractionManager.Instance.AddItemToCart(item);
-                }
-            }
-
-            // 카트 자동으로 열기
-            cartUI.OpenCart();
-        }
-    }
+    
 
 
 

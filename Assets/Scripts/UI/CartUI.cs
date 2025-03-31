@@ -126,45 +126,15 @@ public class CartUI : MonoBehaviour
         cartPanel.SetActive(true);
         UpdateToggleButtonText(true);
 
-        // Intermediate 화면일 때는 선택된 아이템을 표시하기 위해 특별히 처리
-        if (GameManager.Instance.CurrentGameScreen == GameManager.GameScreen.INTERMEDIATE &&
-            IntermediateManager.Instance != null)
+        // 인터미디에이트 화면에서 카트 내용 업데이트 로직 추가
+        if (currentScreen == GameManager.GameScreen.INTERMEDIATE &&
+            IntermediateManager.Instance.requiredPickedItems.Count > 0)
         {
-            // 먼저 카트 UI를 업데이트
-            UpdateCartDisplay();
-
-            // 그런 다음 선택된 아이템들에 대한 시각적 표시를 추가
-            foreach (Transform child in itemContainer)
-            {
-                ItemButton itemButton = child.GetComponent<ItemButton>();
-                if (itemButton != null)
-                {
-                    // 현재는 아이템에 직접 접근할 방법이 없으므로, 
-                    // ItemButton 클래스에 GetCurrentItem 메서드를 추가해야 합니다.
-
-                    // 아래 방법은 임시 방편입니다. 
-                    // 실제로는 ItemButton에 GetCurrentItem 메서드를 추가하세요.
-                    Item buttonItem = GetItemFromButton(itemButton);
-
-                    if (buttonItem != null &&
-                        IntermediateManager.Instance.requiredPickedItems.Any(item => item.itemId == buttonItem.itemId))
-                    {
-                        // 선택된 아이템 시각적 표시
-                        Image itemBg = child.GetComponent<Image>();
-                        if (itemBg != null)
-                        {
-                            itemBg.color = new Color(0.7f, 1f, 0.7f); // 연한 녹색
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            // 다른 화면에서는 일반적인 업데이트만 수행
-            UpdateCartDisplay();
+            // 이미 선택한 아이템이 있는 경우, 선택한 아이템만 표시
+            IntermediateManager.Instance.RefreshCartItems();
         }
 
+        UpdateCartDisplay();
         UpdateCartInstruction();
     }
 
@@ -175,6 +145,7 @@ public class CartUI : MonoBehaviour
     }
 
     // CartUI.cs의 ToggleCart 메서드
+    // CartUI.cs의 ToggleCart 메서드 수정
     private void ToggleCart()
     {
         if (cartPanel == null) return;
@@ -193,8 +164,40 @@ public class CartUI : MonoBehaviour
         bool newState = !cartPanel.activeSelf;
         cartPanel.SetActive(newState);
         UpdateToggleButtonText(newState);
-    }
 
+        // 카트를 열 때 카트 내용 업데이트
+        if (newState && currentScreen == GameManager.GameScreen.INTERMEDIATE)
+        {
+            // 카트를 열 때 현재 설정에 따라 내용 업데이트
+            bool isFirstOpen = IntermediateManager.Instance.requiredPickedItems.Count == 0;
+
+            // 기존 카트 아이템 제거
+            ClearItemContainer();
+
+            if (isFirstOpen)
+            {
+                // 첫 열기: Prepare 화면에서 가져온 아이템 표시 (InteractionManager에서 관리중)
+                List<Item> cartItems = InteractionManager.Instance.GetCartItems();
+                foreach (var item in cartItems)
+                {
+                    CreateItemButton(item);
+                }
+            }
+            else
+            {
+                // 다시 열기: 선택했던 아이템만 표시
+                foreach (var item in IntermediateManager.Instance.requiredPickedItems)
+                {
+                    CreateItemButton(item);
+                }
+            }
+        }
+        else
+        {
+            // 다른 화면에서는 기존 카트 업데이트 방식 사용
+            UpdateCartDisplay();
+        }
+    }
     private void UpdateToggleButtonText(bool isCartOpen)
     {
         if (cartToggleButtonText != null)
@@ -269,8 +272,12 @@ public class CartUI : MonoBehaviour
     {
         if (IntermediateManager.Instance.IsRequiredItem(item))
         {
+            // 선택한 아이템은 카트에서 제거
             InteractionManager.Instance.RemoveItemFromCart(item);
+
+            // 선택한 아이템 목록에 추가
             IntermediateManager.Instance.AddPickedItem(item);
+
             UpdateCartDisplay();
         }
         else
