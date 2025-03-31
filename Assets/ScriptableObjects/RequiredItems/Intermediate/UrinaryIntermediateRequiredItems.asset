@@ -30,3 +30,5 @@ MonoBehaviour:
     isOptional: 0
   - item: {fileID: 11400000, guid: b505b7e9e4589b54ca23a18e1c748100, type: 2}
     isOptional: 0
+  - item: {fileID: 11400000, guid: 9eecedcf46dd8254d905429723ace602, type: 2}
+    isOptional: 0

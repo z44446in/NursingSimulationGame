@@ -2,27 +2,55 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using System.Collections;
 
 public class DialogueManager : MonoBehaviour
 {
     private static DialogueManager instance;
     public static DialogueManager Instance => instance;
 
-    [Header("UI Prefabs")]
+    public enum Speaker
+    {
+        Character,   // 캐릭터
+        Patient,     // 환자 
+        Guardian,    // 보호자
+        Player,      // 플레이어
+        HeadNurse    // 수간호사
+    }
+
+    [System.Serializable]
+    public class SpeakerData
+    {
+        public string displayName;      // 화면에 표시될 이름
+        public Sprite speakerSprite;    // 화자 이미지
+    }
+
+    [Header("Dialogue Prefabs")]
     [SerializeField] private GameObject smallDialoguePrefab;
     [SerializeField] private GameObject largeDialoguePrefab;
+
+    [Header("Speakers")]
+    [SerializeField] private SpeakerData[] speakerData = new SpeakerData[5];
+
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI speakerNameText;
+    [SerializeField] private Image speakerImage;
+    [SerializeField] private TextMeshProUGUI dialogueText;
+
+    [Header("Parents")]
     [SerializeField] private Transform dialogueParent;
+    [SerializeField] private Transform popupParent;
 
     private GameObject currentSmallDialogue;
     private GameObject currentLargeDialogue;
-    private Coroutine autoCloseCoroutine;
+    private TextMeshProUGUI largeDialogueText;
+    private ScrollRect scrollRect;
 
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -30,94 +58,100 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void ShowSmallDialogue(string message, bool autoClose = true, Action onClose = null)
+    public void ShowSmallDialogue(
+     string message,
+     bool isOptionalItemMessage = false,  // 두 번째 매개변수로 이동
+     Action onDialogueClosed = null,      // 세 번째 매개변수로 이동
+     Speaker speaker = Speaker.Character   // 마지막 매개변수로 이동
+ )
     {
-        // 이미 떠있는 다이얼로그가 있다면 닫기
-        CloseSmallDialogue();
+        Button dialogueButton;
 
-        if (smallDialoguePrefab == null || dialogueParent == null)
+        if (currentSmallDialogue == null)
         {
-            Debug.LogError("Small dialogue prefab or parent is null");
-            return;
-        }
+            currentSmallDialogue = Instantiate(smallDialoguePrefab, dialogueParent);
 
-        currentSmallDialogue = Instantiate(smallDialoguePrefab, dialogueParent);
-        SmallPopup smallPopup = currentSmallDialogue.GetComponent<SmallPopup>();
-        
-        if (smallPopup != null)
-        {
-            smallPopup.Initialize(message, autoClose, onClose);
-            
-            if (autoClose)
+            speakerNameText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
+            speakerImage = currentSmallDialogue.GetComponentInChildren<Image>(true);
+            dialogueText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
+
+            dialogueButton = currentSmallDialogue.GetComponent<Button>();
+            if (dialogueButton == null)
             {
-                autoCloseCoroutine = StartCoroutine(AutoCloseDialogue());
+                dialogueButton = currentSmallDialogue.AddComponent<Button>();
             }
         }
         else
         {
-            Debug.LogError("Failed to get SmallPopup component");
-            Destroy(currentSmallDialogue);
+            dialogueButton = currentSmallDialogue.GetComponent<Button>();
         }
+
+        SpeakerData currentSpeaker = speakerData[(int)speaker];
+
+        if (speakerNameText != null)
+        {
+            speakerNameText.text = currentSpeaker.displayName;
+        }
+
+        if (speakerImage != null)
+        {
+            speakerImage.sprite = currentSpeaker.speakerSprite;
+            speakerImage.gameObject.SetActive(currentSpeaker.speakerSprite != null);
+        }
+
+        if (dialogueText != null)
+        {
+            dialogueText.text = message;
+        }
+
+        SetDialogueAsTopmost(currentSmallDialogue);
+        currentSmallDialogue.SetActive(true);
+
+        dialogueButton.onClick.RemoveAllListeners();
+        dialogueButton.onClick.AddListener(() => {
+            currentSmallDialogue.SetActive(false);
+            onDialogueClosed?.Invoke();
+        });
     }
 
-    public void ShowLargeDialogue(string message, Action onClose = null)
+    public void ShowLargeDialogue(string message)
     {
-        // 이미 떠있는 다이얼로그가 있다면 닫기
-        CloseLargeDialogue();
+        if (currentLargeDialogue == null)
+        {
+            currentLargeDialogue = Instantiate(largeDialoguePrefab, dialogueParent);
+            largeDialogueText = currentLargeDialogue.GetComponentInChildren<TextMeshProUGUI>();
+            scrollRect = currentLargeDialogue.GetComponentInChildren<ScrollRect>();
 
-        if (largeDialoguePrefab == null || dialogueParent == null)
-        {
-            Debug.LogError("Large dialogue prefab or parent is null");
-            return;
+            Button dialogueButton = currentLargeDialogue.GetComponent<Button>();
+            if (dialogueButton == null)
+            {
+                dialogueButton = currentLargeDialogue.AddComponent<Button>();
+            }
+            dialogueButton.onClick.AddListener(() => {
+                currentLargeDialogue.SetActive(false);
+            });
         }
 
-        currentLargeDialogue = Instantiate(largeDialoguePrefab, dialogueParent);
-        SmallPopup largePopup = currentLargeDialogue.GetComponent<SmallPopup>();
-        
-        if (largePopup != null)
-        {
-            largePopup.Initialize(message, false, onClose);
-        }
-        else
-        {
-            Debug.LogError("Failed to get SmallPopup component for large dialogue");
-            Destroy(currentLargeDialogue);
-        }
+        SetDialogueAsTopmost(currentLargeDialogue);
+        largeDialogueText.text = message;
+        if (scrollRect != null)
+            scrollRect.normalizedPosition = Vector2.one;
+        currentLargeDialogue.SetActive(true);
     }
 
-    public void CloseSmallDialogue()
+    private void SetDialogueAsTopmost(GameObject dialogueObject)
     {
-        if (currentSmallDialogue != null)
+        if (dialogueObject != null)
         {
-            Destroy(currentSmallDialogue);
-            currentSmallDialogue = null;
+            dialogueObject.transform.SetAsLastSibling();
         }
-
-        if (autoCloseCoroutine != null)
-        {
-            StopCoroutine(autoCloseCoroutine);
-            autoCloseCoroutine = null;
-        }
-    }
-
-    public void CloseLargeDialogue()
-    {
-        if (currentLargeDialogue != null)
-        {
-            Destroy(currentLargeDialogue);
-            currentLargeDialogue = null;
-        }
-    }
-
-    private IEnumerator AutoCloseDialogue()
-    {
-        yield return new WaitForSeconds(3f);
-        CloseSmallDialogue();
     }
 
     private void OnDestroy()
     {
-        CloseSmallDialogue();
-        CloseLargeDialogue();
+        if (currentSmallDialogue != null)
+            Destroy(currentSmallDialogue);
+        if (currentLargeDialogue != null)
+            Destroy(currentLargeDialogue);
     }
 }
