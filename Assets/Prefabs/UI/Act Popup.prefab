@@ -1322,7 +1322,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backgroundPanel: {fileID: 5503965433567546166}
-  buttonContainer: {fileID: 1014105096915050005}
   closeButton: {fileID: 2533733467385365337}
 --- !u!1 &5846306903872808276
 GameObject:

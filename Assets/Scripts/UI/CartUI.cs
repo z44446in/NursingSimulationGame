@@ -20,6 +20,9 @@ public class CartUI : MonoBehaviour
 
     [Header("Popup References")]
     [SerializeField] private GameObject confirmationPopupPrefab;
+    [SerializeField] private GameObject smallPopupPrefab;
+    [SerializeField] private GameObject quizPopupPrefab;
+    [SerializeField] private GameObject actionPopupPrefab;
     [SerializeField] private Transform popupParent;
 
     // 화면별 상수 메시지 정의
@@ -55,8 +58,6 @@ public class CartUI : MonoBehaviour
         }
     }
 
-
-
     private void InitializeUI()
     {
         if (cartPanel != null)
@@ -64,13 +65,11 @@ public class CartUI : MonoBehaviour
             cartPanel.SetActive(false);
         }
        
-
         if (cartToggleButton != null)
         {
             cartToggleButton.onClick.AddListener(ToggleCart);
             UpdateToggleButtonText(false);
         }
-       
     }
 
     private void OnEnable()
@@ -90,15 +89,11 @@ public class CartUI : MonoBehaviour
         }
     }
 
-
     private void HandleScreenChange(GameManager.GameScreen newScreen)
     {
         currentScreen = newScreen;
         UpdateCartInstruction();
     }
-
-
-
 
     private void UpdateCartInstruction()
     {
@@ -139,21 +134,13 @@ public class CartUI : MonoBehaviour
 
         if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE)
         {
-            
-           
             bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
-           
 
             if (!itemsAllPicked)
             {
-                
                 DialogueManager.Instance.ShowSmallDialogue("아직 덜골랐어.. 좀 더 생각해봐. 환자한테 가면 완전 멸균이어야 한다구?");
-
-               
-
                 return;
             }
-
         }
 
         bool newState = !cartPanel.activeSelf;
@@ -211,9 +198,7 @@ public class CartUI : MonoBehaviour
 
         switch (currentScreen)
         {
-            case GameManager.GameScreen.GAMESCREEN:
-                itemButton.Initialize(item, HandleGameScreenItemClick);
-                break;
+            
             case GameManager.GameScreen.INTERMEDIATE:
                 itemButton.Initialize(item, HandleIntermediateItemClick);
                 break;
@@ -223,11 +208,7 @@ public class CartUI : MonoBehaviour
         }
     }
 
-    private void HandleGameScreenItemClick(Item item)
-    {
-        ShowConfirmationPopup(item, GAME_CONFIRMATION_MESSAGE, TryPickupItemInGameScreen);
-    }
-
+ 
     private void HandleIntermediateItemClick(Item item)
     {
         ShowConfirmationPopup(item, INTERMEDIATE_CONFIRMATION_MESSAGE, TryPickItemFromCart);
@@ -258,10 +239,6 @@ public class CartUI : MonoBehaviour
         }
     }
 
-    private void TryPickupItemInGameScreen(Item item)
-    {
-        GameScreenManager.Instance?.HandleItemPickup(item);
-    }
 
     private void TryPickItemFromCart(Item item)
     {
@@ -293,6 +270,4 @@ public class CartUI : MonoBehaviour
         var popupObject = Instantiate(prefab, parent);
         return popupObject.GetComponent<T>();
     }
-
-    
 }

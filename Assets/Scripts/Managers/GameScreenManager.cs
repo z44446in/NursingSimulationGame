@@ -33,23 +33,18 @@ public class GameScreenManager : MonoBehaviour
     [SerializeField] private Ease transitionEase = Ease.InOutQuad;
 
     [Header("Popup References")]
-    [SerializeField] private GameObject actPopup; // ¾À¿¡ ÀÖ´Â ActPopup ÂüÁ¶
-    [SerializeField] private Button actButton;    // Çàµ¿ÇÏ±â ¹öÆ° ÂüÁ¶
+    [SerializeField] private GameObject actPopup; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ActPopup ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] private Button actButton;    // ï¿½àµ¿ï¿½Ï±ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
 
     [Header("Popup References")]
-    [SerializeField] private GameObject talkPopup; // ¾À¿¡ ÀÖ´Â TalkPopup ÂüÁ¶
-    [SerializeField] private Button talkButton;    // Çàµ¿ÇÏ±â ¹öÆ° ÂüÁ¶
+    [SerializeField] private GameObject talkPopup; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ TalkPopup ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] private Button talkButton;    // ï¿½àµ¿ï¿½Ï±ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
 
     [Header("UI Elements")]
-    [SerializeField] private Button addAllRequiredItemsButton; // "ÇÊ¿äÇÑ ¹°°Ç ´Ù ´ã±â" ¹öÆ°
-    [SerializeField] private List<Item> requiredItemsToAdd; // ÀÎ½ºÆåÅÍ¿¡¼­ ¼³Á¤ÇÒ ÇÊ¼ö ¾ÆÀÌÅÛ ¸®½ºÆ®
-    [SerializeField] private Button debugModeButton; // µð¹ö±× ¸ðµå¿ë ¹öÆ°
+    [SerializeField] private Button addAllRequiredItemsButton; // "ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½" ï¿½ï¿½Æ°
+    [SerializeField] private List<Item> requiredItemsToAdd; // ï¿½Î½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+    [SerializeField] private Button debugModeButton; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
 
-
-    [Header("Hand Sprites")]
-    [SerializeField] private Image handImage;  // ¼Õ ÀÌ¹ÌÁö UI ÄÄÆ÷³ÍÆ®
-    [SerializeField] private Sprite defaultHandSprite;  // ±âº» ¼Õ ÀÌ¹ÌÁö
-    [SerializeField] private Sprite tarpHandSprite;     // ¹æ¼öÆ÷ µç ¼Õ ÀÌ¹ÌÁö
 
     private CanvasGroup canvasGroup;
     private GameObject currentActivePanel;
@@ -92,13 +87,13 @@ public class GameScreenManager : MonoBehaviour
         if (actPopup != null)
         {
       
-            actPopup.SetActive(false); // ½ÃÀÛ½Ã ºñÈ°¼ºÈ­
+            actPopup.SetActive(false); // ï¿½ï¿½ï¿½Û½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
    
 
         }
         if (talkPopup != null)
         {
-            talkPopup.SetActive(false); // ½ÃÀÛ½Ã ºñÈ°¼ºÈ­
+            talkPopup.SetActive(false); // ï¿½ï¿½ï¿½Û½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
         }
 
     }
@@ -130,7 +125,7 @@ public class GameScreenManager : MonoBehaviour
             return;
         }
 
-        // ÇÊ¿äÇÑ ¾ÆÀÌÅÛÀ» Ä«Æ®¿¡ Ãß°¡
+        // ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«Æ®ï¿½ï¿½ ï¿½ß°ï¿½
         foreach (var item in requiredItemsToAdd)
         {
             if (item != null)
@@ -147,19 +142,19 @@ public class GameScreenManager : MonoBehaviour
             }
         }
 
-        // UI ¾÷µ¥ÀÌÆ®
+        // UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         cartUI?.UpdateCartDisplay();
     }
 
 
     private void InitializeGameScreen()
     {
-        // ÆÐ³Î ÃÊ±âÈ­
+        // ï¿½Ð³ï¿½ ï¿½Ê±ï¿½È­
         SetActiveAllPanels(false);
         fullViewPanel.SetActive(true);
 
 
-        // Ä«Æ® ÃÊ±âÈ­
+        // Ä«Æ® ï¿½Ê±ï¿½È­
         InitializeCart();
     }
 
@@ -187,7 +182,7 @@ public class GameScreenManager : MonoBehaviour
         targetPanel.SetActive(true);
         currentActivePanel = targetPanel;
 
-        // Back ¹öÆ°Àº fullViewPanelÀÌ ¾Æ´Ò ¶§¸¸ º¸ÀÌ°Ô
+        // Back ï¿½ï¿½Æ°ï¿½ï¿½ fullViewPanelï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½
         if (backToFullViewButton != null)
             backToFullViewButton.gameObject.SetActive(targetPanel != fullViewPanel);
     }
@@ -228,22 +223,22 @@ public class GameScreenManager : MonoBehaviour
     {
         if (InteractionManager.Instance != null)
         {
-            // ÇöÀç Ä«Æ®ÀÇ ¾ÆÀÌÅÛµéÀ» ÀÓ½Ã ÀúÀå
+            // ï¿½ï¿½ï¿½ï¿½ Ä«Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½ï¿½
             List<Item> intermediateCartItems = InteractionManager.Instance.GetCartItems();
 
-            // Ä«Æ® ÃÊ±âÈ­
+            // Ä«Æ® ï¿½Ê±ï¿½È­
             InteractionManager.Instance.ClearCart();
 
-            // Áß°£È­¸é¿¡¼­ °¡Á®¿Â ¾ÆÀÌÅÛµé ´Ù½Ã Ãß°¡
+            // ï¿½ß°ï¿½È­ï¿½é¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ ï¿½Ù½ï¿½ ï¿½ß°ï¿½
             foreach (var item in intermediateCartItems)
             {
                 InteractionManager.Instance.AddItemToCart(item);
             }
 
-            // Ãß°¡·Î ÇÊ¿äÇÑ °ÔÀÓÈ­¸é Àü¿ë ¾ÆÀÌÅÛµé Ãß°¡
+            // ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ß°ï¿½
             foreach (var item in initialCartItems)
             {
-                // ÀÌ¹Ì Ä«Æ®¿¡ ÀÖ´Â ¾ÆÀÌÅÛÀÌ ¾Æ´Ò °æ¿ì¿¡¸¸ Ãß°¡
+                // ï¿½Ì¹ï¿½ Ä«Æ®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ß°ï¿½
                 if (!intermediateCartItems.Any(x => x.itemId == item.itemId))
                 {
                     InteractionManager.Instance.AddItemToCart(item);
@@ -286,49 +281,4 @@ public class GameScreenManager : MonoBehaviour
             });
     }
 
-    public void HandleItemPickup(Item item)
-    {
-        if (item == null) return;
-
-        // À¯Ä¡µµ´¢ ¼ú±â °ü·Ã ¾ÆÀÌÅÛÀº UrinaryCatheterManager·Î À§ÀÓ
-        UrinaryCatheterManager.Instance.HandleItemInteraction(item);
-    }
-
-    public void HandleTarpPickup()
-    {
-        // ¼Õ ÀÌ¹ÌÁö º¯°æ
-        // ¹æ¼öÆ÷¸¦ µé°í ÀÖ´Â ¼Õ ÀÌ¹ÌÁö·Î º¯°æ
-        UpdateHandSprite("tarpHand");
-
-        // °¡ÀÌµå ÅØ½ºÆ® Ç¥½Ã
-        GuidePanel.Instance.ShowGuide("¹æ¼öÆ÷¸¦ µÑ °÷À» ÅÍÄ¡ÇÏ¼¼¿ä.");
-
-        // Collider³ª ¹öÆ°ÀÌ ÀÖ´Â ¿µ¿ª¸¸ ÅÍÄ¡ °¡´ÉÇÏµµ·Ï ¼³Á¤
-        EnableTarpPlacementAreas(true);
-    }
-
-    public void EnableTarpPlacementAreas(bool enable)
-    {
-        // ¹æ¼öÆ÷¸¦ µÑ ¼ö ÀÖ´Â ¿µ¿ªÀÇ Collider³ª Button È°¼ºÈ­/ºñÈ°¼ºÈ­
-        TarpPlacementArea[] areas = FindObjectsOfType<TarpPlacementArea>();
-        foreach (var area in areas)
-        {
-            area.gameObject.SetActive(enable);
-        }
-    }
-
-    private void UpdateHandSprite(string handType)
-    {
-        if (handImage == null) return;
-
-        switch (handType)
-        {
-            case "tarpHand":
-                handImage.sprite = tarpHandSprite;
-                break;
-            default:
-                handImage.sprite = defaultHandSprite;
-                break;
-        }
-    }
 }
