@@ -2,55 +2,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class DialogueManager : MonoBehaviour
 {
     private static DialogueManager instance;
     public static DialogueManager Instance => instance;
 
-    public enum Speaker
-    {
-        Character,   // ƒ≥∏Ø≈Õ
-        Patient,     // »Ø¿⁄ 
-        Guardian,    // ∫∏»£¿⁄
-        Player,      // «√∑π¿ÃæÓ
-        HeadNurse    // ºˆ∞£»£ªÁ
-    }
-
-    [System.Serializable]
-    public class SpeakerData
-    {
-        public string displayName;      // »≠∏Èø° «•Ω√µ… ¿Ã∏ß
-        public Sprite speakerSprite;    // »≠¿⁄ ¿ÃπÃ¡ˆ
-    }
-
-    [Header("Dialogue Prefabs")]
+    [Header("UI Prefabs")]
     [SerializeField] private GameObject smallDialoguePrefab;
     [SerializeField] private GameObject largeDialoguePrefab;
-
-    [Header("Speakers")]
-    [SerializeField] private SpeakerData[] speakerData = new SpeakerData[5];
-
-    [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI speakerNameText;
-    [SerializeField] private Image speakerImage;
-    [SerializeField] private TextMeshProUGUI dialogueText;
-
-    [Header("Parents")]
     [SerializeField] private Transform dialogueParent;
-    [SerializeField] private Transform popupParent;
 
     private GameObject currentSmallDialogue;
     private GameObject currentLargeDialogue;
-    private TextMeshProUGUI largeDialogueText;
-    private ScrollRect scrollRect;
+    private Coroutine autoCloseCoroutine;
 
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -58,100 +30,94 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void ShowSmallDialogue(
-     string message,
-     bool isOptionalItemMessage = false,  // µŒ π¯¬∞ ∏≈∞≥∫Øºˆ∑Œ ¿Ãµø
-     Action onDialogueClosed = null,      // ºº π¯¬∞ ∏≈∞≥∫Øºˆ∑Œ ¿Ãµø
-     Speaker speaker = Speaker.Character   // ∏∂¡ˆ∏∑ ∏≈∞≥∫Øºˆ∑Œ ¿Ãµø
- )
+    public void ShowSmallDialogue(string message, bool autoClose = true, Action onClose = null)
     {
-        Button dialogueButton;
+        // Ïù¥ÎØ∏ Îñ†ÏûàÎäî Îã§Ïù¥ÏñºÎ°úÍ∑∏Í∞Ä ÏûàÎã§Î©¥ Îã´Í∏∞
+        CloseSmallDialogue();
 
-        if (currentSmallDialogue == null)
+        if (smallDialoguePrefab == null || dialogueParent == null)
         {
-            currentSmallDialogue = Instantiate(smallDialoguePrefab, dialogueParent);
+            Debug.LogError("Small dialogue prefab or parent is null");
+            return;
+        }
 
-            speakerNameText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
-            speakerImage = currentSmallDialogue.GetComponentInChildren<Image>(true);
-            dialogueText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
-
-            dialogueButton = currentSmallDialogue.GetComponent<Button>();
-            if (dialogueButton == null)
+        currentSmallDialogue = Instantiate(smallDialoguePrefab, dialogueParent);
+        SmallPopup smallPopup = currentSmallDialogue.GetComponent<SmallPopup>();
+        
+        if (smallPopup != null)
+        {
+            smallPopup.Initialize(message, autoClose, onClose);
+            
+            if (autoClose)
             {
-                dialogueButton = currentSmallDialogue.AddComponent<Button>();
+                autoCloseCoroutine = StartCoroutine(AutoCloseDialogue());
             }
         }
         else
         {
-            dialogueButton = currentSmallDialogue.GetComponent<Button>();
+            Debug.LogError("Failed to get SmallPopup component");
+            Destroy(currentSmallDialogue);
         }
-
-        SpeakerData currentSpeaker = speakerData[(int)speaker];
-
-        if (speakerNameText != null)
-        {
-            speakerNameText.text = currentSpeaker.displayName;
-        }
-
-        if (speakerImage != null)
-        {
-            speakerImage.sprite = currentSpeaker.speakerSprite;
-            speakerImage.gameObject.SetActive(currentSpeaker.speakerSprite != null);
-        }
-
-        if (dialogueText != null)
-        {
-            dialogueText.text = message;
-        }
-
-        SetDialogueAsTopmost(currentSmallDialogue);
-        currentSmallDialogue.SetActive(true);
-
-        dialogueButton.onClick.RemoveAllListeners();
-        dialogueButton.onClick.AddListener(() => {
-            currentSmallDialogue.SetActive(false);
-            onDialogueClosed?.Invoke();
-        });
     }
 
-    public void ShowLargeDialogue(string message)
+    public void ShowLargeDialogue(string message, Action onClose = null)
     {
-        if (currentLargeDialogue == null)
-        {
-            currentLargeDialogue = Instantiate(largeDialoguePrefab, dialogueParent);
-            largeDialogueText = currentLargeDialogue.GetComponentInChildren<TextMeshProUGUI>();
-            scrollRect = currentLargeDialogue.GetComponentInChildren<ScrollRect>();
+        // Ïù¥ÎØ∏ Îñ†ÏûàÎäî Îã§Ïù¥ÏñºÎ°úÍ∑∏Í∞Ä ÏûàÎã§Î©¥ Îã´Í∏∞
+        CloseLargeDialogue();
 
-            Button dialogueButton = currentLargeDialogue.GetComponent<Button>();
-            if (dialogueButton == null)
-            {
-                dialogueButton = currentLargeDialogue.AddComponent<Button>();
-            }
-            dialogueButton.onClick.AddListener(() => {
-                currentLargeDialogue.SetActive(false);
-            });
+        if (largeDialoguePrefab == null || dialogueParent == null)
+        {
+            Debug.LogError("Large dialogue prefab or parent is null");
+            return;
         }
 
-        SetDialogueAsTopmost(currentLargeDialogue);
-        largeDialogueText.text = message;
-        if (scrollRect != null)
-            scrollRect.normalizedPosition = Vector2.one;
-        currentLargeDialogue.SetActive(true);
+        currentLargeDialogue = Instantiate(largeDialoguePrefab, dialogueParent);
+        SmallPopup largePopup = currentLargeDialogue.GetComponent<SmallPopup>();
+        
+        if (largePopup != null)
+        {
+            largePopup.Initialize(message, false, onClose);
+        }
+        else
+        {
+            Debug.LogError("Failed to get SmallPopup component for large dialogue");
+            Destroy(currentLargeDialogue);
+        }
     }
 
-    private void SetDialogueAsTopmost(GameObject dialogueObject)
+    public void CloseSmallDialogue()
     {
-        if (dialogueObject != null)
+        if (currentSmallDialogue != null)
         {
-            dialogueObject.transform.SetAsLastSibling();
+            Destroy(currentSmallDialogue);
+            currentSmallDialogue = null;
         }
+
+        if (autoCloseCoroutine != null)
+        {
+            StopCoroutine(autoCloseCoroutine);
+            autoCloseCoroutine = null;
+        }
+    }
+
+    public void CloseLargeDialogue()
+    {
+        if (currentLargeDialogue != null)
+        {
+            Destroy(currentLargeDialogue);
+            currentLargeDialogue = null;
+        }
+    }
+
+    private IEnumerator AutoCloseDialogue()
+    {
+        yield return new WaitForSeconds(3f);
+        CloseSmallDialogue();
     }
 
     private void OnDestroy()
     {
-        if (currentSmallDialogue != null)
-            Destroy(currentSmallDialogue);
-        if (currentLargeDialogue != null)
-            Destroy(currentLargeDialogue);
+        CloseSmallDialogue();
+        CloseLargeDialogue();
     }
 }
