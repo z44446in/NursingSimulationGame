@@ -1,22 +1,76 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// NursingActionData.cs
 
-[CreateAssetMenu(fileName = "NursingAction", menuName = "Nursing/Action Data")]
+/// <summary>
+/// 개별 간호 행동에 대한 데이터를 정의하는 ScriptableObject
+/// </summary>
+[CreateAssetMenu(fileName = "NursingActionData", menuName = "Nursing/Nursing Action Data")]
 public class NursingActionData : ScriptableObject
 {
-    public string actionId;           // 행동 고유 ID
-    public string actionName;         // 행동 이름
-    public string description;        // 행동 설명
-    public bool isEssential;          // 필수 단계 여부
-    public int score;                 // 기본 점수
-    public string[] requiredItems;    // 필요한 준비물 목록
-    
-    [TextArea(3, 10)]
-    public string practiceHint;       // 연습 모드 힌트
-    
-    [TextArea(3, 10)]
-    public string feedbackMessage;    // 피드백 메시지
-}
+    [Header("Action Info")]
+    public string actionId;
+    public string actionName;
+    [TextArea(3, 5)]
+    public string description;
+    public bool isRequired = true;
+    public int scoreWeight = 1;
 
+    [Header("Required Items")]
+    public List<Item> requiredItems = new List<Item>();
+
+    [Header("Guide Info")]
+    [TextArea(2, 4)]
+    public string hintText;
+    [TextArea(2, 4)]
+    public string feedbackMessage;
+
+    [Header("Interaction Settings")]
+    public InteractionType interactionType = InteractionType.SingleClick;
+    [TextArea(2, 4)]
+    public string guideText;
+    public GameObject tutorialPrefab;
+    
+    [Header("Drag Interaction Settings")]
+    public bool useDragInteraction = false;
+    [Range(0, 360)]
+    public float requiredDragAngle = 0;
+    [Range(5, 60)]
+    public float dragAngleTolerance = 30f;
+    public Sprite dragArrowSprite;
+    public Vector2 dragArrowPosition;
+    public float dragArrowRotation;
+    public int dragStepsRequired = 1;
+    
+    [Header("Click Interaction Settings")]
+    public bool useClickInteraction = false;
+    public Rect validClickArea = new Rect(0, 0, 100, 100);
+    public string[] validClickTargetTags;
+    public Sprite clickHighlightSprite;
+    
+    [Header("Quiz Interaction Settings")]
+    public bool useQuizInteraction = false;
+    public string quizQuestion;
+    public string[] quizOptions;
+    public int correctOptionIndex;
+    
+    [Header("Error Handling")]
+    public string errorMessage;
+    public PenaltyType penaltyType = PenaltyType.Minor;
+    
+    [Header("Visual Feedback")]
+    public Sprite successFeedbackSprite;
+    public AudioClip successSound;
+    public Sprite errorFeedbackSprite;
+    public AudioClip errorSound;
+    
+    [Header("Next Step Conditions")]
+    public bool waitForUserInput = false;
+    public float autoAdvanceDelay = 0f;
+    
+    // 에디터 확장을 위한 도우미 속성
+    #if UNITY_EDITOR
+    public bool showDragSettings = false;
+    public bool showClickSettings = false;
+    public bool showQuizSettings = false;
+    #endif
+}

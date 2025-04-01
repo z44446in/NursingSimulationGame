@@ -1,6 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections;
+using DG.Tweening;
 
 /// <summary>
 /// InteractionManager: 상호작용과 아이템 카트를 관리하는 클래스.
@@ -17,6 +20,29 @@ public class InteractionManager : MonoBehaviour
     [Header("Highlight Settings")]
     [SerializeField] private Color highlightColor = Color.white; // 하이라이트 색상
 
+    [Header("UI References")]
+    [SerializeField] private Transform popupContainer;
+    [SerializeField] private GameObject smallPopupPrefab;
+    [SerializeField] private GameObject quizPopupPrefab;
+    [SerializeField] private Image errorOverlay;
+
+    [Header("Tutorial Settings")]
+    [SerializeField] private TutorialArrowSystem tutorialArrowSystem;
+
+    [Header("Feedback Settings")]
+    [SerializeField] private Color errorColor = new Color(1f, 0f, 0f, 0.3f);
+    [SerializeField] private float errorFlashDuration = 0.2f;
+    [SerializeField] private AudioClip errorSound;
+    [SerializeField] private AudioClip successSound;
+
+    [Header("Item Interaction")]
+    [SerializeField] private List<ItemInteractionData> itemInteractionDatabase = new List<ItemInteractionData>();
+    
+    // 컴포넌트 참조
+    private AudioSource audioSource;
+    private DragGestureDetector dragDetector;
+    private ItemInteractionHandler itemInteractionHandler;
+
     private Dictionary<Renderer, Material[]> originalMaterials = new Dictionary<Renderer, Material[]>(); // 원본 재질 저장
 
     // 카트 관련
@@ -28,16 +54,245 @@ public class InteractionManager : MonoBehaviour
     private Item currentHeldItem;
     public Item CurrentHeldItem => currentHeldItem;
 
+    // 상호작용 관련
+    private Dictionary<string, List<InteractionStep>> itemInteractionStepsDatabase = new Dictionary<string, List<InteractionStep>>();
+    
+    // 오류 로깅 및 점수 관리
+    private List<string> errorLog = new List<string>();
+    
+    // 오류 이벤트
+    public event Action<string, int> OnInteractionError;
+    public event Action<Item, int> OnInteractionStepCompleted;
+    public event Action<Item> OnInteractionCompleted;
+
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            
+            // 컴포넌트 초기화
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+            
+            dragDetector = GetComponent<DragGestureDetector>();
+            if (dragDetector == null)
+            {
+                dragDetector = gameObject.AddComponent<DragGestureDetector>();
+            }
+            
+            itemInteractionHandler = GetComponent<ItemInteractionHandler>();
+            if (itemInteractionHandler == null)
+            {
+                itemInteractionHandler = gameObject.AddComponent<ItemInteractionHandler>();
+            }
+            
+            // 아이템 상호작용 데이터베이스 초기화
+            InitializeInteractionDatabase();
+            
+            // 이벤트 구독
+            if (dragDetector != null)
+            {
+                dragDetector.OnDragCompleted += HandleDragGesture;
+                dragDetector.OnDragCancelled += HandleDragCancelled;
+            }
+            
+            if (itemInteractionHandler != null)
+            {
+                itemInteractionHandler.OnStepCompleted += HandleInteractionStepCompleted;
+                itemInteractionHandler.OnInteractionCompleted += HandleInteractionCompleted;
+                itemInteractionHandler.OnInteractionError += HandleInteractionError;
+            }
+            
+            // 에러 오버레이 초기화
+            if (errorOverlay != null)
+            {
+                Color color = errorOverlay.color;
+                color.a = 0f;
+                errorOverlay.color = color;
+            }
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 아이템 상호작용 데이터베이스를 초기화합니다.
+    /// </summary>
+    private void InitializeInteractionDatabase()
+    {
+        // 인스펙터에서 설정된 아이템 상호작용 데이터를 등록
+        foreach (var interactionData in itemInteractionDatabase)
+        {
+            RegisterItemInteraction(interactionData.itemId, interactionData.interactionSteps);
+        }
+    }
+
+    /// <summary>
+    /// 아이템 상호작용을 데이터베이스에 등록합니다.
+    /// </summary>
+    public void RegisterItemInteraction(string itemId, List<InteractionStep> steps)
+    {
+        itemInteractionStepsDatabase[itemId] = steps;
+        
+        // ItemInteractionHandler에도 등록
+        if (itemInteractionHandler != null)
+        {
+            itemInteractionHandler.RegisterItemInteractionSteps(itemId, steps);
+        }
+    }
+
+    /// <summary>
+    /// 아이템 상호작용을 시작합니다.
+    /// </summary>
+    public void StartItemInteraction(Item item)
+    {
+        if (item == null)
+        {
+            Debug.LogWarning("Cannot start interaction with null item");
+            return;
+        }
+        
+        if (!itemInteractionStepsDatabase.ContainsKey(item.itemId))
+        {
+            Debug.LogWarning($"No interaction steps defined for item {item.itemName}");
+            return;
+        }
+        
+        // 상호작용 시작
+        itemInteractionHandler.StartItemInteraction(item);
+        
+        // 가이드 텍스트 업데이트
+        if (UIManager.Instance != null)
+        {
+            var firstStep = itemInteractionStepsDatabase[item.itemId][0];
+            UIManager.Instance.UpdateGuideText(firstStep.guideText);
+        }
+    }
+
+    /// <summary>
+    /// 드래그 제스처를 처리합니다.
+    /// </summary>
+    private void HandleDragGesture(Vector2 start, Vector2 end, Vector2 direction)
+    {
+        // 드래그 상호작용 처리
+        itemInteractionHandler.HandleDragInteraction(start, end, direction);
+    }
+
+    /// <summary>
+    /// 드래그 취소를 처리합니다.
+    /// </summary>
+    private void HandleDragCancelled()
+    {
+        // 구현할 내용 있으면 추가
+    }
+
+    /// <summary>
+    /// 상호작용 단계 완료를 처리합니다.
+    /// </summary>
+    private void HandleInteractionStepCompleted(Item item, int stepIndex)
+    {
+        // 효과음 재생
+        PlaySound(successSound);
+        
+        // 이벤트 발생
+        OnInteractionStepCompleted?.Invoke(item, stepIndex);
+    }
+
+    /// <summary>
+    /// 상호작용 완료를 처리합니다.
+    /// </summary>
+    private void HandleInteractionCompleted(Item item)
+    {
+        // 효과음 재생
+        PlaySound(successSound);
+        
+        // 이벤트 발생
+        OnInteractionCompleted?.Invoke(item);
+    }
+
+    /// <summary>
+    /// 상호작용 오류를 처리합니다.
+    /// </summary>
+    private void HandleInteractionError(Item item, string errorMessage, int penaltyPoints)
+    {
+        // 오류 시각 효과
+        ShowErrorFlash();
+        
+        // 효과음 재생
+        PlaySound(errorSound);
+        
+        // 오류 로그에 추가
+        string fullErrorMessage = $"{item.itemName}: {errorMessage}";
+        errorLog.Add(fullErrorMessage);
+        
+        // 작은 팝업 표시
+        ShowSmallPopup("간호사", errorMessage);
+        
+        // 이벤트 발생
+        OnInteractionError?.Invoke(errorMessage, penaltyPoints);
+    }
+
+    /// <summary>
+    /// 오류 플래시 효과를 표시합니다.
+    /// </summary>
+    private void ShowErrorFlash()
+    {
+        if (errorOverlay == null)
+            return;
+            
+        // 깜빡임 시퀀스
+        Sequence flashSequence = DOTween.Sequence();
+        flashSequence.Append(errorOverlay.DOFade(errorColor.a, errorFlashDuration));
+        flashSequence.Append(errorOverlay.DOFade(0f, errorFlashDuration));
+        flashSequence.Append(errorOverlay.DOFade(errorColor.a, errorFlashDuration));
+        flashSequence.Append(errorOverlay.DOFade(0f, errorFlashDuration));
+    }
+
+    /// <summary>
+    /// 효과음을 재생합니다.
+    /// </summary>
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    /// <summary>
+    /// 작은 팝업을 표시합니다.
+    /// </summary>
+    private void ShowSmallPopup(string character, string message)
+    {
+        if (popupContainer == null || smallPopupPrefab == null)
+            return;
+            
+        var popup = Instantiate(smallPopupPrefab, popupContainer).GetComponent<SmallPopup>();
+        if (popup != null)
+        {
+            popup.Initialize(character, message);
+        }
+    }
+
+    /// <summary>
+    /// 퀴즈 팝업을 표시합니다.
+    /// </summary>
+    public void ShowQuizPopup(string question, List<string> options, int correctIndex, System.Action<bool> onComplete)
+    {
+        if (popupContainer == null || quizPopupPrefab == null)
+            return;
+            
+        var popup = Instantiate(quizPopupPrefab, popupContainer).GetComponent<QuizPopup>();
+        if (popup != null)
+        {
+            popup.Initialize(question, options, correctIndex, onComplete);
         }
     }
 
@@ -164,6 +419,9 @@ public class InteractionManager : MonoBehaviour
 
         currentHeldItem = item;
         UpdateCursorWithItem(item);
+        
+        // 상호작용 시작
+        StartItemInteraction(item);
     }
 
     /// <summary>
@@ -204,10 +462,40 @@ public class InteractionManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 오류 로그를 가져옵니다.
+    /// </summary>
+    public List<string> GetErrorLog()
+    {
+        return new List<string>(errorLog);
+    }
+
+    /// <summary>
+    /// 오류 로그를 지웁니다.
+    /// </summary>
+    public void ClearErrorLog()
+    {
+        errorLog.Clear();
+    }
+
+    /// <summary>
     /// 파괴 시 자원 해제.
     /// </summary>
     private void OnDestroy()
     {
+        // 이벤트 구독 해제
+        if (dragDetector != null)
+        {
+            dragDetector.OnDragCompleted -= HandleDragGesture;
+            dragDetector.OnDragCancelled -= HandleDragCancelled;
+        }
+        
+        if (itemInteractionHandler != null)
+        {
+            itemInteractionHandler.OnStepCompleted -= HandleInteractionStepCompleted;
+            itemInteractionHandler.OnInteractionCompleted -= HandleInteractionCompleted;
+            itemInteractionHandler.OnInteractionError -= HandleInteractionError;
+        }
+        
         // 하이라이트 복원
         foreach (var renderer in originalMaterials.Keys)
         {
@@ -221,4 +509,14 @@ public class InteractionManager : MonoBehaviour
         // 커서 복원
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
+}
+
+/// <summary>
+/// 아이템 상호작용 데이터
+/// </summary>
+[System.Serializable]
+public class ItemInteractionData
+{
+    public string itemId;
+    public List<InteractionStep> interactionSteps = new List<InteractionStep>();
 }
