@@ -29,7 +29,10 @@ public class IntermediateManager : MonoBehaviour
     [SerializeField] private List<Sprite> handSprites;
 
     [Header("Required Items")]
-    [SerializeField] public IntermediateRequiredItems requiredItems;
+[SerializeField] public IntermediateRequiredItems requiredItems; // 기존 코드
+
+[Header("Debug about Required Items")]
+[SerializeField] private ProcedureRequiredItems procedureRequiredItems; // 추가: 프로시저 필수 아이템
 
     private Item currentHeldItem;
     private GameObject currentSmallDialogue;
@@ -67,7 +70,10 @@ public class IntermediateManager : MonoBehaviour
 
     private void Start()
     {
-        
+        if (handImage != null)
+    {
+        handImage.gameObject.SetActive(false); // 초기에는 손 이미지 숨김
+    }
     }
 
     [SerializeField] private CartUI cartUI; // CartUI 참조 추가
@@ -207,9 +213,163 @@ public class IntermediateManager : MonoBehaviour
         }
     }
 
-   
+   // IntermediateManager.cs에 추가할 메서드들
 
-   
+// 아이템을 픽업할 때 호출되는 메서드
+public void PickupItem(Item item)
+{
+    if (item == null) return;
+    
+    currentHeldItem = item;
+    
+    // 손 이미지 업데이트
+    UpdateHandImage(item);
+    
+    // 아이템 타입에 따른 처리
+    ProcessItemInteraction(item);
+}
+
+// 손 이미지 업데이트 메서드
+private void UpdateHandImage(Item item)
+{
+    if (handImage != null)
+    {
+        // 아이템에 핸드 스프라이트가 설정되어 있으면 사용
+        if (item.handSprite != null)
+        {
+            handImage.sprite = item.handSprite;
+            handImage.gameObject.SetActive(true);
+        }
+        // 아니면 기본 손 스프라이트 중에서 선택
+        else if (handSprites != null && handSprites.Count > 0)
+        {
+            handImage.sprite = handSprites[0]; // 기본 손 이미지 사용
+            handImage.gameObject.SetActive(true);
+        }
+    }
+}
+
+// 아이템 상호작용 처리 메서드
+private void ProcessItemInteraction(Item item)
+{
+    switch (item.interactionType)
+    {
+        case InteractionType.None:
+            // 상호작용 없음
+            break;
+            
+        case InteractionType.SingleClick:
+            // 단순 클릭 상호작용 - 메시지 표시 등
+            if (!string.IsNullOrEmpty(item.guideText))
+            {
+                DialogueManager.Instance?.ShowSmallDialogue(item.guideText);
+            }
+            break;
+            
+        case InteractionType.Drag:
+        case InteractionType.TwoFingerDrag:
+        case InteractionType.Draw:
+        case InteractionType.RotateDrag:
+            // 복잡한 상호작용 - 미니게임 실행
+            StartItemMiniGame(item);
+            break;
+    }
+}
+
+// 미니게임 시작 메서드
+private void StartItemMiniGame(Item item)
+{
+    if (item.miniGamePrefab == null)
+    {
+        DialogueManager.Instance?.ShowSmallDialogue("이 아이템에 대한 미니게임이 설정되지 않았습니다.");
+        return;
+    }
+    
+    GameObject miniGameObj = Instantiate(item.miniGamePrefab, popupParent);
+    MiniGameBase miniGame = miniGameObj.GetComponent<MiniGameBase>();
+    
+    if (miniGame != null)
+    {
+        miniGame.Initialize(
+            item.timeLimit,
+            item.successThreshold,
+            (success) => {
+                // 미니게임 완료 후 처리
+                if (success)
+                {
+                    DialogueManager.Instance?.ShowSmallDialogue("성공적으로 완료했습니다!");
+                    // 성공 시 추가 처리
+                }
+                else
+                {
+                    DialogueManager.Instance?.ShowSmallDialogue("실패했습니다. 다시 시도하세요.");
+                    // 실패 시 추가 처리
+                }
+            }
+        );
+    }
+    else
+    {
+        Debug.LogError($"미니게임 컴포넌트를 찾을 수 없습니다: {item.itemName}");
+        Destroy(miniGameObj);
+    }
+}
+
+   // 디버깅용 메서드 - 준비 단계에서 필요한 아이템을 자동으로 카트에 채우기
+public void DEBUG_FillCartWithRequiredItems()
+{
+    // 먼저 PreparationManager에서 ProcedureRequiredItems 가져오기
+    ProcedureRequiredItems items = null;
+    
+    if (procedureRequiredItems != null)
+    {
+        // IntermediateManager에 직접 설정된 ProcedureRequiredItems 사용
+        items = procedureRequiredItems;
+    }
+    else if (PreparationManager.Instance != null)
+    {
+        // PreparationManager에서 현재 설정된 ProcedureRequiredItems 가져오기
+        items = PreparationManager.Instance.GetCurrentProcedureItems();
+    }
+    
+    if (items == null || items.requiredItems.Count == 0)
+    {
+        Debug.LogWarning("No procedure required items are defined or accessible.");
+        DialogueManager.Instance?.ShowSmallDialogue("필수 아이템이 설정되지 않았습니다.");
+        return;
+    }
+    
+    // 현재 카트 초기화
+    InteractionManager.Instance.ClearCart();
+    requiredPickedItems.Clear();
+    
+    // 필요한 아이템들을 카트에 추가
+    foreach (var requiredItem in items.requiredItems)
+    {
+        if (!requiredItem.isOptional)  // 필수 아이템만 추가
+        {
+            InteractionManager.Instance.AddItemToCart(requiredItem.item);
+            
+            // IntermediateManager의 필수 항목과 비교하여 필요한 것만 선택된 목록에 추가
+            if (requiredItems != null && 
+                requiredItems.requiredItems.Any(ri => ri.item.itemId == requiredItem.item.itemId))
+            {
+                requiredPickedItems.Add(requiredItem.item);
+            }
+        }
+    }
+    
+    // CartUI가 있으면 업데이트
+    if (cartUI != null)
+    {
+        cartUI.UpdateCartDisplay();
+    }
+    
+    Debug.Log("[DEBUG] All required items have been added to cart");
+    
+    // 팝업 메시지로 알림
+    DialogueManager.Instance?.ShowSmallDialogue("디버그: 모든 필수 아이템이 카트에 추가되었습니다.");
+}
     
 
 

@@ -268,23 +268,34 @@ public class CartUI : MonoBehaviour
     }
 
     // TryPickItemFromCart 메서드 수정
-    private void TryPickItemFromCart(Item item)
+    // CartUI.cs의 TryPickItemFromCart 메서드 수정
+private void TryPickItemFromCart(Item item)
+{
+    if (IntermediateManager.Instance.IsRequiredItem(item))
     {
-        if (IntermediateManager.Instance.IsRequiredItem(item))
-        {
-            // 선택한 아이템은 카트에서 제거
-            InteractionManager.Instance.RemoveItemFromCart(item);
+        // 선택한 아이템은 카트에서 제거
+        InteractionManager.Instance.RemoveItemFromCart(item);
 
-            // 선택한 아이템 목록에 추가
-            IntermediateManager.Instance.AddPickedItem(item);
+        // 선택한 아이템 목록에 추가
+        IntermediateManager.Instance.AddPickedItem(item);
+        
+        // 새로 추가: 아이템 픽업 처리
+        IntermediateManager.Instance.PickupItem(item);
 
-            UpdateCartDisplay();
-        }
-        else
-        {
-            DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
-        }
+        // 카트 UI 업데이트
+        UpdateCartDisplay();
+        
+        // 선택 후 카트 닫기 (옵션)
+        if (cartPanel != null)
+            cartPanel.SetActive(false);
+        
+        UpdateToggleButtonText(false);
     }
+    else
+    {
+        DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
+    }
+}
 
     // OpenCart 메서드는 그대로 두고, 카트 UI 업데이트를 위한 메서드를 적절히 호출
     private void HandlePrepareScreenItemClick(Item item)
