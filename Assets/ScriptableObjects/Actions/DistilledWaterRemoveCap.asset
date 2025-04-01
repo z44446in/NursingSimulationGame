@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a863a8a1f27da47a2a9bbe3113bd6c32, type: 3}
+  m_Name: DistilledWaterRemoveCap
+  m_EditorClassIdentifier: 
+  actionId: DW_RemoveCap
+  actionName: 멸균증류수 뚜껑 제거
+  description: 멸균증류수 병의 뚜껑을 오른쪽에서 왼쪽으로 드래그하여 완전히 제거합니다.
+  isRequired: 1
+  scoreWeight: 5
+  requiredItems:
+  - {fileID: 11400000, guid: 6e0ba54a8990ca242be16fd27b9c5bc6, type: 2}
+  hintText: 멸균증류수 뚜껑을 제거하려면 오른쪽에서 왼쪽으로 드래그하세요.
+  feedbackMessage: 멸균증류수 뚜껑을 성공적으로 제거했습니다!
+  interactionType: 2
+  guideText: 드래그로 멸균증류수 뚜껑을 완전히 제거해주세요.
+  tutorialPrefab: {fileID: 0}
+  useDragInteraction: 1
+  requiredDragAngle: 180
+  dragAngleTolerance: 30
+  dragArrowSprite: {fileID: 0}
+  dragArrowPosition: {x: 50, y: 0}
+  dragArrowRotation: 180
+  dragStepsRequired: 1
+  useClickInteraction: 0
+  validClickArea:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  validClickTargetTags: []
+  clickHighlightSprite: {fileID: 0}
+  useQuizInteraction: 0
+  quizQuestion: 
+  quizOptions: []
+  correctOptionIndex: 0
+  errorMessage: 멸균증류수 뚜껑을 제거하기 위해서는 뚜껑을 오른쪽에서 왼쪽으로 드래그해야 합니다.
+  penaltyType: 0
+  successFeedbackSprite: {fileID: 0}
+  successSound: {fileID: 0}
+  errorFeedbackSprite: {fileID: 0}
+  errorSound: {fileID: 0}
+  waitForUserInput: 0
+  autoAdvanceDelay: 1
+  showDragSettings: 1
+  showClickSettings: 0
+  showQuizSettings: 0

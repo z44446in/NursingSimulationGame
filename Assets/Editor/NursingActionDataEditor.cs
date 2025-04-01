@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+// We need to access PenaltyType enum from the ScoringSystem class
+using System;
 
 /// <summary>
 /// NursingActionData의 커스텀 에디터
@@ -422,20 +424,156 @@ public class NursingActionDataEditor : Editor
         
         GUI.Box(displayRect, "클릭 영역");
         
-        // 드래그 핸들
-        EditorGUI.BeginChangeCheck();
-        Rect newRect = EditorGUI.RectHandle(displayRect);
-        if (EditorGUI.EndChangeCheck())
+        // 커스텀 핸들 구현
+        int controlID = GUIUtility.GetControlID(FocusType.Passive);
+        Event e = Event.current;
+        
+        // 핸들 크기
+        float handleSize = 8f;
+        
+        // 모서리 핸들 위치 계산
+        Rect topLeft = new Rect(displayRect.x - handleSize/2, displayRect.y - handleSize/2, handleSize, handleSize);
+        Rect topRight = new Rect(displayRect.x + displayRect.width - handleSize/2, displayRect.y - handleSize/2, handleSize, handleSize);
+        Rect bottomLeft = new Rect(displayRect.x - handleSize/2, displayRect.y + displayRect.height - handleSize/2, handleSize, handleSize);
+        Rect bottomRight = new Rect(displayRect.x + displayRect.width - handleSize/2, displayRect.y + displayRect.height - handleSize/2, handleSize, handleSize);
+        
+        // 중앙 핸들 위치 계산
+        Rect topCenter = new Rect(displayRect.x + displayRect.width/2 - handleSize/2, displayRect.y - handleSize/2, handleSize, handleSize);
+        Rect bottomCenter = new Rect(displayRect.x + displayRect.width/2 - handleSize/2, displayRect.y + displayRect.height - handleSize/2, handleSize, handleSize);
+        Rect leftCenter = new Rect(displayRect.x - handleSize/2, displayRect.y + displayRect.height/2 - handleSize/2, handleSize, handleSize);
+        Rect rightCenter = new Rect(displayRect.x + displayRect.width - handleSize/2, displayRect.y + displayRect.height/2 - handleSize/2, handleSize, handleSize);
+        
+        // 핸들 그리기
+        EditorGUI.DrawRect(topLeft, Color.white);
+        EditorGUI.DrawRect(topRight, Color.white);
+        EditorGUI.DrawRect(bottomLeft, Color.white);
+        EditorGUI.DrawRect(bottomRight, Color.white);
+        EditorGUI.DrawRect(topCenter, Color.white);
+        EditorGUI.DrawRect(bottomCenter, Color.white);
+        EditorGUI.DrawRect(leftCenter, Color.white);
+        EditorGUI.DrawRect(rightCenter, Color.white);
+        
+        // 드래그 처리
+        switch (e.type)
         {
-            // 화면 좌표에서 게임 좌표로 변환
-            return new Rect(
-                (newRect.x - canvas.x) / scaleX,
-                (newRect.y - canvas.y) / scaleY,
-                newRect.width / scaleX,
-                newRect.height / scaleY
-            );
+            case EventType.MouseDown:
+                if (topLeft.Contains(e.mousePosition) || topRight.Contains(e.mousePosition) ||
+                    bottomLeft.Contains(e.mousePosition) || bottomRight.Contains(e.mousePosition) ||
+                    topCenter.Contains(e.mousePosition) || bottomCenter.Contains(e.mousePosition) ||
+                    leftCenter.Contains(e.mousePosition) || rightCenter.Contains(e.mousePosition) ||
+                    displayRect.Contains(e.mousePosition))
+                {
+                    GUIUtility.hotControl = controlID;
+                    e.Use();
+                }
+                break;
+                
+            case EventType.MouseDrag:
+                if (GUIUtility.hotControl == controlID)
+                {
+                    Vector2 mouseDelta = e.delta;
+                    
+                    // 근사치 구하기 (최대 8개 중 가장 가까운 핸들 찾기)
+                    float minDistance = float.MaxValue;
+                    Rect closestHandle = displayRect; // 기본값으로 전체 영역
+                    
+                    // 각 핸들에 대한 거리 계산
+                    CheckHandleDistance(topLeft, e.mousePosition, ref minDistance, ref closestHandle);
+                    CheckHandleDistance(topRight, e.mousePosition, ref minDistance, ref closestHandle);
+                    CheckHandleDistance(bottomLeft, e.mousePosition, ref minDistance, ref closestHandle);
+                    CheckHandleDistance(bottomRight, e.mousePosition, ref minDistance, ref closestHandle);
+                    CheckHandleDistance(topCenter, e.mousePosition, ref minDistance, ref closestHandle);
+                    CheckHandleDistance(bottomCenter, e.mousePosition, ref minDistance, ref closestHandle);
+                    CheckHandleDistance(leftCenter, e.mousePosition, ref minDistance, ref closestHandle);
+                    CheckHandleDistance(rightCenter, e.mousePosition, ref minDistance, ref closestHandle);
+                    
+                    // 가장 가까운 핸들에 따라 다르게 동작
+                    if (closestHandle == topLeft)
+                    {
+                        displayRect.x += mouseDelta.x;
+                        displayRect.y += mouseDelta.y;
+                        displayRect.width -= mouseDelta.x;
+                        displayRect.height -= mouseDelta.y;
+                    }
+                    else if (closestHandle == topRight)
+                    {
+                        displayRect.y += mouseDelta.y;
+                        displayRect.width += mouseDelta.x;
+                        displayRect.height -= mouseDelta.y;
+                    }
+                    else if (closestHandle == bottomLeft)
+                    {
+                        displayRect.x += mouseDelta.x;
+                        displayRect.width -= mouseDelta.x;
+                        displayRect.height += mouseDelta.y;
+                    }
+                    else if (closestHandle == bottomRight)
+                    {
+                        displayRect.width += mouseDelta.x;
+                        displayRect.height += mouseDelta.y;
+                    }
+                    else if (closestHandle == topCenter)
+                    {
+                        displayRect.y += mouseDelta.y;
+                        displayRect.height -= mouseDelta.y;
+                    }
+                    else if (closestHandle == bottomCenter)
+                    {
+                        displayRect.height += mouseDelta.y;
+                    }
+                    else if (closestHandle == leftCenter)
+                    {
+                        displayRect.x += mouseDelta.x;
+                        displayRect.width -= mouseDelta.x;
+                    }
+                    else if (closestHandle == rightCenter)
+                    {
+                        displayRect.width += mouseDelta.x;
+                    }
+                    else
+                    {
+                        // 영역 내부를 클릭한 경우 전체 이동
+                        displayRect.x += mouseDelta.x;
+                        displayRect.y += mouseDelta.y;
+                    }
+                    
+                    // 화면 좌표에서 게임 좌표로 변환
+                    Rect gameRect = new Rect(
+                        (displayRect.x - canvas.x) / scaleX,
+                        (displayRect.y - canvas.y) / scaleY,
+                        displayRect.width / scaleX,
+                        displayRect.height / scaleY
+                    );
+                    
+                    GUI.changed = true;
+                    e.Use();
+                    
+                    return gameRect;
+                }
+                break;
+                
+            case EventType.MouseUp:
+                if (GUIUtility.hotControl == controlID)
+                {
+                    GUIUtility.hotControl = 0;
+                    e.Use();
+                }
+                break;
         }
         
         return currentArea;
+    }
+    
+    // 마우스 위치와 핸들 간의 거리 계산
+    private void CheckHandleDistance(Rect handle, Vector2 mousePosition, ref float minDistance, ref Rect closestHandle)
+    {
+        Vector2 handleCenter = new Vector2(handle.x + handle.width / 2f, handle.y + handle.height / 2f);
+        float distance = Vector2.Distance(mousePosition, handleCenter);
+        
+        if (distance < minDistance)
+        {
+            minDistance = distance;
+            closestHandle = handle;
+        }
     }
 }

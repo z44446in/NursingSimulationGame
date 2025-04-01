@@ -99,9 +99,21 @@ public class TutorialManager : MonoBehaviour
         // 펄스 애니메이션 시작 (선택적)
         if (pulse)
         {
+            // DOTween 시퀀스 생성
             highlightSequence = DOTween.Sequence();
-            highlightSequence.Append(highlightImage.DOFade(highlightMinAlpha, highlightPulseDuration))
-                .Append(highlightImage.DOFade(highlightMaxAlpha, highlightPulseDuration))
+            
+            // CanvasGroup을 사용하는 방식으로 페이드 처리
+            CanvasGroup canvasGroup = highlightImage.gameObject.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = highlightImage.gameObject.AddComponent<CanvasGroup>();
+            }
+            
+            canvasGroup.alpha = highlightMaxAlpha;
+            
+            // 시퀀스에 알파값 애니메이션 추가
+            highlightSequence.Append(canvasGroup.DOFade(highlightMinAlpha, highlightPulseDuration))
+                .Append(canvasGroup.DOFade(highlightMaxAlpha, highlightPulseDuration))
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
         }

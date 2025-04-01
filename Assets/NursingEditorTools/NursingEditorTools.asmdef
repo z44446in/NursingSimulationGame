@@ -1,0 +1,23 @@
+{
+    "name": "NursingEditorTools",
+    "rootNamespace": "NursingGame.Editor",
+    "references": [
+        "NursingGame",
+        "Unity.TextMeshPro",
+        "DOTween.Modules"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "DOTween.dll",
+        "DOTweenEditor.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

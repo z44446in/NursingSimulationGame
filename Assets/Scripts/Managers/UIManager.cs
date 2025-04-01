@@ -21,6 +21,8 @@ public class UIManager : MonoBehaviour
 
     [Header("Game Info")]
     [SerializeField] private TextMeshProUGUI timeText; // 시간 표시 텍스트
+    [SerializeField] private TextMeshProUGUI guideText; // 가이드 텍스트 
+    [SerializeField] private TextMeshProUGUI scoreText; // 점수 표시 텍스트
 
     private float elapsedTime; // 경과 시간 추적
 
@@ -102,6 +104,28 @@ public class UIManager : MonoBehaviour
     }
 
     
+    /// <summary>
+    /// 가이드 텍스트를 업데이트합니다.
+    /// </summary>
+    public void UpdateGuideText(string text)
+    {
+        if (guideText != null)
+        {
+            guideText.text = text;
+        }
+    }
+
+    /// <summary>
+    /// 점수를 업데이트합니다.
+    /// </summary>
+    public void UpdateScore(int score)
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = score.ToString();
+        }
+    }
+
     /// <summary>
     /// 파괴 시 이벤트 구독 해제.
     /// </summary>

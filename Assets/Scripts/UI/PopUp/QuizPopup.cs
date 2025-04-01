@@ -23,6 +23,17 @@ public class QuizPopup : BasePopup
     private Action<bool> onQuizCompleted;
     private int correctOptionIndex;
 
+    /// <summary>
+    /// 기본 시간 제한을 사용하는 간단한 초기화
+    /// </summary>
+    public void Initialize(string question, string[] options, int correctIndex, Action<bool> onCompleted)
+    {
+        Initialize(question, options, correctIndex, this.timeLimit, onCompleted);
+    }
+
+    /// <summary>
+    /// 전체 매개변수로 초기화
+    /// </summary>
     public void Initialize(string question, string[] options, int correctIndex, float time, Action<bool> onCompleted)
     {
         // 퀴즈 데이터 설정

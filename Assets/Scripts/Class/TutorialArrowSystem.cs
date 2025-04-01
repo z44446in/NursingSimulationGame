@@ -23,6 +23,7 @@ public class TutorialArrowSystem : MonoBehaviour
     
     // 애니메이션 시퀀스
     private Sequence currentAnimation;
+    private CanvasGroup canvasGroup;
     
     // 화살표 방향 열거형
     public enum ArrowDirection
@@ -49,6 +50,13 @@ public class TutorialArrowSystem : MonoBehaviour
         if (arrowRectTransform == null && arrowImage != null)
         {
             arrowRectTransform = arrowImage.rectTransform;
+        }
+        
+        // CanvasGroup 가져오기 또는 추가하기
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
         
         HideArrow();
@@ -141,9 +149,7 @@ public class TutorialArrowSystem : MonoBehaviour
         StopArrowAnimation();
         
         // 초기 설정
-        Color startColor = arrowImage.color;
-        startColor.a = maxAlpha;
-        arrowImage.color = startColor;
+        canvasGroup.alpha = maxAlpha;
         
         // 새 애니메이션 시퀀스 생성
         currentAnimation = DOTween.Sequence();
@@ -168,18 +174,14 @@ public class TutorialArrowSystem : MonoBehaviour
             default:
                 // 기본 방향 애니메이션 (투명도 + 이동)
                 Vector2 moveOffset = GetMoveOffsetForDirection(direction);
+                Vector2 originalPos = arrowRectTransform.anchoredPosition;
+                Vector2 targetPos = originalPos + moveOffset;
                 
-                currentAnimation.Append(
-                    DOTween.Sequence()
-                        .Join(arrowImage.DOFade(minAlpha, pulseDuration))
-                        .Join(arrowRectTransform.DOAnchorPos(arrowRectTransform.anchoredPosition + moveOffset, pulseDuration))
-                )
-                .Append(
-                    DOTween.Sequence()
-                        .Join(arrowImage.DOFade(maxAlpha, pulseDuration))
-                        .Join(arrowRectTransform.DOAnchorPos(arrowRectTransform.anchoredPosition, pulseDuration))
-                )
-                .SetLoops(-1, LoopType.Restart);
+                currentAnimation.Append(canvasGroup.DOFade(minAlpha, pulseDuration))
+                    .Join(arrowRectTransform.DOAnchorPos(targetPos, pulseDuration))
+                    .Append(canvasGroup.DOFade(maxAlpha, pulseDuration))
+                    .Join(arrowRectTransform.DOAnchorPos(originalPos, pulseDuration))
+                    .SetLoops(-1, LoopType.Restart);
                 break;
         }
     }
@@ -196,12 +198,13 @@ public class TutorialArrowSystem : MonoBehaviour
         }
         
         // 원래 상태로 복원
-        if (arrowImage != null)
+        if (canvasGroup != null)
         {
-            Color color = arrowImage.color;
-            color.a = 1.0f;
-            arrowImage.color = color;
-            
+            canvasGroup.alpha = 1.0f;
+        }
+        
+        if (arrowRectTransform != null)
+        {
             arrowRectTransform.localScale = Vector3.one;
         }
     }
@@ -232,5 +235,10 @@ public class TutorialArrowSystem : MonoBehaviour
             default:
                 return Vector2.zero;
         }
+    }
+    
+    private void OnDestroy()
+    {
+        StopArrowAnimation();
     }
 }

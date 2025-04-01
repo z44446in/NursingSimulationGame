@@ -247,12 +247,22 @@ public class InteractionManager : MonoBehaviour
         if (errorOverlay == null)
             return;
             
+        // CanvasGroup을 통한 페이드 구현
+        CanvasGroup canvasGroup = errorOverlay.gameObject.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = errorOverlay.gameObject.AddComponent<CanvasGroup>();
+        }
+        
+        // 에러 색상 설정
+        errorOverlay.color = errorColor;
+            
         // 깜빡임 시퀀스
         Sequence flashSequence = DOTween.Sequence();
-        flashSequence.Append(errorOverlay.DOFade(errorColor.a, errorFlashDuration));
-        flashSequence.Append(errorOverlay.DOFade(0f, errorFlashDuration));
-        flashSequence.Append(errorOverlay.DOFade(errorColor.a, errorFlashDuration));
-        flashSequence.Append(errorOverlay.DOFade(0f, errorFlashDuration));
+        flashSequence.Append(canvasGroup.DOFade(errorColor.a, errorFlashDuration));
+        flashSequence.Append(canvasGroup.DOFade(0f, errorFlashDuration));
+        flashSequence.Append(canvasGroup.DOFade(errorColor.a, errorFlashDuration));
+        flashSequence.Append(canvasGroup.DOFade(0f, errorFlashDuration));
     }
 
     /// <summary>
@@ -277,7 +287,8 @@ public class InteractionManager : MonoBehaviour
         var popup = Instantiate(smallPopupPrefab, popupContainer).GetComponent<SmallPopup>();
         if (popup != null)
         {
-            popup.Initialize(character, message);
+            // character는 현재 무시하고 메시지만 전달 (자동 닫기 활성화)
+            popup.Initialize(message, true);
         }
     }
 
@@ -292,7 +303,9 @@ public class InteractionManager : MonoBehaviour
         var popup = Instantiate(quizPopupPrefab, popupContainer).GetComponent<QuizPopup>();
         if (popup != null)
         {
-            popup.Initialize(question, options, correctIndex, onComplete);
+            // 기본 타임 리밋 10초로 설정
+            float timeLimit = 10f;
+            popup.Initialize(question, options.ToArray(), correctIndex, timeLimit, onComplete);
         }
     }
 

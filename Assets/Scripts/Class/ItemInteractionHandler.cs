@@ -30,6 +30,9 @@ public class ItemInteractionHandler : MonoBehaviour
     private bool isInteractionActive = false;
     private bool isTutorialActive = false;
     
+    // 튜토리얼 애니메이션
+    private Sequence tutorialAnimation;
+    
     // 콜백 델리게이트
     public event Action<Item, int> OnStepCompleted;
     public event Action<Item> OnInteractionCompleted;
@@ -103,7 +106,10 @@ public class ItemInteractionHandler : MonoBehaviour
         var currentStep = steps[currentStepIndex];
         
         // 가이드 텍스트 업데이트 (UIManager에서 처리)
-        UIManager.Instance?.UpdateGuideText(currentStep.guideText);
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateGuideText(currentStep.guideText);
+        }
         
         // 튜토리얼 화살표 표시
         if (tutorialContainer && tutorialArrow && currentStep.tutorialArrowSprite != null)
@@ -115,8 +121,23 @@ public class ItemInteractionHandler : MonoBehaviour
             tutorialContainer.SetActive(true);
             isTutorialActive = true;
             
-            // 화살표 깜빡임 효과
-            tutorialArrow.DOFade(0.3f, highlightPulseDuration)
+            // 화살표 깜빡임 효과 - CanvasGroup을 사용해 페이드 처리
+            CanvasGroup canvasGroup = tutorialArrow.gameObject.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = tutorialArrow.gameObject.AddComponent<CanvasGroup>();
+            }
+            
+            // 기존 애니메이션 중지
+            if (tutorialAnimation != null)
+            {
+                tutorialAnimation.Kill();
+            }
+            
+            // 새 애니메이션 시작
+            tutorialAnimation = DOTween.Sequence();
+            tutorialAnimation.Append(canvasGroup.DOFade(0.3f, highlightPulseDuration))
+                .Append(canvasGroup.DOFade(1f, highlightPulseDuration))
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
         }
@@ -133,8 +154,18 @@ public class ItemInteractionHandler : MonoBehaviour
             isTutorialActive = false;
             
             // 애니메이션 정지
-            tutorialArrow.DOKill();
-            tutorialArrow.color = new Color(tutorialArrow.color.r, tutorialArrow.color.g, tutorialArrow.color.b, 1f);
+            if (tutorialAnimation != null)
+            {
+                tutorialAnimation.Kill();
+                tutorialAnimation = null;
+            }
+            
+            // 알파값 초기화
+            CanvasGroup canvasGroup = tutorialArrow?.gameObject.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 1f;
+            }
         }
     }
     
@@ -295,10 +326,30 @@ public class ItemInteractionHandler : MonoBehaviour
             
             // 빨간색으로 2번 깜빡임
             Sequence flashSequence = DOTween.Sequence();
-            flashSequence.Append(errorOverlay.DOColor(errorColor, errorFlashDuration));
-            flashSequence.Append(errorOverlay.DOColor(originalColor, errorFlashDuration));
-            flashSequence.Append(errorOverlay.DOColor(errorColor, errorFlashDuration));
-            flashSequence.Append(errorOverlay.DOColor(originalColor, errorFlashDuration));
+            
+            // CanvasGroup을 사용해 깜빡임 구현
+            CanvasGroup canvasGroup = errorOverlay.gameObject.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = errorOverlay.gameObject.AddComponent<CanvasGroup>();
+            }
+            
+            // 원래 상태 저장
+            float originalAlpha = canvasGroup.alpha;
+            
+            // 에러 오버레이의 색상을 에러 색상으로 설정
+            errorOverlay.color = errorColor;
+            
+            // 깜빡임 시퀀스 설정
+            flashSequence.Append(canvasGroup.DOFade(0.5f, errorFlashDuration))
+                .Append(canvasGroup.DOFade(0f, errorFlashDuration))
+                .Append(canvasGroup.DOFade(0.5f, errorFlashDuration))
+                .Append(canvasGroup.DOFade(0f, errorFlashDuration))
+                .OnComplete(() => {
+                    // 원래 상태로 복원
+                    errorOverlay.color = originalColor;
+                    canvasGroup.alpha = originalAlpha;
+                });
         }
     }
     
@@ -308,6 +359,16 @@ public class ItemInteractionHandler : MonoBehaviour
     public void RegisterItemInteractionSteps(string itemId, List<InteractionStep> steps)
     {
         itemInteractionSteps[itemId] = steps;
+    }
+    
+    private void OnDestroy()
+    {
+        // 애니메이션 정리
+        if (tutorialAnimation != null)
+        {
+            tutorialAnimation.Kill();
+            tutorialAnimation = null;
+        }
     }
 }
 

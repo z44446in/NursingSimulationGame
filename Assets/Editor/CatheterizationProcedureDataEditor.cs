@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using UnityEditorInternal;
+using System.Reflection;
 
 /// <summary>
 /// 유치도뇨 시술 데이터를 위한 커스텀 에디터
@@ -475,23 +476,24 @@ public class CatheterizationProcedureDataEditor : Editor
         EditorUtility.DisplayDialog("단계 순서 검증 결과", message, "확인");
     }
     
-    // 오디오 클립 재생
+    // 오디오 클립 재생 (에디터 전용)
     private void PlayClip(AudioClip clip)
     {
         if (clip == null)
             return;
             
-        Assembly unityEditorAssembly = typeof(AudioImporter).Assembly;
-        Type audioUtilClass = unityEditorAssembly.GetType("UnityEditor.AudioUtil");
-        MethodInfo method = audioUtilClass.GetMethod("PlayPreviewClip", 
-            BindingFlags.Static | BindingFlags.Public, null, new System.Type[] { typeof(AudioClip), typeof(int), typeof(bool) }, null);
-        
-        method.Invoke(null, new object[] { clip, 0, false });
+        // Unity 에디터의 AudioUtil 클래스 접근 (리플렉션 사용)
+        // 이렇게 접근하는 이유는 AudioUtil이 공개 API가 아니기 때문
+        System.Type audioUtilClass = System.Type.GetType("UnityEditor.AudioUtil,UnityEditor");
+        if (audioUtilClass != null)
+        {
+            MethodInfo method = audioUtilClass.GetMethod("PlayPreviewClip", 
+                BindingFlags.Static | BindingFlags.Public, null, new System.Type[] { typeof(AudioClip) }, null);
+            
+            if (method != null)
+            {
+                method.Invoke(null, new object[] { clip });
+            }
+        }
     }
 }
-
-// System.Reflection 네임스페이스와 필요한 using 문 추가
-#region Using
-using System.Reflection;
-using UnityEditor.SceneManagement;
-#endregion
