@@ -36,12 +36,13 @@ public class CartUI : MonoBehaviour
     private const string GAME_CONFIRMATION_MESSAGE = "손에 들겠습니까?";
 
     private GameManager.GameScreen currentScreen;
-
+private bool hasCartBeenClosedOnce = false;
     private void Start()
     {
         currentScreen = GameManager.Instance.GetCurrentScreen(); // 현재 화면 가져오기
         InitializeUI();
         UpdateCartInstruction();
+        
     }
 
     private GameManager.GameScreen lastScreen;
@@ -126,14 +127,6 @@ public class CartUI : MonoBehaviour
         cartPanel.SetActive(true);
         UpdateToggleButtonText(true);
 
-        // 인터미디에이트 화면에서 카트 내용 업데이트 로직 추가
-        if (currentScreen == GameManager.GameScreen.INTERMEDIATE &&
-            IntermediateManager.Instance.requiredPickedItems.Count > 0)
-        {
-            // 이미 선택한 아이템이 있는 경우, 선택한 아이템만 표시
-            IntermediateManager.Instance.RefreshCartItems();
-        }
-
         UpdateCartDisplay();
         UpdateCartInstruction();
     }
@@ -159,44 +152,15 @@ public class CartUI : MonoBehaviour
                 DialogueManager.Instance.ShowSmallDialogue("아직 덜골랐어.. 좀 더 생각해봐. 환자한테 가면 완전 멸균이어야 한다구?");
                 return;
             }
+
+                hasCartBeenClosedOnce = true;
         }
 
         bool newState = !cartPanel.activeSelf;
         cartPanel.SetActive(newState);
         UpdateToggleButtonText(newState);
 
-        // 카트를 열 때 카트 내용 업데이트
-        if (newState && currentScreen == GameManager.GameScreen.INTERMEDIATE)
-        {
-            // 카트를 열 때 현재 설정에 따라 내용 업데이트
-            bool isFirstOpen = IntermediateManager.Instance.requiredPickedItems.Count == 0;
-
-            // 기존 카트 아이템 제거
-            ClearItemContainer();
-
-            if (isFirstOpen)
-            {
-                // 첫 열기: Prepare 화면에서 가져온 아이템 표시 (InteractionManager에서 관리중)
-                List<Item> cartItems = InteractionManager.Instance.GetCartItems();
-                foreach (var item in cartItems)
-                {
-                    CreateItemButton(item);
-                }
-            }
-            else
-            {
-                // 다시 열기: 선택했던 아이템만 표시
-                foreach (var item in IntermediateManager.Instance.requiredPickedItems)
-                {
-                    CreateItemButton(item);
-                }
-            }
-        }
-        else
-        {
-            // 다른 화면에서는 기존 카트 업데이트 방식 사용
-            UpdateCartDisplay();
-        }
+       
     }
     private void UpdateToggleButtonText(bool isCartOpen)
     {
@@ -279,17 +243,11 @@ private void TryPickItemFromCart(Item item)
         // 선택한 아이템 목록에 추가
         IntermediateManager.Instance.AddPickedItem(item);
         
-        // 새로 추가: 아이템 픽업 처리
-        IntermediateManager.Instance.PickupItem(item);
-
+        
         // 카트 UI 업데이트
         UpdateCartDisplay();
         
-        // 선택 후 카트 닫기 (옵션)
-        if (cartPanel != null)
-            cartPanel.SetActive(false);
         
-        UpdateToggleButtonText(false);
     }
     else
     {
