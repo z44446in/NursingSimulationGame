@@ -36,15 +36,19 @@ public class CartUI : MonoBehaviour
     private const string GAME_CONFIRMATION_MESSAGE = "손에 들겠습니까?";
 
     private GameManager.GameScreen currentScreen;
+    private GameManager.GameScreen lastScreen;
+    bool hasCartBeenClosedOnce = false;
+
 
     private void Start()
     {
         currentScreen = GameManager.Instance.GetCurrentScreen(); // 현재 화면 가져오기
         InitializeUI();
         UpdateCartInstruction();
+        
     }
 
-    private GameManager.GameScreen lastScreen;
+    
 
     private void Update()
     {
@@ -126,14 +130,6 @@ public class CartUI : MonoBehaviour
         cartPanel.SetActive(true);
         UpdateToggleButtonText(true);
 
-        // 인터미디에이트 화면에서 카트 내용 업데이트 로직 추가
-        if (currentScreen == GameManager.GameScreen.INTERMEDIATE &&
-            IntermediateManager.Instance.requiredPickedItems.Count > 0)
-        {
-            // 이미 선택한 아이템이 있는 경우, 선택한 아이템만 표시
-            IntermediateManager.Instance.RefreshCartItems();
-        }
-
         UpdateCartDisplay();
         UpdateCartInstruction();
     }
@@ -150,53 +146,44 @@ public class CartUI : MonoBehaviour
     {
         if (cartPanel == null) return;
 
-        if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE)
-        {
-            bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
+        if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE )
+        {   
+            
+            
 
-            if (!itemsAllPicked)
-            {
-                DialogueManager.Instance.ShowSmallDialogue("아직 덜골랐어.. 좀 더 생각해봐. 환자한테 가면 완전 멸균이어야 한다구?");
+            if ( hasCartBeenClosedOnce == false)
+            {bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
+
+                if (!itemsAllPicked)
+                {
+                    DialogueManager.Instance.ShowSmallDialogue("아직 덜골랐어.. 좀 더 생각해봐. 환자한테 가면 완전 멸균이어야 한다구?");
+                    return;
+                }
+
+                hasCartBeenClosedOnce = true;
+                
+                cartPanel.SetActive(false);
+                UpdateToggleButtonText(false);
+                IntermediateManager.Instance.RefreshCartItems();
+                cartInstructionText.text = "어떤 물품을 꺼내시겠습니까?";
+                UpdateCartDisplay();
+                
+
                 return;
+            
             }
+
+            
+
         }
+
+       
 
         bool newState = !cartPanel.activeSelf;
         cartPanel.SetActive(newState);
         UpdateToggleButtonText(newState);
 
-        // 카트를 열 때 카트 내용 업데이트
-        if (newState && currentScreen == GameManager.GameScreen.INTERMEDIATE)
-        {
-            // 카트를 열 때 현재 설정에 따라 내용 업데이트
-            bool isFirstOpen = IntermediateManager.Instance.requiredPickedItems.Count == 0;
-
-            // 기존 카트 아이템 제거
-            ClearItemContainer();
-
-            if (isFirstOpen)
-            {
-                // 첫 열기: Prepare 화면에서 가져온 아이템 표시 (InteractionManager에서 관리중)
-                List<Item> cartItems = InteractionManager.Instance.GetCartItems();
-                foreach (var item in cartItems)
-                {
-                    CreateItemButton(item);
-                }
-            }
-            else
-            {
-                // 다시 열기: 선택했던 아이템만 표시
-                foreach (var item in IntermediateManager.Instance.requiredPickedItems)
-                {
-                    CreateItemButton(item);
-                }
-            }
-        }
-        else
-        {
-            // 다른 화면에서는 기존 카트 업데이트 방식 사용
-            UpdateCartDisplay();
-        }
+       
     }
     private void UpdateToggleButtonText(bool isCartOpen)
     {
@@ -265,26 +252,43 @@ public class CartUI : MonoBehaviour
     private void HandleIntermediateItemClick(Item item)
     {
         ShowConfirmationPopup(item, INTERMEDIATE_CONFIRMATION_MESSAGE, TryPickItemFromCart);
+
+    
     }
 
     // TryPickItemFromCart 메서드 수정
-    private void TryPickItemFromCart(Item item)
+    // CartUI.cs의 TryPickItemFromCart 메서드 수정
+private void TryPickItemFromCart(Item item)
+{
+    if (IntermediateManager.Instance.IsRequiredItem(item))
     {
-        if (IntermediateManager.Instance.IsRequiredItem(item))
+        // 선택한 아이템은 카트에서 제거
+        InteractionManager.Instance.RemoveItemFromCart(item);
+
+        if(hasCartBeenClosedOnce == true)
         {
-            // 선택한 아이템은 카트에서 제거
-            InteractionManager.Instance.RemoveItemFromCart(item);
-
-            // 선택한 아이템 목록에 추가
-            IntermediateManager.Instance.AddPickedItem(item);
-
+            IntermediateManager.Instance.PickupItem(item);
+            UpdateToggleButtonText(true);
+            cartPanel.SetActive(false);
             UpdateCartDisplay();
+            return;
         }
-        else
-        {
-            DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
-        }
+        // 선택한 아이템 목록에 추가
+        IntermediateManager.Instance.AddPickedItem(item);
+        
+        
+        // 카트 UI 업데이트
+        UpdateCartDisplay();
+        
+        
     }
+    else
+    {
+        DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
+    }
+
+
+}
 
     // OpenCart 메서드는 그대로 두고, 카트 UI 업데이트를 위한 메서드를 적절히 호출
     private void HandlePrepareScreenItemClick(Item item)

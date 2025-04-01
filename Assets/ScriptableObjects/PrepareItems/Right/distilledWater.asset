@@ -22,7 +22,7 @@ MonoBehaviour:
     \uACB0\uC11D\uC774 \uC0DD\uAE38 \uC218 \uC788\uAC70\uB4E0. \uADF8\uB7FC \uBC8C\uB8E8\uB2DD\uC774
     \uD6A8\uACFC\uC801\uC73C\uB85C \uC548\uB418\uACA0\uC9C0?"
   interactionType: 1
-  guideText: 
+  guideText: "\u3147\u3147\u3147\u3147"
   guideImage: {fileID: 0}
   handSprite: {fileID: 83288435, guid: a8e106c8a9f7841b6a5b0cc4cee300ad, type: 3}
   miniGamePrefab: {fileID: 0}

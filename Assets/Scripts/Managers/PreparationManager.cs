@@ -318,7 +318,11 @@ public class PreparationManager : MonoBehaviour
 
     }
 
-
+// 현재 설정된 ProcedureRequiredItems를 반환하는 메서드
+public ProcedureRequiredItems GetCurrentProcedureItems()
+{
+    return currentProcedureItems;
+}
 
 
     private IEnumerator SwitchToIntermediateScreen()
