@@ -1804,6 +1804,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 671e7ce7427b64090b9ae9f30290f211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  urinaryCatheterData: {fileID: 0}
+  popupContainer: {fileID: 0}
+  backgroundAudioSource: {fileID: 0}
+  sfxAudioSource: {fileID: 0}
 --- !u!4 &403440771
 Transform:
   m_ObjectHideFlags: 0
@@ -3043,6 +3047,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  popupContainer: {fileID: 0}
+  smallPopupPrefab: {fileID: 0}
+  quizPopupPrefab: {fileID: 0}
+  errorOverlay: {fileID: 0}
+  tutorialArrowSystem: {fileID: 0}
+  errorColor: {r: 1, g: 0, b: 0, a: 0.3}
+  errorFlashDuration: 0.2
+  errorSound: {fileID: 0}
+  successSound: {fileID: 0}
+  itemInteractionDatabase: []
 --- !u!4 &923778981
 Transform:
   m_ObjectHideFlags: 0
@@ -4663,6 +4677,8 @@ MonoBehaviour:
   pausePanel: {fileID: 0}
   resultPanel: {fileID: 0}
   timeText: {fileID: 0}
+  guideText: {fileID: 0}
+  scoreText: {fileID: 0}
 --- !u!4 &1212461739
 Transform:
   m_ObjectHideFlags: 0
@@ -9391,7 +9407,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1199565409181193370}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -9645,7 +9661,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 5359100351219707682}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -9920,7 +9936,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 7021983806487557619}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -10415,7 +10431,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1555390377149469625}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []

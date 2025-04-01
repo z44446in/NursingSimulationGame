@@ -30,7 +30,11 @@ public class GameScreenManager : MonoBehaviour
 
     [Header("Transition Settings")]
     [SerializeField] private float transitionDuration = 0.3f;
-    [SerializeField] private Ease transitionEase = Ease.InOutQuad;
+    [SerializeField, Tooltip("화면 전환 애니메이션 효과 타입")] 
+    private Ease transitionEase = Ease.InOutQuad;
+    
+    // 트랜지션 이펙트를 위한 캔버스 그룹
+    private CanvasGroup panelCanvasGroup;
 
     [Header("Popup References")]
     [SerializeField] private GameObject actPopup; // ���� �ִ� ActPopup ����
@@ -177,12 +181,38 @@ public class GameScreenManager : MonoBehaviour
     {
         if (targetPanel == null || targetPanel == currentActivePanel)
             return;
-
-        currentActivePanel.SetActive(false);
+        
+        // 트랜지션 효과 적용하기
+        CanvasGroup currentCanvasGroup = currentActivePanel.GetComponent<CanvasGroup>();
+        if (currentCanvasGroup == null)
+        {
+            currentCanvasGroup = currentActivePanel.AddComponent<CanvasGroup>();
+        }
+        
+        CanvasGroup targetCanvasGroup = targetPanel.GetComponent<CanvasGroup>();
+        if (targetCanvasGroup == null)
+        {
+            targetCanvasGroup = targetPanel.AddComponent<CanvasGroup>();
+        }
+        
+        // 트랜지션 시작
         targetPanel.SetActive(true);
+        targetCanvasGroup.alpha = 0;
+        
+        // 현재 패널 페이드 아웃
+        currentCanvasGroup.DOFade(0, transitionDuration)
+            .SetEase(transitionEase)
+            .OnComplete(() => {
+                currentActivePanel.SetActive(false);
+            });
+            
+        // 타겟 패널 페이드 인
+        targetCanvasGroup.DOFade(1, transitionDuration)
+            .SetEase(transitionEase);
+        
         currentActivePanel = targetPanel;
 
-        // Back ��ư�� fullViewPanel�� �ƴ� ���� ���̰�
+        // Back 버튼은 fullViewPanel이 아닐 때만 표시
         if (backToFullViewButton != null)
             backToFullViewButton.gameObject.SetActive(targetPanel != fullViewPanel);
     }

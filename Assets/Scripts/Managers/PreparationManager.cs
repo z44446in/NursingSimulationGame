@@ -43,7 +43,8 @@ public class PreparationManager : MonoBehaviour
     // 현재 선택된 아이템 관리
     private List<Item> selectedItems = new List<Item>();
     private Queue<Item> optionalItemsToExplain = new Queue<Item>();
-    private bool isShowingOptionalItems = false;
+    // 이 변수는 추후 옵셔널 아이템 설명 기능에서 사용될 예정이므로 속성으로 변경
+    public bool IsShowingOptionalItems { get; private set; } = false;
 
     // ItemSelectionPopup 참조
     private ItemSelectionPopup currentPopup;
@@ -183,7 +184,7 @@ public class PreparationManager : MonoBehaviour
             {
                 optionalItemsToExplain.Enqueue(item.item);
             }
-            isShowingOptionalItems = true;
+            IsShowingOptionalItems = true;
             ShowNextOptionalItemDialogue();
         }
         else

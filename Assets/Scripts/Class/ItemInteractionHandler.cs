@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
+// BaseInteractionSystem에 정의된 InteractionStep과 InteractionData를 사용하기 위한 참조
+
 /// <summary>
 /// 아이템 상호작용을 처리하는 기본 클래스입니다.
 /// 다양한 상호작용 유형을 지원하고 상태를 관리합니다.
@@ -28,7 +30,8 @@ public class ItemInteractionHandler : MonoBehaviour
     // 상호작용 상태
     private int currentStepIndex = 0;
     private bool isInteractionActive = false;
-    private bool isTutorialActive = false;
+    // 이 변수는 HideGuide와 같은 다른 메서드에서 사용될 수 있으므로 속성으로 변경
+    public bool IsTutorialActive { get; private set; } = false;
     
     // 튜토리얼 애니메이션
     private Sequence tutorialAnimation;
@@ -119,7 +122,7 @@ public class ItemInteractionHandler : MonoBehaviour
             tutorialArrow.rectTransform.eulerAngles = new Vector3(0, 0, currentStep.tutorialArrowRotation);
             
             tutorialContainer.SetActive(true);
-            isTutorialActive = true;
+            IsTutorialActive = true;
             
             // 화살표 깜빡임 효과 - CanvasGroup을 사용해 페이드 처리
             CanvasGroup canvasGroup = tutorialArrow.gameObject.GetComponent<CanvasGroup>();
@@ -151,7 +154,7 @@ public class ItemInteractionHandler : MonoBehaviour
         if (tutorialContainer)
         {
             tutorialContainer.SetActive(false);
-            isTutorialActive = false;
+            IsTutorialActive = false;
             
             // 애니메이션 정지
             if (tutorialAnimation != null)
@@ -372,28 +375,5 @@ public class ItemInteractionHandler : MonoBehaviour
     }
 }
 
-/// <summary>
-/// 상호작용 단계 정보를 담는 클래스
-/// </summary>
-[System.Serializable]
-public class InteractionStep
-{
-    public InteractionType interactionType;
-    public string guideText;
-    
-    // 드래그 관련
-    public float requiredDragAngle;
-    public float dragAngleTolerance = 30f;
-    
-    // 클릭 관련
-    public Rect validClickArea;
-    
-    // 튜토리얼 화살표 관련
-    public Sprite tutorialArrowSprite;
-    public Vector2 tutorialArrowPosition;
-    public float tutorialArrowRotation;
-    
-    // 오류 메시지
-    public string errorMessage;
-    public int penaltyPoints = 5;
-}
+// InteractionStep 클래스는 BaseInteractionSystem.cs로 이동되었습니다.
+// 이 파일에서는 BaseInteractionSystem에 정의된 InteractionStep 클래스를 사용합니다.

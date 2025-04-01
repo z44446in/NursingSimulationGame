@@ -25,7 +25,8 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private Color highlightColor = new Color(1f, 1f, 1f, 0.5f);
     
     // 튜토리얼 상태
-    private bool isTutorialActive = false;
+    // 이 변수는 실제로 다른 메서드에서 참조될 수 있으므로 public으로 변경합니다
+    public bool IsTutorialActive { get; private set; } = false;
     private Coroutine currentTutorialCoroutine;
     
     // 하이라이트 애니메이션
@@ -245,7 +246,7 @@ public class TutorialManager : MonoBehaviour
         HideArrowTutorial();
         HideAreaHighlight();
         
-        isTutorialActive = false;
+        IsTutorialActive = false;
     }
     
     /// <summary>
