@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5688618507370074633}
   - component: {fileID: 1021948738582235339}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: context
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 8819161881373235210}
   - component: {fileID: 1231392503170480427}
   m_Layer: 5
-  m_Name: SmallDialougeText
+  m_Name: name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,8 +168,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 79, y: -220}
-  m_SizeDelta: {x: -391.166, y: -927.371}
+  m_AnchoredPosition: {x: -592.64307, y: -175.22379}
+  m_SizeDelta: {x: -1734.4521, y: -1016.9234}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8819161881373235210
 CanvasRenderer:
