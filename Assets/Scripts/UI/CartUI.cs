@@ -36,7 +36,10 @@ public class CartUI : MonoBehaviour
     private const string GAME_CONFIRMATION_MESSAGE = "손에 들겠습니까?";
 
     private GameManager.GameScreen currentScreen;
-    private bool hasCartBeenClosedOnce = false;
+    private GameManager.GameScreen lastScreen;
+    bool hasCartBeenClosedOnce = false;
+
+
     private void Start()
     {
         currentScreen = GameManager.Instance.GetCurrentScreen(); // 현재 화면 가져오기
@@ -45,7 +48,7 @@ public class CartUI : MonoBehaviour
         
     }
 
-    private GameManager.GameScreen lastScreen;
+    
 
     private void Update()
     {
@@ -144,33 +147,33 @@ public class CartUI : MonoBehaviour
         if (cartPanel == null) return;
 
         if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE )
-        {
+        {   
+            
+            
+
             if ( hasCartBeenClosedOnce == false)
             {bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
 
-            if (!itemsAllPicked)
-            {
-                DialogueManager.Instance.ShowSmallDialogue("아직 덜골랐어.. 좀 더 생각해봐. 환자한테 가면 완전 멸균이어야 한다구?");
-                return;
-            }
+                if (!itemsAllPicked)
+                {
+                    DialogueManager.Instance.ShowSmallDialogue("아직 덜골랐어.. 좀 더 생각해봐. 환자한테 가면 완전 멸균이어야 한다구?");
+                    return;
+                }
 
-            hasCartBeenClosedOnce = true;
-            
-            cartPanel.SetActive(false);
-            UpdateToggleButtonText(false);
-            return;
-            
-            }
-
-            
-                cartInstructionText.text = "어떤 물품을 꺼내시겠습니까?";
-                // cart item 고른 아이템으로 업데이트 
-                // 
+                hasCartBeenClosedOnce = true;
+                
+                cartPanel.SetActive(false);
+                UpdateToggleButtonText(false);
                 IntermediateManager.Instance.RefreshCartItems();
+                cartInstructionText.text = "어떤 물품을 꺼내시겠습니까?";
                 UpdateCartDisplay();
+                
+
+                return;
+            
+            }
 
             
-
 
         }
 
@@ -265,6 +268,7 @@ private void TryPickItemFromCart(Item item)
         if(hasCartBeenClosedOnce == true)
         {
             IntermediateManager.Instance.PickupItem(item);
+            UpdateToggleButtonText(true);
             cartPanel.SetActive(false);
             UpdateCartDisplay();
             return;
