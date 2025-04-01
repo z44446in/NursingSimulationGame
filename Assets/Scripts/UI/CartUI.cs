@@ -36,7 +36,7 @@ public class CartUI : MonoBehaviour
     private const string GAME_CONFIRMATION_MESSAGE = "손에 들겠습니까?";
 
     private GameManager.GameScreen currentScreen;
-private bool hasCartBeenClosedOnce = false;
+    private bool hasCartBeenClosedOnce = false;
     private void Start()
     {
         currentScreen = GameManager.Instance.GetCurrentScreen(); // 현재 화면 가져오기
@@ -143,9 +143,10 @@ private bool hasCartBeenClosedOnce = false;
     {
         if (cartPanel == null) return;
 
-        if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE)
+        if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE )
         {
-            bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
+            if ( hasCartBeenClosedOnce == false)
+            {bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
 
             if (!itemsAllPicked)
             {
@@ -153,8 +154,27 @@ private bool hasCartBeenClosedOnce = false;
                 return;
             }
 
-                hasCartBeenClosedOnce = true;
+            hasCartBeenClosedOnce = true;
+            
+            cartPanel.SetActive(false);
+            UpdateToggleButtonText(false);
+            return;
+            
+            }
+
+            
+                cartInstructionText.text = "어떤 물품을 꺼내시겠습니까?";
+                // cart item 고른 아이템으로 업데이트 
+                // 
+                IntermediateManager.Instance.RefreshCartItems();
+                UpdateCartDisplay();
+
+            
+
+
         }
+
+       
 
         bool newState = !cartPanel.activeSelf;
         cartPanel.SetActive(newState);
@@ -229,6 +249,8 @@ private bool hasCartBeenClosedOnce = false;
     private void HandleIntermediateItemClick(Item item)
     {
         ShowConfirmationPopup(item, INTERMEDIATE_CONFIRMATION_MESSAGE, TryPickItemFromCart);
+
+    
     }
 
     // TryPickItemFromCart 메서드 수정
@@ -240,6 +262,13 @@ private void TryPickItemFromCart(Item item)
         // 선택한 아이템은 카트에서 제거
         InteractionManager.Instance.RemoveItemFromCart(item);
 
+        if(hasCartBeenClosedOnce == true)
+        {
+            IntermediateManager.Instance.PickupItem(item);
+            cartPanel.SetActive(false);
+            UpdateCartDisplay();
+            return;
+        }
         // 선택한 아이템 목록에 추가
         IntermediateManager.Instance.AddPickedItem(item);
         
@@ -253,6 +282,8 @@ private void TryPickItemFromCart(Item item)
     {
         DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
     }
+
+
 }
 
     // OpenCart 메서드는 그대로 두고, 카트 UI 업데이트를 위한 메서드를 적절히 호출

@@ -124,7 +124,7 @@ public class IntermediateManager : MonoBehaviour
     }
 
     // IntermediateManager.cs에 다음 메서드 추가
-    public void RefreshCartItems()
+    public void RefreshCartItems() // 토글 두번째로 열었을 때 카트 아이템 설정하는 거. 
     {
         // 기존 카트 초기화
         InteractionManager.Instance.ClearCart();
