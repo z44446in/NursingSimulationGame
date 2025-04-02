@@ -225,7 +225,30 @@ public void PickupItem(Item item)
     // 손 이미지 업데이트
     UpdateHandImage(item);
     
-    // 아이템 타입에 따른 처리
+    // 멸균증류수 아이템 처리
+    if (item.itemId == "distilledWater" || item.itemName == "멸균증류수")
+    {
+        // 베이스 인터랙션 시스템 찾기
+        BaseInteractionSystem interactionSystem = FindObjectOfType<BaseInteractionSystem>();
+        if (interactionSystem != null)
+        {
+            // 초기 오브젝트 생성 (뚜껑 등)
+            interactionSystem.CreateInitialObjects("dilutedWaterInteraction");
+            
+            // 상호작용 시작
+            interactionSystem.StartInteraction("dilutedWaterInteraction");
+            
+            // 로그 출력
+            Debug.Log("멸균증류수 절차가 시작되었습니다.");
+            return;
+        }
+        else
+        {
+            Debug.LogWarning("BaseInteractionSystem을 찾을 수 없습니다. 멸균증류수 절차를 시작할 수 없습니다.");
+        }
+    }
+    
+    // 기존 아이템 타입에 따른 처리
     ProcessItemInteraction(item);
 }
 

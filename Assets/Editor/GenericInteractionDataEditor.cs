@@ -17,6 +17,11 @@ namespace NursingGame.Editor
         private bool showVisualEffects = false;
         private bool showSettings = false;
         
+        // 특수 기능 폴드아웃 상태
+        private Dictionary<int, bool> showInitialObjectsFoldout = new Dictionary<int, bool>();
+        private Dictionary<int, bool> showMultiStageDragFoldout = new Dictionary<int, bool>();
+        private Dictionary<int, bool> showConditionalTouchFoldout = new Dictionary<int, bool>();
+        
         // 드래그 컨트롤 변수
         private int selectedStepIndex = -1;
         private int selectedControl = -1;
@@ -113,6 +118,9 @@ namespace NursingGame.Editor
                         EditorGUILayout.PropertyField(stepNameProp, new GUIContent("단계 이름"));
                         EditorGUILayout.PropertyField(interactionTypeProp, new GUIContent("상호작용 유형"));
                         EditorGUILayout.PropertyField(stepProp.FindPropertyRelative("guideText"), new GUIContent("가이드 텍스트"));
+                        
+                        // 새로운 고급 기능 섹션
+                        DrawAdvancedFeaturesSection(stepProp, i);
                         
                         // 상호작용 유형별 설정
                         InteractionType interactionType = (InteractionType)interactionTypeProp.enumValueIndex;
@@ -223,6 +231,314 @@ namespace NursingGame.Editor
             }
             
             serializedObject.ApplyModifiedProperties();
+        }
+        
+        // 고급 기능 섹션 그리기
+        private void DrawAdvancedFeaturesSection(SerializedProperty stepProp, int stepIndex)
+        {
+            EditorGUILayout.Space(5);
+            EditorGUILayout.LabelField("고급 기능 (메르트리얼 증류수 절차)", EditorStyles.boldLabel);
+            
+            // 초기 오브젝트 설정
+            DrawInitialObjectsSettings(stepProp, stepIndex);
+            
+            // 다중 단계 드래그 설정
+            DrawMultiStageDragSettings(stepProp, stepIndex);
+            
+            // 조건부 터치 설정
+            DrawConditionalTouchSettings(stepProp, stepIndex);
+            
+            // 추가 시각 효과
+            SerializedProperty showErrorBorderProp = stepProp.FindPropertyRelative("showErrorBorderFlash");
+            SerializedProperty disableTouchDurationProp = stepProp.FindPropertyRelative("disableTouchDuration");
+            SerializedProperty createWaterEffectProp = stepProp.FindPropertyRelative("createWaterEffect");
+            SerializedProperty waterEffectPositionProp = stepProp.FindPropertyRelative("waterEffectPosition");
+            SerializedProperty createWaterImageProp = stepProp.FindPropertyRelative("createWaterImageOnObject");
+            
+            EditorGUILayout.Space(3);
+            EditorGUILayout.LabelField("추가 시각 효과", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(showErrorBorderProp, new GUIContent("오류 테두리 효과"));
+            
+            if (showErrorBorderProp.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(disableTouchDurationProp, new GUIContent("터치 비활성화 시간 (초)"));
+                EditorGUI.indentLevel--;
+            }
+            
+            EditorGUILayout.PropertyField(createWaterEffectProp, new GUIContent("물 효과 표시"));
+            
+            if (createWaterEffectProp.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(waterEffectPositionProp, new GUIContent("물 효과 위치"));
+                EditorGUILayout.PropertyField(createWaterImageProp, new GUIContent("물 이미지 생성"));
+                EditorGUI.indentLevel--;
+            }
+        }
+        
+        // 초기 오브젝트 설정 UI 그리기
+        private void DrawInitialObjectsSettings(SerializedProperty stepProp, int stepIndex)
+        {
+            if (!showInitialObjectsFoldout.ContainsKey(stepIndex))
+            {
+                showInitialObjectsFoldout[stepIndex] = false;
+            }
+            
+            SerializedProperty createInitialObjectsProp = stepProp.FindPropertyRelative("createInitialObjects");
+            SerializedProperty initialObjectsProp = stepProp.FindPropertyRelative("initialObjects");
+            
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            
+            EditorGUILayout.BeginHorizontal();
+            createInitialObjectsProp.boolValue = EditorGUILayout.Toggle(createInitialObjectsProp.boolValue, GUILayout.Width(20));
+            showInitialObjectsFoldout[stepIndex] = EditorGUILayout.Foldout(showInitialObjectsFoldout[stepIndex], "초기 오브젝트 생성", true);
+            EditorGUILayout.EndHorizontal();
+            
+            if (createInitialObjectsProp.boolValue && showInitialObjectsFoldout[stepIndex])
+            {
+                EditorGUI.indentLevel++;
+                
+                // 오브젝트 추가 버튼
+                if (GUILayout.Button("새 오브젝트 추가", GUILayout.Height(20)))
+                {
+                    initialObjectsProp.arraySize++;
+                    var newObj = initialObjectsProp.GetArrayElementAtIndex(initialObjectsProp.arraySize - 1);
+                    newObj.FindPropertyRelative("objectId").stringValue = "object_" + System.Guid.NewGuid().ToString().Substring(0, 8);
+                    newObj.FindPropertyRelative("objectName").stringValue = "오브젝트 " + initialObjectsProp.arraySize;
+                    newObj.FindPropertyRelative("scale").vector3Value = Vector3.one;
+                    newObj.FindPropertyRelative("tag").stringValue = "Untagged";
+                }
+                
+                // 각 오브젝트 정보 표시
+                for (int i = 0; i < initialObjectsProp.arraySize; i++)
+                {
+                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                    
+                    SerializedProperty objProp = initialObjectsProp.GetArrayElementAtIndex(i);
+                    EditorGUILayout.LabelField($"오브젝트 {i+1}", EditorStyles.boldLabel);
+                    
+                    EditorGUILayout.PropertyField(objProp.FindPropertyRelative("objectId"), new GUIContent("오브젝트 ID"));
+                    EditorGUILayout.PropertyField(objProp.FindPropertyRelative("objectName"), new GUIContent("오브젝트 이름"));
+                    EditorGUILayout.PropertyField(objProp.FindPropertyRelative("objectSprite"), new GUIContent("스프라이트"));
+                    EditorGUILayout.PropertyField(objProp.FindPropertyRelative("position"), new GUIContent("위치"));
+                    EditorGUILayout.PropertyField(objProp.FindPropertyRelative("rotation"), new GUIContent("회전"));
+                    EditorGUILayout.PropertyField(objProp.FindPropertyRelative("scale"), new GUIContent("스케일"));
+                    EditorGUILayout.PropertyField(objProp.FindPropertyRelative("tag"), new GUIContent("태그"));
+                    
+                    // 커스텀 프리팹 설정
+                    SerializedProperty useCustomPrefabProp = objProp.FindPropertyRelative("useCustomPrefab");
+                    EditorGUILayout.PropertyField(useCustomPrefabProp, new GUIContent("커스텀 프리팹 사용"));
+                    
+                    if (useCustomPrefabProp.boolValue)
+                    {
+                        EditorGUILayout.PropertyField(objProp.FindPropertyRelative("customPrefab"), new GUIContent("커스텀 프리팹"));
+                    }
+                    
+                    // 오브젝트 삭제 버튼
+                    if (GUILayout.Button("삭제", GUILayout.Height(20)))
+                    {
+                        initialObjectsProp.DeleteArrayElementAtIndex(i);
+                        break;
+                    }
+                    
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.Space(2);
+                }
+                
+                EditorGUI.indentLevel--;
+            }
+            
+            EditorGUILayout.EndVertical();
+        }
+        
+        // 다중 단계 드래그 설정 UI 그리기
+        private void DrawMultiStageDragSettings(SerializedProperty stepProp, int stepIndex)
+        {
+            if (!showMultiStageDragFoldout.ContainsKey(stepIndex))
+            {
+                showMultiStageDragFoldout[stepIndex] = false;
+            }
+            
+            SerializedProperty useMultiStageDragProp = stepProp.FindPropertyRelative("useMultiStageDrag");
+            SerializedProperty multiStageDragStepsProp = stepProp.FindPropertyRelative("multiStageDragSteps");
+            
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            
+            EditorGUILayout.BeginHorizontal();
+            useMultiStageDragProp.boolValue = EditorGUILayout.Toggle(useMultiStageDragProp.boolValue, GUILayout.Width(20));
+            showMultiStageDragFoldout[stepIndex] = EditorGUILayout.Foldout(showMultiStageDragFoldout[stepIndex], "다중 단계 드래그", true);
+            EditorGUILayout.EndHorizontal();
+            
+            if (useMultiStageDragProp.boolValue && showMultiStageDragFoldout[stepIndex])
+            {
+                EditorGUI.indentLevel++;
+                
+                // 드래그 단계 추가 버튼
+                if (GUILayout.Button("새 드래그 단계 추가", GUILayout.Height(20)))
+                {
+                    multiStageDragStepsProp.arraySize++;
+                    var newStep = multiStageDragStepsProp.GetArrayElementAtIndex(multiStageDragStepsProp.arraySize - 1);
+                    newStep.FindPropertyRelative("stepId").stringValue = "drag_" + System.Guid.NewGuid().ToString().Substring(0, 8);
+                    newStep.FindPropertyRelative("dragAngleTolerance").floatValue = 30f;
+                }
+                
+                // 각 드래그 단계 정보 표시
+                for (int i = 0; i < multiStageDragStepsProp.arraySize; i++)
+                {
+                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                    
+                    SerializedProperty dragStepProp = multiStageDragStepsProp.GetArrayElementAtIndex(i);
+                    EditorGUILayout.LabelField($"드래그 단계 {i+1}", EditorStyles.boldLabel);
+                    
+                    EditorGUILayout.PropertyField(dragStepProp.FindPropertyRelative("stepId"), new GUIContent("단계 ID"));
+                    
+                    // 드래그 화살표 설정
+                    EditorGUILayout.PropertyField(dragStepProp.FindPropertyRelative("arrowPosition"), new GUIContent("화살표 위치"));
+                    EditorGUILayout.PropertyField(dragStepProp.FindPropertyRelative("arrowRotation"), new GUIContent("화살표 회전"));
+                    
+                    // 드래그 방향 설정
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel("드래그 방향");
+                    
+                    SerializedProperty angleProp = dragStepProp.FindPropertyRelative("requiredDragAngle");
+                    
+                    // 원형 방향 선택기 그리기
+                    Rect rect = EditorGUILayout.GetControlRect(false, 100);
+                    float newAngle = DrawAngleSelector(rect, angleProp.floatValue, stepIndex);
+                    if (newAngle != angleProp.floatValue)
+                    {
+                        angleProp.floatValue = newAngle;
+                    }
+                    
+                    EditorGUILayout.EndHorizontal();
+                    
+                    EditorGUILayout.PropertyField(angleProp, new GUIContent("필요 드래그 각도"));
+                    EditorGUILayout.PropertyField(dragStepProp.FindPropertyRelative("dragAngleTolerance"), new GUIContent("허용 오차 범위"));
+                    
+                    // 드래그 시작 오브젝트 설정
+                    SerializedProperty requireStartOnObjectProp = dragStepProp.FindPropertyRelative("requireStartOnObject");
+                    EditorGUILayout.PropertyField(requireStartOnObjectProp, new GUIContent("특정 오브젝트에서 시작"));
+                    
+                    if (requireStartOnObjectProp.boolValue)
+                    {
+                        EditorGUILayout.PropertyField(dragStepProp.FindPropertyRelative("requiredStartTag"), new GUIContent("시작 오브젝트 태그"));
+                    }
+                    
+                    // 타겟 오프셋 설정
+                    EditorGUILayout.PropertyField(dragStepProp.FindPropertyRelative("targetPositionOffset"), new GUIContent("타겟 위치 오프셋"));
+                    EditorGUILayout.PropertyField(dragStepProp.FindPropertyRelative("targetRotationOffset"), new GUIContent("타겟 회전 오프셋"));
+                    
+                    // 드래그 단계 삭제 버튼
+                    if (GUILayout.Button("삭제", GUILayout.Height(20)))
+                    {
+                        multiStageDragStepsProp.DeleteArrayElementAtIndex(i);
+                        break;
+                    }
+                    
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.Space(2);
+                }
+                
+                EditorGUI.indentLevel--;
+            }
+            
+            EditorGUILayout.EndVertical();
+        }
+        
+        // 조건부 터치 설정 UI 그리기
+        private void DrawConditionalTouchSettings(SerializedProperty stepProp, int stepIndex)
+        {
+            if (!showConditionalTouchFoldout.ContainsKey(stepIndex))
+            {
+                showConditionalTouchFoldout[stepIndex] = false;
+            }
+            
+            SerializedProperty useConditionalTouchProp = stepProp.FindPropertyRelative("useConditionalTouch");
+            SerializedProperty touchOptionsProp = stepProp.FindPropertyRelative("touchOptions");
+            
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            
+            EditorGUILayout.BeginHorizontal();
+            useConditionalTouchProp.boolValue = EditorGUILayout.Toggle(useConditionalTouchProp.boolValue, GUILayout.Width(20));
+            showConditionalTouchFoldout[stepIndex] = EditorGUILayout.Foldout(showConditionalTouchFoldout[stepIndex], "조건부 터치", true);
+            EditorGUILayout.EndHorizontal();
+            
+            if (useConditionalTouchProp.boolValue && showConditionalTouchFoldout[stepIndex])
+            {
+                EditorGUI.indentLevel++;
+                
+                // 터치 옵션 추가 버튼
+                if (GUILayout.Button("새 터치 옵션 추가", GUILayout.Height(20)))
+                {
+                    touchOptionsProp.arraySize++;
+                    var newOption = touchOptionsProp.GetArrayElementAtIndex(touchOptionsProp.arraySize - 1);
+                    newOption.FindPropertyRelative("optionId").stringValue = "touch_" + System.Guid.NewGuid().ToString().Substring(0, 8);
+                }
+                
+                // 각 터치 옵션 정보 표시
+                for (int i = 0; i < touchOptionsProp.arraySize; i++)
+                {
+                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                    
+                    SerializedProperty optionProp = touchOptionsProp.GetArrayElementAtIndex(i);
+                    
+                    // 색상 표시 (올바른 옵션은 초록색, 잘못된 옵션은 빨간색)
+                    SerializedProperty isCorrectProp = optionProp.FindPropertyRelative("isCorrectOption");
+                    Color originalColor = GUI.backgroundColor;
+                    
+                    if (isCorrectProp.boolValue)
+                    {
+                        GUI.backgroundColor = new Color(0.6f, 1.0f, 0.6f); // 옅은 초록색
+                    }
+                    else
+                    {
+                        GUI.backgroundColor = new Color(1.0f, 0.6f, 0.6f); // 옅은 빨간색
+                    }
+                    
+                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                    GUI.backgroundColor = originalColor;
+                    
+                    EditorGUILayout.LabelField($"터치 옵션 {i+1} " + (isCorrectProp.boolValue ? "(정답)" : "(오답)"), EditorStyles.boldLabel);
+                    
+                    EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("optionId"), new GUIContent("옵션 ID"));
+                    EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("targetTag"), new GUIContent("타겟 태그"));
+                    EditorGUILayout.PropertyField(isCorrectProp, new GUIContent("정답 옵션"));
+                    
+                    EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("successMessage"), new GUIContent("성공 메시지"));
+                    EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("errorMessage"), new GUIContent("오류 메시지"));
+                    
+                    // 오류 효과 설정
+                    if (!isCorrectProp.boolValue)
+                    {
+                        EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("showErrorBorderFlash"), new GUIContent("오류 테두리 효과"));
+                        EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("disableTouchDuration"), new GUIContent("터치 비활성화 시간 (초)"));
+                        EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("errorEntryText"), new GUIContent("오류 기록 텍스트"));
+                    }
+                    
+                    // 물 효과 설정 (정답 옵션만)
+                    if (isCorrectProp.boolValue)
+                    {
+                        EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("waterEffectPosition"), new GUIContent("물 효과 위치"));
+                        EditorGUILayout.PropertyField(optionProp.FindPropertyRelative("createWaterImageOnObject"), new GUIContent("물 이미지 생성"));
+                    }
+                    
+                    // 터치 옵션 삭제 버튼
+                    if (GUILayout.Button("삭제", GUILayout.Height(20)))
+                    {
+                        touchOptionsProp.DeleteArrayElementAtIndex(i);
+                        break;
+                    }
+                    
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.Space(2);
+                }
+                
+                EditorGUI.indentLevel--;
+            }
+            
+            EditorGUILayout.EndVertical();
         }
         
         // 드래그 설정 UI 그리기

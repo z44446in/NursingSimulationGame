@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 // DialogueManager 참조 추가
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 /// <summary>
 /// 모든 상호작용을 처리하는 범용 베이스 클래스
@@ -16,16 +17,25 @@ public class BaseInteractionSystem : MonoBehaviour
     [SerializeField] protected CanvasGroup feedbackPanel;
     [SerializeField] protected Image tutorialArrow;
     [SerializeField] protected Transform popupContainer;
+    [SerializeField] protected Image errorBorder;
+    [SerializeField] protected GameObject waterEffectPrefab;
+    [SerializeField] protected GameObject waterImagePrefab;
+    [SerializeField] protected GameObject correctMarkPrefab;
+    [SerializeField] protected GameObject wrongMarkPrefab;
     
     [Header("Feedback Settings")]
     [SerializeField] protected AudioClip successSound;
     [SerializeField] protected AudioClip errorSound;
+    [SerializeField] protected AudioClip waterPouringSound;
     [SerializeField] protected float feedbackDuration = 0.5f;
+    [SerializeField] protected int defaultErrorPenalty = 5;
     
     // 이벤트
     public event Action<string, InteractionEventData> OnInteractionStarted;
     public event Action<string, InteractionEventData> OnInteractionCompleted;
     public event Action<string, InteractionEventData, string> OnInteractionError;
+    public event Action<string> OnMultiStageDragCompleted;
+    public event Action<string, bool> OnConditionalTouchHandled;
     
     // 오디오 컴포넌트
     protected AudioSource audioSource;
@@ -37,6 +47,11 @@ public class BaseInteractionSystem : MonoBehaviour
     protected string currentInteractionId;
     protected int currentStepIndex = 0;
     protected bool isInteractionActive = false;
+    protected int currentDragStage = 0;
+    protected bool isTouchDisabled = false;
+    
+    // 생성된 초기 오브젝트 캐시
+    protected Dictionary<string, GameObject> initialObjectsCache = new Dictionary<string, GameObject>();
     
     protected virtual void Awake()
     {
@@ -76,6 +91,29 @@ public class BaseInteractionSystem : MonoBehaviour
     }
     
     /// <summary>
+    /// 초기 오브젝트 생성 처리
+    /// </summary>
+    /// <param name="interactionId">상호작용 ID</param>
+    public virtual void CreateInitialObjects(string interactionId)
+    {
+        if (!interactionsDatabase.ContainsKey(interactionId))
+        {
+            Debug.LogWarning($"상호작용 ID '{interactionId}'가 등록되어 있지 않습니다.");
+            return;
+        }
+            
+        var data = interactionsDatabase[interactionId];
+        if (data.steps.Count == 0)
+            return;
+        
+        // GenericInteractionStep의 정보를 갖고 있지 않으므로, 이 부분은 GenericInteractionData에서 처리하도록 변경해야 합니다.
+        // 이 메서드는 GenericInteractionData에서 호출됩니다.
+        
+        // 예시 코드 (실제 구현은 GenericInteractionData에서)
+        Debug.Log($"초기 오브젝트 생성을 시작합니다. 상호작용: {interactionId}");
+    }
+    
+    /// <summary>
     /// 상호작용 시작
     /// </summary>
     /// <param name="interactionId">시작할 상호작용의 ID</param>
@@ -96,7 +134,9 @@ public class BaseInteractionSystem : MonoBehaviour
         
         currentInteractionId = interactionId;
         currentStepIndex = 0;
+        currentDragStage = 0;
         isInteractionActive = true;
+        isTouchDisabled = false;
         
         // 이벤트 발생
         OnInteractionStarted?.Invoke(interactionId, eventData);
@@ -447,6 +487,292 @@ public class BaseInteractionSystem : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 다중 단계 드래그 처리
+    /// </summary>
+    public virtual void HandleMultiStageDrag(Vector2 start, Vector2 end, Vector2 direction)
+    {
+        if (!isInteractionActive || !interactionsDatabase.ContainsKey(currentInteractionId))
+            return;
+            
+        if (isTouchDisabled)
+            return;
+            
+        var data = interactionsDatabase[currentInteractionId];
+        if (currentStepIndex >= data.steps.Count)
+            return;
+            
+        var step = data.steps[currentStepIndex];
+        
+        // 현재 단계가 드래그 상호작용인지 확인
+        if (step.interactionType != InteractionType.Drag)
+        {
+            ShowError("이 단계에서는 드래그를 사용할 수 없습니다.");
+            return;
+        }
+        
+        // GenericInteractionStep의 정보를 갖고 있지 않으므로 실제 구현에서는 다르게 처리해야 합니다.
+        // 멀티 드래그 스테이지 정보 확인
+        
+        // 드래그 각도 계산
+        float dragAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        if (dragAngle < 0) dragAngle += 360f;
+        
+        // 허용 오차 범위 확인
+        float angleDifference = Mathf.Abs(Mathf.DeltaAngle(dragAngle, step.requiredDragAngle));
+        
+        if (angleDifference <= step.dragAngleTolerance)
+        {
+            // 각 단계별 처리
+            currentDragStage++;
+            
+            // 완료 이벤트 발생
+            OnMultiStageDragCompleted?.Invoke(step.guideText);
+            
+            // 모든 단계가 완료되었는지 확인
+            if (currentDragStage >= 2) // 예시로 2단계
+            {
+                // 성공
+                CompleteCurrentStep();
+                currentDragStage = 0;
+            }
+            else
+            {
+                // 다음 드래그 단계 가이드 표시
+                UpdateDragStageGuide();
+            }
+        }
+        else
+        {
+            // 오류: 잘못된 드래그 방향
+            ShowError("올바른 방향으로 드래그하세요.");
+        }
+    }
+    
+    /// <summary>
+    /// 드래그 단계 가이드 업데이트
+    /// </summary>
+    protected virtual void UpdateDragStageGuide()
+    {
+        // 실제 구현에서는 GenericInteractionStep의 정보를 이용합니다.
+        if (tutorialArrow != null)
+        {
+            // 화살표 위치와 회전 업데이트
+            if (currentDragStage == 1)
+            {
+                // 두 번째 드래그에 대한 정보 설정
+                tutorialArrow.rectTransform.eulerAngles = new Vector3(0, 0, 180); // 왼쪽 방향
+                tutorialArrow.gameObject.SetActive(true);
+                
+                // 깜빡임 효과
+                CanvasGroup canvasGroup = tutorialArrow.gameObject.GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    DOTween.Kill(canvasGroup);
+                    canvasGroup.DOFade(0.4f, 0.5f)
+                        .SetLoops(-1, LoopType.Yoyo)
+                        .SetEase(Ease.InOutSine);
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 조건부 터치 처리
+    /// </summary>
+    public virtual void HandleConditionalTouch(Vector2 position)
+    {
+        if (!isInteractionActive || !interactionsDatabase.ContainsKey(currentInteractionId))
+            return;
+            
+        if (isTouchDisabled)
+            return;
+            
+        var data = interactionsDatabase[currentInteractionId];
+        if (currentStepIndex >= data.steps.Count)
+            return;
+            
+        var step = data.steps[currentStepIndex];
+        
+        // 현재 단계가 조건부 터치인지 확인
+        if (step.interactionType != InteractionType.SingleClick)
+        {
+            ShowError("이 단계에서는 터치를 사용할 수 없습니다.");
+            return;
+        }
+        
+        // GenericInteractionStep의 정보를 갖고 있지 않으므로 실제 구현에서는 다르게 처리해야 합니다.
+        // 여기서는 예시 코드만 작성
+        
+        // 터치된 오브젝트 찾기
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(position), Vector2.zero);
+        if (hit.collider != null)
+        {
+            string tag = hit.collider.tag;
+            bool isCorrect = false;
+            
+            // 태그가 일치하는지 확인 (예: "TrashBin"은 올바른 선택)
+            if (tag == "TrashBin" || tag == "MedicineContainer")
+            {
+                isCorrect = true;
+                
+                // 성공 시 효과
+                ShowSuccessFeedback();
+                PlaySound(successSound);
+                
+                // 물 효과 애니메이션
+                ShowWaterEffect(position);
+                
+                // 다음 단계로 진행
+                CompleteCurrentStep();
+            }
+            else
+            {
+                // 실패 시 효과
+                ShowErrorFeedback();
+                PlaySound(errorSound);
+                
+                // 오류 메시지
+                ShowError("올바른 위치를 터치하세요.");
+                
+                // 오류 테두리 효과
+                ShowErrorBorderFlash();
+            }
+            
+            // 이벤트 발생
+            OnConditionalTouchHandled?.Invoke(tag, isCorrect);
+        }
+    }
+    
+    /// <summary>
+    /// 오류 테두리 깜빡임 효과
+    /// </summary>
+    protected virtual void ShowErrorBorderFlash()
+    {
+        if (errorBorder == null)
+            return;
+            
+        // 초기 설정
+        errorBorder.color = new Color(1f, 0f, 0f, 0f);
+        errorBorder.gameObject.SetActive(true);
+        
+        // 깜빡임 시퀀스
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(errorBorder.DOFade(0.3f, 0.2f));
+        sequence.Append(errorBorder.DOFade(0f, 0.2f));
+        sequence.Append(errorBorder.DOFade(0.3f, 0.2f));
+        sequence.Append(errorBorder.DOFade(0f, 0.2f));
+        sequence.OnComplete(() => {
+            errorBorder.gameObject.SetActive(false);
+        });
+    }
+    
+    /// <summary>
+    /// 물 효과 표시
+    /// </summary>
+    protected virtual void ShowWaterEffect(Vector2 position)
+    {
+        if (waterEffectPrefab == null)
+            return;
+            
+        // 물 효과 생성
+        GameObject waterEffect = Instantiate(waterEffectPrefab, popupContainer);
+        waterEffect.transform.position = position;
+        
+        // 물 효과음 재생
+        if (waterPouringSound != null)
+        {
+            PlaySound(waterPouringSound);
+        }
+        
+        // 일정 시간 후 제거
+        Destroy(waterEffect, 1.5f);
+    }
+    
+    /// <summary>
+    /// 오브젝트에 물 이미지 생성
+    /// </summary>
+    protected virtual void CreateWaterImageOnObject(GameObject targetObject)
+    {
+        if (waterImagePrefab == null || targetObject == null)
+            return;
+            
+        // 물 이미지 생성
+        GameObject waterImage = Instantiate(waterImagePrefab, targetObject.transform);
+        waterImage.transform.localPosition = Vector3.zero;
+    }
+    
+    /// <summary>
+    /// 터치 일시적 비활성화
+    /// </summary>
+    protected virtual void DisableTouch(float duration)
+    {
+        isTouchDisabled = true;
+        
+        // 지정된 시간 후 다시 활성화
+        StartCoroutine(EnableTouchAfterDelay(duration));
+    }
+    
+    /// <summary>
+    /// 지정된 시간 후 터치 다시 활성화
+    /// </summary>
+    protected IEnumerator EnableTouchAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        isTouchDisabled = false;
+    }
+    
+    /// <summary>
+    /// 정답 표시 이미지
+    /// </summary>
+    protected virtual void ShowCorrectAnswerFeedback()
+    {
+        if (correctMarkPrefab == null || popupContainer == null)
+            return;
+            
+        GameObject correctMark = Instantiate(correctMarkPrefab, popupContainer);
+        correctMark.transform.position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        
+        // 일정 시간 후 제거
+        Destroy(correctMark, 1.5f);
+    }
+    
+    /// <summary>
+    /// 오답 표시 이미지
+    /// </summary>
+    protected virtual void ShowWrongAnswerFeedback()
+    {
+        if (wrongMarkPrefab == null || popupContainer == null)
+            return;
+            
+        GameObject wrongMark = Instantiate(wrongMarkPrefab, popupContainer);
+        wrongMark.transform.position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        
+        // 일정 시간 후 제거
+        Destroy(wrongMark, 1.5f);
+    }
+    
+    /// <summary>
+    /// 오류 기록
+    /// </summary>
+    protected virtual void RecordError(string errorMessage, int penaltyPoints = 0)
+    {
+        if (penaltyPoints == 0)
+        {
+            penaltyPoints = defaultErrorPenalty;
+        }
+        
+        // TODO: 오류 데이터베이스에 기록
+        Debug.LogWarning($"오류 기록: {errorMessage}, 감점: {penaltyPoints}");
+        
+        // GameManager에 점수 감점 요청
+        if (GameManager.Instance != null)
+        {
+            // GameManager에 점수 관련 메서드가 있다고 가정
+            // GameManager.Instance.DeductScore(penaltyPoints);
+        }
+    }
+    
     protected virtual void OnDestroy()
     {
         // 애니메이션 정리
@@ -463,6 +789,21 @@ public class BaseInteractionSystem : MonoBehaviour
         {
             DOTween.Kill(feedbackPanel);
         }
+        
+        if (errorBorder != null)
+        {
+            DOTween.Kill(errorBorder);
+        }
+        
+        // 생성된 초기 오브젝트 정리
+        foreach (var obj in initialObjectsCache.Values)
+        {
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
+        }
+        initialObjectsCache.Clear();
     }
 }
 
@@ -488,9 +829,22 @@ public class InteractionStep
     public InteractionType interactionType;
     public string guideText;
     
+    // 초기 오브젝트 생성 관련
+    public bool createInitialObjects = false;
+    
+    // 다중 단계 드래그 관련
+    public bool useMultiStageDrag = false;
+    public int totalDragStages = 2;
+    
+    // 조건부 터치 관련
+    public bool useConditionalTouch = false;
+    public string[] validTouchTags;
+    public string[] correctTouchTags;
+    
     // 드래그 관련
     public float requiredDragAngle;
     public float dragAngleTolerance = 30f;
+    public float dragDistance = 100f;
     
     // 클릭 관련
     public Rect validClickArea;
@@ -508,6 +862,14 @@ public class InteractionStep
     // 피드백 관련
     public string successMessage;
     public string errorMessage;
+    public bool showErrorBorderFlash = false;
+    public float disableTouchDuration = 0f;
+    public string errorEntryText = "";
+    
+    // 시각 효과 관련
+    public bool createWaterEffect = false;
+    public Vector2 waterEffectPosition;
+    public bool createWaterImageOnObject = false;
     
     // ItemInteractionHandler와의 호환성을 위한 필드
     public int penaltyPoints = 5;
