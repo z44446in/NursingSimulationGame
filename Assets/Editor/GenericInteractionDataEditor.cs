@@ -67,11 +67,15 @@ namespace NursingGame.Editor
                 // 단계 추가 버튼
                 if (GUILayout.Button("새 단계 추가", GUILayout.Height(25)))
                 {
+                    Debug.Log("단계 추가 버튼 클릭됨: 현재 단계 수: " + stepsProperty.arraySize);
                     stepsProperty.arraySize++;
+                    Debug.Log("배열 크기 증가: 현재 단계 수: " + stepsProperty.arraySize);
                     var newStep = stepsProperty.GetArrayElementAtIndex(stepsProperty.arraySize - 1);
                     newStep.FindPropertyRelative("stepId").stringValue = "step_" + System.Guid.NewGuid().ToString().Substring(0, 8);
                     newStep.FindPropertyRelative("stepName").stringValue = "단계 " + stepsProperty.arraySize;
                     newStep.FindPropertyRelative("interactionType").enumValueIndex = 0; // None
+                    Debug.Log("새 단계 생성 완료: ID=" + newStep.FindPropertyRelative("stepId").stringValue);
+                    serializedObject.ApplyModifiedProperties(); // 변경사항 즉시 적용
                 }
                 
                 // 각 단계 표시

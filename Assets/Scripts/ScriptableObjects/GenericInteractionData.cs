@@ -259,6 +259,7 @@ public class GenericInteractionStep
     public float stepTimeLimit;
     public string[] requiredCompletedStepIds;
     public bool isOptional;
+    [System.NonSerialized]
     public System.Action<GenericInteractionStep> customAction;
 
     [Header("Error Handling")]
@@ -266,5 +267,10 @@ public class GenericInteractionStep
     public float disableTouchDuration = 1.0f;
     [TextArea(2, 3)]
     public string errorEntryText;
+    
+    [Header("Water Effect")]
+    public bool createWaterEffect = false;
+    public Vector2 waterEffectPosition;
+    public bool createWaterImageOnObject = false;
 
 }
