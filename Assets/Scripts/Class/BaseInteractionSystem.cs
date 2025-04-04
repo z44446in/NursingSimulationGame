@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-// DialogueManager 참조 추가
 using UnityEngine.SceneManagement;
 using System.Collections;
-using System.Linq; // 추가해야 하는 부분
+using System.Linq;
 
 /// <summary>
 /// 모든 상호작용을 처리하는 범용 베이스 클래스
-/// 다양한 간호 절차 및 아이템에 적용 가능한 상호작용 기능 제공
+/// 
+/// 주요 사용법:
+/// 1. ScriptableObject로 GenericInteractionData 생성
+/// 2. 아이템에 interactionDataId 설정
+/// 3. BaseInteractionSystem이 자동으로 상호작용 처리
+/// 
+/// 참고: 이전의 ItemInteractionHandler 기능은 이 클래스로 통합되었습니다.
 /// </summary>
 public class BaseInteractionSystem : MonoBehaviour
 {

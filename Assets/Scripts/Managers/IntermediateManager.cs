@@ -225,6 +225,12 @@ public void PickupItem(Item item)
     // 손 이미지 업데이트
     UpdateHandImage(item);
     
+    // 고급 기능
+    // 특정 아이템에 대한 interactionDataId 설정은 에디터에서 직접 처리합니다
+    
+    // 상호작용 성공 여부 추적 변수
+    bool success = false;
+    
     // interactionDataId가 설정된 경우 범용 상호작용 처리
     if (!string.IsNullOrEmpty(item.interactionDataId))
     {
@@ -310,12 +316,12 @@ public void PickupItem(Item item)
             interactionSystem.CreateInitialObjects(item.interactionDataId);
             
             // 상호작용 시작
-            bool success = interactionSystem.StartInteraction(item.interactionDataId);
+            bool interactionSuccess = interactionSystem.StartInteraction(item.interactionDataId);
             
-            if (success)
+            if (interactionSuccess)
             {
                 Debug.Log($"[아이템] 상호작용 절차가 시작되었습니다.(ID:{item.interactionDataId})");
-                return;
+                return; // 성공했으므로 여기서 종료
             }
             else
             {
@@ -325,6 +331,9 @@ public void PickupItem(Item item)
                 {
                     DialogueManager.Instance.ShowSmallDialogue($"아이템 상호작용을 시작할 수 없습니다: {item.itemName}");
                 }
+                
+                // 실패 변수 설정 (ProcessItemInteraction 호출 위해)
+                success = false;
             }
         }
         catch (System.Exception ex)
@@ -337,11 +346,12 @@ public void PickupItem(Item item)
         }
     }
     
-    
-    
-    
-    // 기존 아이템 타입에 따른 처리
-    ProcessItemInteraction(item);
+    // interactionDataId가 없거나 상호작용을 시작하지 못한 경우에만 
+    // 기존 아이템 타입에 따른 처리 실행
+    if (string.IsNullOrEmpty(item.interactionDataId) || !success)
+    {
+        ProcessItemInteraction(item);
+    }
 }
 
 // 손 이미지 업데이트 메서드

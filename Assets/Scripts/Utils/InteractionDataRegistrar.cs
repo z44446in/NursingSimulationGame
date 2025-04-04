@@ -93,29 +93,7 @@ public class InteractionDataRegistrar : MonoBehaviour
             return;
         }
         
-        // 개별 간호 액션 등록
-        foreach (var action in nursingActions)
-        {
-            if (action == null) continue;
-            
-            // 여기서 액션 등록 로직 구현
-            // 예: InteractionManager.Instance.RegisterNursingAction(action);
-            Debug.Log($"Registered nursing action: {action.actionName}");
-        }
-        
-        // 시술 단계 등록
-        foreach (var step in procedureSteps)
-        {
-            if (step == null) continue;
-            
-            // 여기서 단계 등록 로직 구현
-            // 예: ProcedureManager.Instance.RegisterProcedureStep(step);
-            Debug.Log($"Registered procedure step: {step.stepName}");
-        }
-        
-        
-        
-        // 일반 상호작용 데이터 등록
+        // 일반 상호작용 데이터 등록 (모든 상호작용을 범용화)
         foreach (var interaction in genericInteractions)
         {
             if (interaction == null) continue;
@@ -132,6 +110,36 @@ public class InteractionDataRegistrar : MonoBehaviour
             
             Debug.Log($"Registered generic interaction: {interaction.interactionName} (ID: {interaction.interactionId})");
         }
+    }
+    
+    /// <summary>
+    /// 고급 기능
+    /// </summary>
+    private void RegisterAdvancedInteraction(string interactionId)
+    {
+        // 상호작용 데이터가 있는지 확인
+        GenericInteractionData interactionData = GetInteractionData(interactionId);
+        
+        if (interactionData == null)
+        {
+            // Resources에서 찾기
+            interactionData = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
+            
+            if (interactionData == null)
+            {
+                Debug.LogWarning($"상호작용 데이터 '{interactionId}'를 찾을 수 없습니다.");
+                return;
+            }
+        }
+        
+        // 상호작용 등록
+        var steps = ConvertGenericSteps(interactionData);
+        InteractionManager.Instance.RegisterItemInteraction(interactionId, steps);
+        
+        // 캐시에 저장
+        cachedInteractions[interactionId] = interactionData;
+        
+        Debug.Log($"고급 상호작용이 등록되었습니다: {interactionId}");
     }
     
     /// <summary>
