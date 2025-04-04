@@ -13,7 +13,7 @@ public class ProcedureManager : MonoBehaviour
     public static ProcedureManager Instance => instance;
     
     [Header("Procedure References")]
-    [SerializeField] private CatheterizationProcedureData urinaryCatheterData;
+    [SerializeField] private ProcedureData urinaryCatheterData;
     
     [Header("UI References")]
     [SerializeField] private Transform popupContainer;
@@ -24,9 +24,9 @@ public class ProcedureManager : MonoBehaviour
     
     // 현재 시술 관련 데이터
     private NursingProcedureType currentProcedureType;
-    private CatheterizationProcedureData currentProcedureData;
-    private ProcedureStepData currentStep;
-    private NursingActionData currentAction;
+    private ProcedureData currentProcedureData;
+    private ProcedureStep currentStep;
+    private InteractionStep currentAction;
     private int currentStepIndex = -1;
     private int currentActionIndex = -1;
     
@@ -44,10 +44,10 @@ public class ProcedureManager : MonoBehaviour
     // 이벤트
     public event Action<NursingProcedureType> OnProcedureStarted;
     public event Action<NursingProcedureType> OnProcedureCompleted;
-    public event Action<ProcedureStepData, int> OnStepStarted;
-    public event Action<ProcedureStepData, int> OnStepCompleted;
-    public event Action<NursingActionData, int> OnActionStarted;
-    public event Action<NursingActionData, int> OnActionCompleted;
+    public event Action<ProcedureStep, int> OnStepStarted;
+    public event Action<ProcedureStep, int> OnStepCompleted;
+    public event Action<InteractionStep, int> OnActionStarted;
+    public event Action<InteractionStep, int> OnActionCompleted;
     public event Action<string, PenaltyType, int> OnPenaltyApplied;
     public event Action<int> OnScoreChanged;
     public event Action<float> OnTimeUpdated;
@@ -269,43 +269,93 @@ public class ProcedureManager : MonoBehaviour
         
         OnStepStarted?.Invoke(currentStep, currentStepIndex);
         
-        // 단계에 행동이 있는 경우 첫 행동 시작
-        if (currentStep.actions.Count > 0)
+        // 상호작용 단계인 경우 처리
+        if (currentStep.stepType == StepType.Interaction && !string.IsNullOrEmpty(currentStep.interactionDataId))
         {
-            StartNextAction();
+            // 상호작용 시작
+            if (InteractionManager.Instance != null)
+            {
+                InteractionManager.Instance.StartInteraction(currentStep.interactionDataId);
+            }
         }
     }
     
     /// <summary>
-    /// 다음 행동을 시작합니다.
+    /// 인터랙션 데이터를 가져와 단계 시작
     /// </summary>
-    private void StartNextAction()
+    private void StartInteractionStep(string interactionDataId)
     {
-        if (currentStep == null || !isProcedureActive)
+        if (string.IsNullOrEmpty(interactionDataId) || !isProcedureActive)
             return;
             
-        // 다음 행동 인덱스 계산
-        int nextActionIndex = (currentActionIndex < 0) ? 0 : currentActionIndex + 1;
-        
-        // 모든 행동 완료 확인
-        if (nextActionIndex >= currentStep.actions.Count)
+        // 인터랙션 데이터 로드
+        InteractionData interactionData = Resources.Load<InteractionData>($"Interactions/{interactionDataId}");
+        if (interactionData == null)
         {
+            Debug.LogError($"인터랙션 데이터 {interactionDataId}를 찾을 수 없습니다.");
+            CompleteCurrentStep(); // 인터랙션 데이터를 찾지 못했으므로 단계 완료 처리
+            return;
+        }
+        
+        // 인터랙션 단계가 있는지 확인
+        if (interactionData.steps.Count == 0)
+        {
+            Debug.LogWarning($"인터랙션 {interactionDataId}에 단계가 없습니다.");
             CompleteCurrentStep();
             return;
         }
         
-        // 다음 행동 설정
-        currentActionIndex = nextActionIndex;
-        currentAction = currentStep.actions[currentActionIndex];
+        // 첫 번째 인터랙션 단계 설정
+        currentActionIndex = 0;
+        currentAction = interactionData.steps[0];
         
-        if (currentAction == null)
-        {
-            Debug.LogError($"행동 {currentActionIndex}에 대한 데이터가 누락되었습니다.");
-            StartNextAction(); // 누락된 행동 건너뛰기
-            return;
-        }
-        
+        // 이벤트 발생
         OnActionStarted?.Invoke(currentAction, currentActionIndex);
+        
+        // 인터랙션 매니저를 통해 인터랙션 시작
+        if (InteractionManager.Instance != null)
+        {
+            InteractionManager.Instance.StartInteraction(interactionDataId);
+        }
+    }
+    
+    /// <summary>
+    /// 현재 상호작용 단계를 완료하고 다음 단계로 진행
+    /// </summary>
+    public void CompleteInteractionStep(string interactionId)
+    {
+        // 현재 단계가 상호작용 단계인지 확인
+        if (currentStep != null && currentStep.stepType == StepType.Interaction && 
+            currentStep.interactionDataId == interactionId)
+        {
+            CompleteCurrentStep();
+        }
+    }
+    
+    /// <summary>
+    /// 액션 등록 - 다른 매니저가 액션을 등록할 수 있게 함
+    /// </summary>
+    public void RegisterAction(object action)
+    {
+        // NursingActionData 지원 (이전 버전 호환성)
+        if (action is NursingActionData)
+        {
+            var nursingAction = action as NursingActionData;
+            Debug.Log($"간호 액션 등록: {nursingAction.actionName}");
+        }
+    }
+    
+    /// <summary>
+    /// 단계 등록 - 다른 매니저가 단계를 등록할 수 있게 함
+    /// </summary>
+    public void RegisterStep(object step)
+    {
+        // ProcedureStepData 지원 (이전 버전 호환성)
+        if (step is ProcedureStepData)
+        {
+            var procedureStep = step as ProcedureStepData;
+            Debug.Log($"시술 단계 등록: {procedureStep.stepName}");
+        }
     }
     
     /// <summary>
@@ -343,21 +393,33 @@ public class ProcedureManager : MonoBehaviour
     /// </summary>
     private void CheckStepCompletion()
     {
-        if (currentStep == null || currentStep.isOrderImportant)
+        if (currentStep == null)
             return;
             
         // 모든 필수 행동 완료 확인
         bool allRequiredActionsCompleted = true;
         
-        foreach (var action in currentStep.GetRequiredActions())
+        // 현재 단계에 필요한 아이템 확인
+        foreach (var itemReq in currentStep.requiredItems)
         {
-            if (action == null)
+            if (itemReq.item == null || itemReq.isOptional)
                 continue;
                 
-            if (!completedActions.ContainsKey(action.actionId) || !completedActions[action.actionId])
+            string itemId = itemReq.item.itemId;
+            if (!completedActions.ContainsKey(itemId) || !completedActions[itemId])
             {
                 allRequiredActionsCompleted = false;
                 break;
+            }
+        }
+        
+        // 인터랙션 완료 확인
+        if (currentStep.stepType == StepType.Interaction && !string.IsNullOrEmpty(currentStep.interactionDataId))
+        {
+            if (!completedActions.ContainsKey(currentStep.interactionDataId) || 
+                !completedActions[currentStep.interactionDataId])
+            {
+                allRequiredActionsCompleted = false;
             }
         }
         
@@ -481,7 +543,7 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 시술 유형에 따른 시술 데이터를 반환합니다.
     /// </summary>
-    private CatheterizationProcedureData GetProcedureData(NursingProcedureType procedureType)
+    private ProcedureData GetProcedureData(NursingProcedureType procedureType)
     {
         switch (procedureType)
         {
@@ -550,7 +612,7 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 현재 시술 데이터를 반환합니다.
     /// </summary>
-    public CatheterizationProcedureData GetCurrentProcedureData()
+    public ProcedureData GetCurrentProcedureData()
     {
         return currentProcedureData;
     }
@@ -558,7 +620,7 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 현재 단계를 반환합니다.
     /// </summary>
-    public ProcedureStepData GetCurrentStep()
+    public ProcedureStep GetCurrentStep()
     {
         return currentStep;
     }
@@ -566,7 +628,7 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 현재 행동을 반환합니다.
     /// </summary>
-    public NursingActionData GetCurrentAction()
+    public InteractionStep GetCurrentAction()
     {
         return currentAction;
     }

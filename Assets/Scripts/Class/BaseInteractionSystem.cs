@@ -143,12 +143,16 @@ public class BaseInteractionSystem : MonoBehaviour
         
         try
         {
-            // Resources에서 상호작용 데이터 가져오기
-            GenericInteractionData genericData = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
-            if (genericData == null)
-            {
-                Debug.LogWarning($"Resources/Interactions/{interactionId}.asset 파일을 찾을 수 없습니다.");
-                return;
+            // 통합된 두 가지 방식을 지원
+            
+            // 1. 새로운 InteractionData 방식 - 직접 인터랙션 데이터베이스에서 찾기
+            InteractionData interactionData = null;
+            
+            // 리소스에서 찾기
+            try {
+                interactionData = Resources.Load<InteractionData>($"Interactions/{interactionId}");
+            } catch (System.Exception) {
+                // 리소스에서 찾지 못하면 무시
             }
             
             // 기존 초기 오브젝트 정리
@@ -161,25 +165,65 @@ public class BaseInteractionSystem : MonoBehaviour
             }
             initialObjectsCache.Clear();
             
-            // 각 단계를 순회하면서 초기 오브젝트가 있는 단계 처리
-            for (int i = 0; i < genericData.steps.Count; i++)
+            // 새로운 방식: InteractionData를 직접 사용
+            if (interactionData != null)
             {
-                var genericStep = genericData.steps[i];
-                
-                if (genericStep.createInitialObjects && genericStep.initialObjects != null && genericStep.initialObjects.Count > 0)
+                // 먼저 메인 초기 오브젝트 처리
+                if (interactionData.initialObjects != null && interactionData.initialObjects.Count > 0)
                 {
-                    Debug.Log($"단계 {i+1}에서 {genericStep.initialObjects.Count}개의 초기 오브젝트 생성");
+                    Debug.Log($"상호작용 레벨에서 {interactionData.initialObjects.Count}개의 초기 오브젝트 생성");
                     
-                    // 각 초기 오브젝트 생성
-                    foreach (var objData in genericStep.initialObjects)
+                    foreach (var objData in interactionData.initialObjects)
                     {
-                        if (objData == null)
-                        {
-                            Debug.LogWarning("초기 오브젝트 데이터가 null입니다.");
-                            continue;
-                        }
+                        if (objData == null) continue;
                         
                         GameObject newObj = CreateInitialObject(objData);
+                    }
+                }
+                
+                // 각 단계의 초기 오브젝트 처리
+                foreach (var step in interactionData.steps)
+                {
+                    if (step.createInitialObjects && step.initialObjects != null && step.initialObjects.Count > 0)
+                    {
+                        Debug.Log($"단계 {step.stepName}에서 {step.initialObjects.Count}개의 초기 오브젝트 생성");
+                        
+                        foreach (var objData in step.initialObjects)
+                        {
+                            if (objData == null) continue;
+                            
+                            GameObject newObj = CreateInitialObject(objData);
+                        }
+                    }
+                }
+            }
+            // 기존 방식: GenericInteractionData에서 처리 (호환성 유지)
+            else
+            {
+                // Resources에서 상호작용 데이터 가져오기
+                GenericInteractionData genericData = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
+                if (genericData == null)
+                {
+                    Debug.LogWarning($"상호작용 데이터를 찾을 수 없습니다: {interactionId}");
+                    return;
+                }
+                
+                // 각 단계를 순회하면서 초기 오브젝트가 있는 단계 처리
+                for (int i = 0; i < genericData.steps.Count; i++)
+                {
+                    var genericStep = genericData.steps[i];
+                    
+                    if (genericStep.createInitialObjects && genericStep.initialObjects != null && genericStep.initialObjects.Count > 0)
+                    {
+                        Debug.Log($"단계 {i+1}에서 {genericStep.initialObjects.Count}개의 초기 오브젝트 생성");
+                        
+                        // 각 초기 오브젝트 생성
+                        foreach (var objData in genericStep.initialObjects)
+                        {
+                            if (objData == null) continue;
+                            
+                            GameObject newObj = CreateInitialObject(objData);
+                        }
                     }
                 }
             }
