@@ -6,6 +6,7 @@ using DG.Tweening;
 // DialogueManager 참조 추가
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Linq; // 추가해야 하는 부분
 
 /// <summary>
 /// 모든 상호작용을 처리하는 범용 베이스 클래스
@@ -106,11 +107,163 @@ public class BaseInteractionSystem : MonoBehaviour
         if (data.steps.Count == 0)
             return;
         
-        // GenericInteractionStep의 정보를 갖고 있지 않으므로, 이 부분은 GenericInteractionData에서 처리하도록 변경해야 합니다.
-        // 이 메서드는 GenericInteractionData에서 호출됩니다.
-        
-        // 예시 코드 (실제 구현은 GenericInteractionData에서)
         Debug.Log($"초기 오브젝트 생성을 시작합니다. 상호작용: {interactionId}");
+        
+        // popupContainer가 없으면 생성
+        if (popupContainer == null)
+        {
+            Debug.LogWarning("popupContainer가 설정되지 않았습니다. 자동으로 생성합니다.");
+            
+            // 게임 오브젝트 찾기
+            Canvas canvas = FindObjectOfType<Canvas>();
+            if (canvas != null)
+            {
+                GameObject container = new GameObject("InteractionPopupContainer");
+                container.transform.SetParent(canvas.transform, false);
+                
+                RectTransform rectTransform = container.AddComponent<RectTransform>();
+                rectTransform.anchorMin = Vector2.zero;
+                rectTransform.anchorMax = Vector2.one;
+                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = Vector2.zero;
+                
+                popupContainer = container.transform;
+            }
+            else
+            {
+                Debug.LogError("Canvas를 찾을 수 없어 팝업 컨테이너를 생성할 수 없습니다.");
+                return;
+            }
+        }
+        
+        try
+        {
+            // Resources에서 상호작용 데이터 가져오기
+            GenericInteractionData genericData = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
+            if (genericData == null)
+            {
+                Debug.LogWarning($"Resources/Interactions/{interactionId}.asset 파일을 찾을 수 없습니다.");
+                return;
+            }
+            
+            // 기존 초기 오브젝트 정리
+            foreach (var kvp in initialObjectsCache.ToList())
+            {
+                if (kvp.Value != null)
+                {
+                    Destroy(kvp.Value);
+                }
+            }
+            initialObjectsCache.Clear();
+            
+            // 각 단계를 순회하면서 초기 오브젝트가 있는 단계 처리
+            for (int i = 0; i < genericData.steps.Count; i++)
+            {
+                var genericStep = genericData.steps[i];
+                
+                if (genericStep.createInitialObjects && genericStep.initialObjects != null && genericStep.initialObjects.Count > 0)
+                {
+                    Debug.Log($"단계 {i+1}에서 {genericStep.initialObjects.Count}개의 초기 오브젝트 생성");
+                    
+                    // 각 초기 오브젝트 생성
+                    foreach (var objData in genericStep.initialObjects)
+                    {
+                        if (objData == null)
+                        {
+                            Debug.LogWarning("초기 오브젝트 데이터가 null입니다.");
+                            continue;
+                        }
+                        
+                        GameObject newObj = CreateInitialObject(objData);
+                    }
+                }
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"초기 오브젝트 생성 중 오류 발생: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// 단일 초기 오브젝트를 생성합니다.
+    /// </summary>
+    protected virtual GameObject CreateInitialObject(InitialObjectData objData)
+    {
+        if (objData == null || popupContainer == null)
+            return null;
+            
+        // 이미 같은 ID로 오브젝트가 존재하면 제거
+        if (!string.IsNullOrEmpty(objData.objectId) && 
+            initialObjectsCache.TryGetValue(objData.objectId, out GameObject existingObj) && 
+            existingObj != null)
+        {
+            Destroy(existingObj);
+        }
+        
+        GameObject newObj = null;
+        
+        // 커스텀 프리팹 사용 여부에 따라 오브젝트 생성
+        if (objData.useCustomPrefab && objData.customPrefab != null)
+        {
+            // 커스텀 프리팹 인스턴스화
+            newObj = Instantiate(objData.customPrefab, popupContainer);
+        }
+        else
+        {
+            // 기본 게임 오브젝트 생성
+            newObj = new GameObject(objData.objectName);
+            newObj.transform.SetParent(popupContainer, false);
+            
+            // 이미지 컴포넌트 추가
+            Image image = newObj.AddComponent<Image>();
+            if (objData.objectSprite != null)
+            {
+                image.sprite = objData.objectSprite;
+            }
+        }
+        
+        // 기본 속성 설정
+        newObj.name = objData.objectName;
+        if (!string.IsNullOrEmpty(objData.tag))
+        {
+            newObj.tag = objData.tag;
+        }
+        
+        // 위치, 회전, 크기 설정
+        RectTransform rectTransform = newObj.GetComponent<RectTransform>();
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = objData.position;
+            rectTransform.eulerAngles = objData.rotation;
+            rectTransform.localScale = objData.scale;
+            
+            // 스프라이트가 있는 경우 이미지 크기 설정
+            if (!objData.useCustomPrefab && objData.objectSprite != null)
+            {
+                try
+                {
+                    rectTransform.sizeDelta = new Vector2(
+                        objData.objectSprite.rect.width,
+                        objData.objectSprite.rect.height
+                    );
+                }
+                catch
+                {
+                    // 기본 크기 설정
+                    rectTransform.sizeDelta = new Vector2(100, 100);
+                }
+            }
+        }
+        
+        // 캐시에 저장
+        if (!string.IsNullOrEmpty(objData.objectId))
+        {
+            initialObjectsCache[objData.objectId] = newObj;
+        }
+        
+        Debug.Log($"초기 오브젝트 '{objData.objectName}' 생성 완료");
+        return newObj;
     }
     
     /// <summary>
@@ -804,6 +957,22 @@ public class BaseInteractionSystem : MonoBehaviour
             }
         }
         initialObjectsCache.Clear();
+    }
+    
+    /// <summary>
+    /// 팝업 컨테이너를 설정합니다.
+    /// </summary>
+    /// <param name="container">팝업이 생성될 부모 Transform</param>
+    public virtual void SetPopupContainer(Transform container)
+    {
+        if (container == null)
+        {
+            Debug.LogWarning("Null container was provided to SetPopupContainer");
+            return;
+        }
+        
+        popupContainer = container;
+        Debug.Log($"팝업 컨테이너가 설정되었습니다: {container.name}");
     }
 }
 

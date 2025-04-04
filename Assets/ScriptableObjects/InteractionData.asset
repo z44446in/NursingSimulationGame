@@ -16,7 +16,46 @@ MonoBehaviour:
   interactionName: 
   description: 
   icon: {fileID: 0}
-  steps: []
+  steps:
+  - stepId: step_90f0707b
+    stepName: "\uB2E8\uACC4 1"
+    interactionType: 0
+    guideText: 
+    createInitialObjects: 0
+    initialObjects: []
+    useMultiStageDrag: 0
+    multiStageDragSteps: []
+    useConditionalTouch: 0
+    touchOptions: []
+    requiredDragAngle: 0
+    dragAngleTolerance: 0
+    dragDistance: 0
+    validClickArea:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    validTags: []
+    requiredClicks: 0
+    quizQuestion: 
+    quizOptions: []
+    correctOptionIndex: 0
+    tutorialArrowSprite: {fileID: 0}
+    tutorialArrowPosition: {x: 0, y: 0}
+    tutorialArrowRotation: 0
+    highlightSprite: {fileID: 0}
+    successMessage: 
+    errorMessage: 
+    stepTimeLimit: 0
+    requiredCompletedStepIds: []
+    isOptional: 0
+    showErrorBorderFlash: 0
+    disableTouchDuration: 0
+    errorEntryText: 
+    createWaterEffect: 0
+    waterEffectPosition: {x: 0, y: 0}
+    createWaterImageOnObject: 0
   successSound: {fileID: 0}
   errorSound: {fileID: 0}
   successFeedbackSprite: {fileID: 0}

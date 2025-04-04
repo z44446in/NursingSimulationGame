@@ -14,6 +14,7 @@ public class Item : ScriptableObject
 
 [Header("Interaction Settings")]
 public InteractionType interactionType = InteractionType.None;
+public string interactionDataId; // 범용 상호작용 데이터 ID
 public string guideText; // 가이드 텍스트
 public Sprite guideImage; // 가이드 이미지
 public Sprite handSprite; // 손 스프라이트 (아이템을 들고 있을 때)
