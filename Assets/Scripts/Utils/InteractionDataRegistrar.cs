@@ -15,8 +15,9 @@ public class InteractionDataRegistrar : MonoBehaviour
     [Header("Procedure Steps")]
     [SerializeField] private List<ProcedureStepData> procedureSteps = new List<ProcedureStepData>();
     
-    [Header("Item Interaction Data")]
-    [SerializeField] private DistilledWaterInteractionData distilledWaterData;
+    
+    [Header("Generic Interaction Data")]
+    [SerializeField] private List<GenericInteractionData> genericInteractions = new List<GenericInteractionData>();
     
     private void Awake()
     {
@@ -63,6 +64,90 @@ public class InteractionDataRegistrar : MonoBehaviour
             );
             Debug.Log($"Registered distilled water interaction data");
         }
+        
+        // 범용 상호작용 데이터 등록
+        foreach (var interaction in genericInteractions)
+        {
+            if (interaction == null) continue;
+            
+            // GenericInteractionData를 InteractionStep 리스트로 변환
+            List<InteractionStep> steps = ConvertGenericToInteractionSteps(interaction);
+            
+            // InteractionManager에 등록
+            InteractionManager.Instance.RegisterItemInteraction(
+                interaction.interactionId, 
+                steps
+            );
+            Debug.Log($"Registered generic interaction: {interaction.interactionName} (ID: {interaction.interactionId})");
+        }
+    }
+    
+    /// <summary>
+    /// GenericInteractionData를 InteractionStep 리스트로 변환
+    /// </summary>
+    private List<InteractionStep> ConvertGenericToInteractionSteps(GenericInteractionData data)
+    {
+        List<InteractionStep> result = new List<InteractionStep>();
+        
+        foreach (var genericStep in data.steps)
+        {
+            InteractionStep step = new InteractionStep
+            {
+                interactionType = genericStep.interactionType,
+                guideText = genericStep.guideText,
+                requiredDragAngle = genericStep.requiredDragAngle,
+                dragAngleTolerance = genericStep.dragAngleTolerance,
+                dragDistance = genericStep.dragDistance,
+                validClickArea = genericStep.validClickArea,
+                quizQuestion = genericStep.quizQuestion,
+                quizOptions = genericStep.quizOptions,
+                correctOptionIndex = genericStep.correctOptionIndex,
+                tutorialArrowSprite = genericStep.tutorialArrowSprite,
+                tutorialArrowPosition = genericStep.tutorialArrowPosition,
+                tutorialArrowRotation = genericStep.tutorialArrowRotation,
+                successMessage = genericStep.successMessage,
+                errorMessage = genericStep.errorMessage,
+                
+                // 추가 설정
+                createInitialObjects = genericStep.createInitialObjects,
+                useMultiStageDrag = genericStep.useMultiStageDrag,
+                totalDragStages = genericStep.useMultiStageDrag ? genericStep.multiStageDragSteps.Count : 0,
+                useConditionalTouch = genericStep.useConditionalTouch,
+                showErrorBorderFlash = genericStep.showErrorBorderFlash,
+                disableTouchDuration = genericStep.disableTouchDuration,
+                errorEntryText = genericStep.errorEntryText,
+                createWaterEffect = genericStep.createWaterEffect,
+                waterEffectPosition = genericStep.waterEffectPosition,
+                createWaterImageOnObject = genericStep.createWaterImageOnObject,
+            };
+            
+            // 조건부 터치 태그 설정
+            if (genericStep.useConditionalTouch && genericStep.touchOptions != null && genericStep.touchOptions.Count > 0)
+            {
+                List<string> allTags = new List<string>();
+                List<string> correctTags = new List<string>();
+                
+                foreach (var option in genericStep.touchOptions)
+                {
+                    if (!string.IsNullOrEmpty(option.targetTag))
+                    {
+                        allTags.Add(option.targetTag);
+                        
+                        if (option.isCorrectOption)
+                        {
+                            correctTags.Add(option.targetTag);
+                        }
+                    }
+                }
+                
+                step.validTouchTags = allTags.ToArray();
+                step.correctTouchTags = correctTags.ToArray();
+            }
+            
+            result.Add(step);
+        }
+        
+        return result;
     }
     
     /// <summary>
@@ -72,5 +157,35 @@ public class InteractionDataRegistrar : MonoBehaviour
     private void TestRegisterActions()
     {
         RegisterActions();
+    }
+    
+    /// <summary>
+    /// 코드에서 직접 상호작용 데이터를 추가하기 위한 메소드
+    /// </summary>
+    public void AddGenericInteraction(GenericInteractionData interaction)
+    {
+        if (interaction == null) return;
+        
+        if (genericInteractions == null)
+        {
+            genericInteractions = new List<GenericInteractionData>();
+        }
+        
+        // 이미 추가되어 있는지 확인
+        if (!genericInteractions.Contains(interaction))
+        {
+            genericInteractions.Add(interaction);
+            
+            // InteractionManager가 초기화되어 있으면 바로 등록
+            if (InteractionManager.Instance != null)
+            {
+                List<InteractionStep> steps = ConvertGenericToInteractionSteps(interaction);
+                InteractionManager.Instance.RegisterItemInteraction(
+                    interaction.interactionId, 
+                    steps
+                );
+                Debug.Log($"Runtime added generic interaction: {interaction.interactionName} (ID: {interaction.interactionId})");
+            }
+        }
     }
 }

@@ -80,10 +80,13 @@ public class ItemInteractionHandler : MonoBehaviour
             handImage.gameObject.SetActive(true);
         }
         
-        // 상호작용 단계 가져오기 (실제로는 DB나 ScriptableObject에서 로드)
-        if (!itemInteractionSteps.ContainsKey(item.itemId))
+        // 상호작용 ID 확인 (interactionDataId 우선, 없으면 itemId 사용)
+        string interactionId = !string.IsNullOrEmpty(item.interactionDataId) ? item.interactionDataId : item.itemId;
+        
+        // 상호작용 단계 가져오기
+        if (!itemInteractionSteps.ContainsKey(interactionId))
         {
-            Debug.LogWarning($"No interaction steps defined for item {item.itemName}");
+            Debug.LogWarning($"상호작용 ID '{interactionId}'가 등록되어 있지 않습니다. 아이템: {item.itemName}");
             return;
         }
         
@@ -101,8 +104,11 @@ public class ItemInteractionHandler : MonoBehaviour
     {
         if (!isInteractionActive || currentItem == null)
             return;
+        
+        // 상호작용 ID 확인 (interactionDataId 우선, 없으면 itemId 사용)
+        string interactionId = !string.IsNullOrEmpty(currentItem.interactionDataId) ? currentItem.interactionDataId : currentItem.itemId;
             
-        var steps = itemInteractionSteps[currentItem.itemId];
+        var steps = itemInteractionSteps[interactionId];
         if (currentStepIndex >= steps.Count)
             return;
             
@@ -180,7 +186,10 @@ public class ItemInteractionHandler : MonoBehaviour
         if (!isInteractionActive || currentItem == null)
             return;
             
-        var steps = itemInteractionSteps[currentItem.itemId];
+        // 상호작용 ID 확인 (interactionDataId 우선, 없으면 itemId 사용)
+        string interactionId = !string.IsNullOrEmpty(currentItem.interactionDataId) ? currentItem.interactionDataId : currentItem.itemId;
+            
+        var steps = itemInteractionSteps[interactionId];
         if (currentStepIndex >= steps.Count)
             return;
             
@@ -219,7 +228,10 @@ public class ItemInteractionHandler : MonoBehaviour
         if (!isInteractionActive || currentItem == null)
             return;
             
-        var steps = itemInteractionSteps[currentItem.itemId];
+        // 상호작용 ID 확인 (interactionDataId 우선, 없으면 itemId 사용)
+        string interactionId = !string.IsNullOrEmpty(currentItem.interactionDataId) ? currentItem.interactionDataId : currentItem.itemId;
+            
+        var steps = itemInteractionSteps[interactionId];
         if (currentStepIndex >= steps.Count)
             return;
             
@@ -261,7 +273,10 @@ public class ItemInteractionHandler : MonoBehaviour
         if (!isInteractionActive || currentItem == null)
             return;
             
-        var steps = itemInteractionSteps[currentItem.itemId];
+        // 상호작용 ID 확인 (interactionDataId 우선, 없으면 itemId 사용)
+        string interactionId = !string.IsNullOrEmpty(currentItem.interactionDataId) ? currentItem.interactionDataId : currentItem.itemId;
+            
+        var steps = itemInteractionSteps[interactionId];
         
         // 이벤트 발생
         OnStepCompleted?.Invoke(currentItem, currentStepIndex);

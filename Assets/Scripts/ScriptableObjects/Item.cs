@@ -17,6 +17,7 @@ public InteractionType interactionType = InteractionType.None;
 public string guideText; // 가이드 텍스트
 public Sprite guideImage; // 가이드 이미지
 public Sprite handSprite; // 손 스프라이트 (아이템을 들고 있을 때)
+public string interactionDataId; // 연결할 GenericInteractionData의 ID (예: "dilutedWaterInteraction")
 
 [Header("MiniGame Settings")]
 public GameObject miniGamePrefab; // 미니게임 프리팹

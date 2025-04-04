@@ -28,6 +28,7 @@ namespace NursingGame.Editor
         
         public override void OnInspectorGUI()
         {
+            EditorGUI.BeginChangeCheck();
             serializedObject.Update();
             
             GenericInteractionData data = (GenericInteractionData)target;
@@ -67,15 +68,41 @@ namespace NursingGame.Editor
                 // 단계 추가 버튼
                 if (GUILayout.Button("새 단계 추가", GUILayout.Height(25)))
                 {
-                    Debug.Log("단계 추가 버튼 클릭됨: 현재 단계 수: " + stepsProperty.arraySize);
-                    stepsProperty.arraySize++;
-                    Debug.Log("배열 크기 증가: 현재 단계 수: " + stepsProperty.arraySize);
-                    var newStep = stepsProperty.GetArrayElementAtIndex(stepsProperty.arraySize - 1);
-                    newStep.FindPropertyRelative("stepId").stringValue = "step_" + System.Guid.NewGuid().ToString().Substring(0, 8);
-                    newStep.FindPropertyRelative("stepName").stringValue = "단계 " + stepsProperty.arraySize;
-                    newStep.FindPropertyRelative("interactionType").enumValueIndex = 0; // None
-                    Debug.Log("새 단계 생성 완료: ID=" + newStep.FindPropertyRelative("stepId").stringValue);
-                    serializedObject.ApplyModifiedProperties(); // 변경사항 즉시 적용
+                    try
+                    {
+                        Debug.Log("단계 추가 버튼 클릭됨: 현재 단계 수: " + stepsProperty.arraySize);
+                        
+                        // 이전 크기 저장
+                        int previousSize = stepsProperty.arraySize;
+                        
+                        // 배열 크기 증가
+                        stepsProperty.arraySize++;
+                        serializedObject.ApplyModifiedProperties();
+                        
+                        Debug.Log("배열 크기 증가: 현재 단계 수: " + stepsProperty.arraySize);
+                        
+                        // 새 단계 요소 가져오기
+                        SerializedProperty newStep = stepsProperty.GetArrayElementAtIndex(stepsProperty.arraySize - 1);
+                        
+                        // 기본값 설정
+                        newStep.FindPropertyRelative("stepId").stringValue = "step_" + System.Guid.NewGuid().ToString().Substring(0, 8);
+                        newStep.FindPropertyRelative("stepName").stringValue = "단계 " + stepsProperty.arraySize;
+                        newStep.FindPropertyRelative("interactionType").enumValueIndex = 0; // None
+                        
+                        // 변경사항 즉시 적용
+                        serializedObject.ApplyModifiedProperties();
+                        
+                        Debug.Log("새 단계 생성 완료: ID=" + newStep.FindPropertyRelative("stepId").stringValue);
+                        
+                        // UI 업데이트 강제
+                        GUI.changed = true;
+                        EditorUtility.SetDirty(target);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogError("단계 추가 중 오류 발생: " + ex.Message);
+                        Debug.LogException(ex);
+                    }
                 }
                 
                 // 각 단계 표시
@@ -222,11 +249,8 @@ namespace NursingGame.Editor
             
             EditorGUILayout.Space(10);
             
-            // 시스템 등록 버튼
-            if (GUILayout.Button("상호작용 시스템에 등록", GUILayout.Height(30)))
-            {
-                data.RegisterToInteractionSystem();
-            }
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.LabelField("상호작용 등록", EditorStyles.boldLabel);
             
             // ID 자동 생성 버튼
             if (GUILayout.Button("ID 자동 생성", GUILayout.Height(30)))
@@ -234,7 +258,52 @@ namespace NursingGame.Editor
                 serializedObject.FindProperty("interactionId").stringValue = System.Guid.NewGuid().ToString().Substring(0, 8);
             }
             
-            serializedObject.ApplyModifiedProperties();
+            // 자동 설정 버튼 (모든 것을 한 번에 설정)
+            if (GUILayout.Button("상호작용 시스템에 등록 (모든 설정 자동 완료)", GUILayout.Height(40)))
+            {
+                // 먼저 변경 사항을 적용
+                serializedObject.ApplyModifiedProperties();
+                
+                // 상호작용 ID 확인
+                if (string.IsNullOrEmpty(data.interactionId))
+                {
+                    // ID가 없으면 자동 생성
+                    data.interactionId = System.Guid.NewGuid().ToString().Substring(0, 8);
+                    EditorUtility.SetDirty(data);
+                    serializedObject.Update();
+                    Debug.Log($"자동 생성된 상호작용 ID: {data.interactionId}");
+                }
+                
+                // 1. Resources 폴더 생성 및 저장
+                SaveToResources(data);
+                
+                // 2. 인터랙션 매니저에 등록
+                data.RegisterToInteractionSystem();
+                
+                // 3. 아이템과 자동 연결 확인
+                AutoLinkToItems(data);
+                
+                Debug.Log($"'{data.interactionId}' 상호작용 데이터 설정이 완료되었습니다!");
+                
+                // 완료 메시지 표시
+                EditorUtility.DisplayDialog(
+                    "설정 완료", 
+                    $"'{data.interactionId}' 상호작용 데이터가 성공적으로 등록되었습니다.\n\n" +
+                    $"이제 아이템의 interactionDataId에 '{data.interactionId}'를 입력하면 해당 아이템을 클릭했을 때 이 상호작용이 실행됩니다.", 
+                    "확인");
+            }
+            
+            EditorGUILayout.EndVertical();
+            
+            if (EditorGUI.EndChangeCheck() || GUI.changed)
+            {
+                serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty(target);
+            }
+            else
+            {
+                serializedObject.ApplyModifiedProperties();
+            }
         }
         
         // 고급 기능 섹션 그리기
@@ -261,22 +330,45 @@ namespace NursingGame.Editor
             
             EditorGUILayout.Space(3);
             EditorGUILayout.LabelField("추가 시각 효과", EditorStyles.boldLabel);
+            
+            // 오류 테두리 효과
+            EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(showErrorBorderProp, new GUIContent("오류 테두리 효과"));
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+            }
             
             if (showErrorBorderProp.boolValue)
             {
                 EditorGUI.indentLevel++;
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(disableTouchDurationProp, new GUIContent("터치 비활성화 시간 (초)"));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    serializedObject.ApplyModifiedProperties();
+                }
                 EditorGUI.indentLevel--;
             }
             
+            // 물 효과 표시
+            EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(createWaterEffectProp, new GUIContent("물 효과 표시"));
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+            }
             
             if (createWaterEffectProp.boolValue)
             {
                 EditorGUI.indentLevel++;
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(waterEffectPositionProp, new GUIContent("물 효과 위치"));
                 EditorGUILayout.PropertyField(createWaterImageProp, new GUIContent("물 이미지 생성"));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    serializedObject.ApplyModifiedProperties();
+                }
                 EditorGUI.indentLevel--;
             }
         }
@@ -294,10 +386,20 @@ namespace NursingGame.Editor
             
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             
-            EditorGUILayout.BeginHorizontal();
-            createInitialObjectsProp.boolValue = EditorGUILayout.Toggle(createInitialObjectsProp.boolValue, GUILayout.Width(20));
-            showInitialObjectsFoldout[stepIndex] = EditorGUILayout.Foldout(showInitialObjectsFoldout[stepIndex], "초기 오브젝트 생성", true);
-            EditorGUILayout.EndHorizontal();
+            // 별도 라벨로 제목 표시
+            EditorGUILayout.LabelField("초기 오브젝트 생성", EditorStyles.boldLabel);
+            
+            // 체크박스만 독립적으로 표시
+            EditorGUI.BeginChangeCheck();
+            createInitialObjectsProp.boolValue = EditorGUILayout.Toggle("기능 활성화", createInitialObjectsProp.boolValue);
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+                GUI.changed = true;
+            }
+            
+            // 폴드아웃은 별도로 표시
+            showInitialObjectsFoldout[stepIndex] = EditorGUILayout.Foldout(showInitialObjectsFoldout[stepIndex], "세부 설정", true);
             
             if (createInitialObjectsProp.boolValue && showInitialObjectsFoldout[stepIndex])
             {
@@ -369,10 +471,20 @@ namespace NursingGame.Editor
             
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             
-            EditorGUILayout.BeginHorizontal();
-            useMultiStageDragProp.boolValue = EditorGUILayout.Toggle(useMultiStageDragProp.boolValue, GUILayout.Width(20));
-            showMultiStageDragFoldout[stepIndex] = EditorGUILayout.Foldout(showMultiStageDragFoldout[stepIndex], "다중 단계 드래그", true);
-            EditorGUILayout.EndHorizontal();
+            // 별도 라벨로 제목 표시
+            EditorGUILayout.LabelField("다중 단계 드래그", EditorStyles.boldLabel);
+            
+            // 체크박스만 독립적으로 표시
+            EditorGUI.BeginChangeCheck();
+            useMultiStageDragProp.boolValue = EditorGUILayout.Toggle("기능 활성화", useMultiStageDragProp.boolValue);
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+                GUI.changed = true;
+            }
+            
+            // 폴드아웃은 별도로 표시
+            showMultiStageDragFoldout[stepIndex] = EditorGUILayout.Foldout(showMultiStageDragFoldout[stepIndex], "세부 설정", true);
             
             if (useMultiStageDragProp.boolValue && showMultiStageDragFoldout[stepIndex])
             {
@@ -463,10 +575,20 @@ namespace NursingGame.Editor
             
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             
-            EditorGUILayout.BeginHorizontal();
-            useConditionalTouchProp.boolValue = EditorGUILayout.Toggle(useConditionalTouchProp.boolValue, GUILayout.Width(20));
-            showConditionalTouchFoldout[stepIndex] = EditorGUILayout.Foldout(showConditionalTouchFoldout[stepIndex], "조건부 터치", true);
-            EditorGUILayout.EndHorizontal();
+            // 별도 라벨로 제목 표시
+            EditorGUILayout.LabelField("조건부 터치", EditorStyles.boldLabel);
+            
+            // 체크박스만 독립적으로 표시
+            EditorGUI.BeginChangeCheck();
+            useConditionalTouchProp.boolValue = EditorGUILayout.Toggle("기능 활성화", useConditionalTouchProp.boolValue);
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+                GUI.changed = true;
+            }
+            
+            // 폴드아웃은 별도로 표시
+            showConditionalTouchFoldout[stepIndex] = EditorGUILayout.Foldout(showConditionalTouchFoldout[stepIndex], "세부 설정", true);
             
             if (useConditionalTouchProp.boolValue && showConditionalTouchFoldout[stepIndex])
             {
@@ -926,6 +1048,104 @@ namespace NursingGame.Editor
             }
             
             return currentArea;
+        }
+        
+        /// <summary>
+        /// Resources 폴더에 상호작용 데이터 복사본 저장
+        /// </summary>
+        private void SaveToResources(GenericInteractionData data)
+        {
+            if (string.IsNullOrEmpty(data.interactionId))
+            {
+                Debug.LogError("interactionId가 비어 있습니다. 먼저 ID를 설정하세요.");
+                return;
+            }
+            
+            // Resources 폴더 경로 생성
+            string resourcesPath = "Assets/Resources";
+            string interactionsPath = resourcesPath + "/Interactions";
+            
+            // Resources 폴더가 없으면 생성
+            if (!AssetDatabase.IsValidFolder(resourcesPath))
+            {
+                AssetDatabase.CreateFolder("Assets", "Resources");
+                Debug.Log("Resources 폴더를 생성했습니다.");
+            }
+            
+            // Interactions 폴더가 없으면 생성
+            if (!AssetDatabase.IsValidFolder(interactionsPath))
+            {
+                AssetDatabase.CreateFolder(resourcesPath, "Interactions");
+                Debug.Log("Interactions 폴더를 생성했습니다.");
+            }
+            
+            // 현재 에셋 경로 가져오기
+            string currentPath = AssetDatabase.GetAssetPath(data);
+            
+            // 목적지 경로 생성
+            string destinationPath = $"{interactionsPath}/{data.interactionId}.asset";
+            
+            // 이미 존재하는지 확인
+            if (AssetDatabase.LoadAssetAtPath<GenericInteractionData>(destinationPath) != null)
+            {
+                // 이미 존재하면 업데이트
+                Debug.Log($"Resources/Interactions/{data.interactionId}.asset 파일이 이미 존재하여 업데이트합니다.");
+                AssetDatabase.DeleteAsset(destinationPath);
+            }
+            
+            // 복사
+            bool success = AssetDatabase.CopyAsset(currentPath, destinationPath);
+            
+            if (success)
+            {
+                Debug.Log($"상호작용 데이터가 Resources/Interactions/{data.interactionId}.asset에 성공적으로 저장되었습니다.");
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                Debug.LogError($"Resources 폴더에 저장하는 데 실패했습니다. 경로: {destinationPath}");
+            }
+        }
+        
+        /// <summary>
+        /// 이 상호작용 데이터를 사용하는 모든 아이템을 찾아 자동으로 연결합니다.
+        /// </summary>
+        private void AutoLinkToItems(GenericInteractionData data)
+        {
+            if (string.IsNullOrEmpty(data.interactionId))
+            {
+                Debug.LogError("interactionId가 비어 있습니다. 먼저 ID를 설정하세요.");
+                return;
+            }
+
+            // 프로젝트에서 모든 Item 에셋 찾기
+            string[] guids = AssetDatabase.FindAssets("t:Item");
+            int linkedCount = 0;
+            
+            foreach (string guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                Item item = AssetDatabase.LoadAssetAtPath<Item>(assetPath);
+                
+                if (item != null)
+                {
+                    // 아이템의 interactionDataId가 현재 상호작용 ID와 일치하는지 확인
+                    if (item.interactionDataId == data.interactionId)
+                    {
+                        Debug.Log($"아이템 '{item.itemName}'은(는) 이미 '{data.interactionId}'와 연결되어 있습니다.");
+                        linkedCount++;
+                    }
+                }
+            }
+            
+            if (linkedCount > 0)
+            {
+                Debug.Log($"총 {linkedCount}개의 아이템이 '{data.interactionId}' 상호작용과 연결되어 있습니다.");
+            }
+            else
+            {
+                Debug.Log($"'{data.interactionId}' 상호작용과 연결된 아이템이 없습니다. 아이템의 interactionDataId에 '{data.interactionId}'를 입력하세요.");
+            }
         }
     }
 }
