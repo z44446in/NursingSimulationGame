@@ -5,10 +5,9 @@ using UnityEditorInternal;
 using System.Reflection;
 
 /// <summary>
-/// 유치도뇨 시술 데이터를 위한 커스텀 에디터
+/// 시술 데이터를 위한 커스텀 에디터
 /// </summary>
-[CustomEditor(typeof(CatheterizationProcedureData))]
-public class CatheterizationProcedureDataEditor : Editor
+public class ProcedureDataEditor : Editor
 {
     private SerializedProperty procedureTypeProp;
     private SerializedProperty procedureNameProp;
@@ -35,16 +34,16 @@ public class CatheterizationProcedureDataEditor : Editor
     private void OnEnable()
     {
         procedureTypeProp = serializedObject.FindProperty("procedureType");
-        procedureNameProp = serializedObject.FindProperty("procedureName");
+        procedureNameProp = serializedObject.FindProperty("displayName");
         descriptionProp = serializedObject.FindProperty("description");
         stepsProp = serializedObject.FindProperty("steps");
         timeLimitProp = serializedObject.FindProperty("timeLimit");
         maxScoreProp = serializedObject.FindProperty("maxScore");
-        timeBonusProp = serializedObject.FindProperty("timeBonus");
-        maxTimeBonusProp = serializedObject.FindProperty("maxTimeBonus");
-        procedureIconProp = serializedObject.FindProperty("procedureIcon");
-        procedureBannerProp = serializedObject.FindProperty("procedureBanner");
-        procedureColorProp = serializedObject.FindProperty("procedureColor");
+        timeBonusProp = serializedObject.FindProperty("errorPenalty"); // 임시
+        maxTimeBonusProp = serializedObject.FindProperty("maxScore"); // 임시
+        procedureIconProp = serializedObject.FindProperty("backgroundImage");
+        procedureBannerProp = serializedObject.FindProperty("backgroundImage"); // 임시
+        procedureColorProp = serializedObject.FindProperty("titleColor");
         backgroundMusicProp = serializedObject.FindProperty("backgroundMusic");
         completionSoundProp = serializedObject.FindProperty("completionSound");
         
@@ -56,11 +55,11 @@ public class CatheterizationProcedureDataEditor : Editor
     {
         serializedObject.Update();
         
-        CatheterizationProcedureData procedureData = (CatheterizationProcedureData)target;
+        ProcedureData procedureData = (ProcedureData)target;
         
         // 헤더
         EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("유치도뇨 시술 데이터", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("시술 데이터", EditorStyles.boldLabel);
         EditorGUILayout.Space(5);
         
         // 기본 정보 섹션
@@ -284,11 +283,6 @@ public class CatheterizationProcedureDataEditor : Editor
         
         // 요소 높이 설정
         stepsList.elementHeightCallback = (int index) => {
-            SerializedProperty element = stepsProp.GetArrayElementAtIndex(index);
-            if (element.objectReferenceValue == null)
-                return EditorGUIUtility.singleLineHeight + 4;
-                
-            ProcedureStepData step = element.objectReferenceValue as ProcedureStepData;
             return EditorGUIUtility.singleLineHeight * 2 + 6;
         };
         
@@ -297,37 +291,28 @@ public class CatheterizationProcedureDataEditor : Editor
             SerializedProperty element = stepsProp.GetArrayElementAtIndex(index);
             rect.y += 2;
             
-            if (element.objectReferenceValue == null)
-            {
-                EditorGUI.PropertyField(
-                    new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
-                    element, 
-                    new GUIContent($"단계 {index + 1}")
-                );
-                return;
-            }
-            
-            ProcedureStepData step = element.objectReferenceValue as ProcedureStepData;
+            SerializedProperty stepId = element.FindPropertyRelative("stepId");
+            SerializedProperty stepName = element.FindPropertyRelative("stepName");
+            SerializedProperty isRequired = element.FindPropertyRelative("isRequired");
+            SerializedProperty isOrderImportant = element.FindPropertyRelative("isOrderImportant");
             
             // 단계 번호와 이름
             EditorGUI.PropertyField(
                 new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
-                element, 
-                new GUIContent($"단계 {index + 1}: {step.stepName}")
+                stepName, 
+                new GUIContent($"단계 {index + 1}")
             );
             
             // 단계 정보 표시
             string info = "";
-            if (step.isRequired)
+            if (isRequired.boolValue)
             {
                 info += "필수 | ";
             }
             
-            info += $"행동 {step.actions.Count}개";
-            
-            if (step.isOrderImportant)
+            if (isOrderImportant.boolValue)
             {
-                info += " | 순서 중요";
+                info += "순서 중요";
             }
             
             EditorGUI.LabelField(
@@ -335,15 +320,6 @@ public class CatheterizationProcedureDataEditor : Editor
                 info,
                 EditorStyles.miniLabel
             );
-        };
-        
-        // 요소 선택 콜백
-        stepsList.onSelectCallback = (ReorderableList list) => {
-            SerializedProperty element = stepsProp.GetArrayElementAtIndex(list.index);
-            if (element.objectReferenceValue != null)
-            {
-                Selection.activeObject = element.objectReferenceValue;
-            }
         };
     }
     
@@ -363,13 +339,10 @@ public class CatheterizationProcedureDataEditor : Editor
         for (int i = 0; i < stepCount; i++)
         {
             SerializedProperty element = stepsProp.GetArrayElementAtIndex(i);
-            if (element.objectReferenceValue == null)
-                continue;
-                
-            ProcedureStepData step = element.objectReferenceValue as ProcedureStepData;
+            SerializedProperty stepName = element.FindPropertyRelative("stepName");
             
             // 단계 박스
-            GUILayout.Box($"{i + 1}. {step.stepName}", boxStyle, GUILayout.Height(30));
+            GUILayout.Box($"{i + 1}. {stepName.stringValue}", boxStyle, GUILayout.Height(30));
             
             // 화살표 (마지막 단계 제외)
             if (i < stepCount - 1)
@@ -383,78 +356,62 @@ public class CatheterizationProcedureDataEditor : Editor
     
     private void CreateNewStep()
     {
-        CatheterizationProcedureData procedureData = (CatheterizationProcedureData)target;
+        ProcedureData procedureData = (ProcedureData)target;
         
-        // 저장 경로 선택 대화상자
-        string path = EditorUtility.SaveFilePanelInProject(
-            "새 시술 단계 생성",
-            $"Step_{procedureData.procedureName}_{procedureData.steps.Count + 1}",
-            "asset",
-            "생성할 시술 단계 에셋의 이름을 입력하세요."
-        );
-        
-        if (string.IsNullOrEmpty(path))
-            return;
-            
-        // 시술 단계 생성
-        ProcedureStepData stepData = CreateInstance<ProcedureStepData>();
-        stepData.stepId = System.Guid.NewGuid().ToString().Substring(0, 8);
-        stepData.stepName = $"단계 {procedureData.steps.Count + 1}";
-        
-        // 에셋 저장
-        AssetDatabase.CreateAsset(stepData, path);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-        
-        // 단계 목록에 추가
+        // 새 단계 추가
         stepsProp.arraySize++;
-        stepsProp.GetArrayElementAtIndex(stepsProp.arraySize - 1).objectReferenceValue = stepData;
-        serializedObject.ApplyModifiedProperties();
+        SerializedProperty newStep = stepsProp.GetArrayElementAtIndex(stepsProp.arraySize - 1);
         
-        // 새 단계 선택
-        Selection.activeObject = stepData;
+        // 기본값 설정
+        SerializedProperty stepId = newStep.FindPropertyRelative("stepId");
+        SerializedProperty stepName = newStep.FindPropertyRelative("stepName");
+        
+        if (stepId != null && stepName != null)
+        {
+            // 기본값 설정
+            stepId.stringValue = System.Guid.NewGuid().ToString().Substring(0, 8);
+            stepName.stringValue = $"단계 {procedureData.steps.Count}";
+        }
+        else
+        {
+            Debug.LogError("Failed to find properties in the new step");
+        }
+        
+        // 변경사항 적용
+        serializedObject.ApplyModifiedProperties();
     }
     
     private void ValidateStepOrder()
     {
-        CatheterizationProcedureData procedureData = (CatheterizationProcedureData)target;
+        ProcedureData procedureData = (ProcedureData)target;
         
         List<string> issues = new List<string>();
         
         // 단계 순서 검증
         for (int i = 0; i < procedureData.steps.Count; i++)
         {
-            ProcedureStepData step = procedureData.steps[i];
+            ProcedureStep step = procedureData.steps[i];
             
-            if (step == null)
+            if (string.IsNullOrEmpty(step.stepId))
             {
-                issues.Add($"단계 {i + 1}: 누락된 단계");
-                continue;
+                issues.Add($"단계 {i + 1}: stepId가 누락됨");
             }
             
-            // 행동 검증
-            if (step.actions.Count == 0)
+            if (string.IsNullOrEmpty(step.stepName))
             {
-                issues.Add($"단계 {i + 1} ({step.stepName}): 행동이 없음");
+                issues.Add($"단계 {i + 1}: stepName이 누락됨");
             }
             
-            // 필수 단계이지만 필수 행동이 없는 경우
-            if (step.isRequired)
+            // 상호작용 검증
+            if (step.stepType == StepType.Interaction && string.IsNullOrEmpty(step.interactionDataId))
             {
-                bool hasRequiredAction = false;
-                foreach (var action in step.actions)
-                {
-                    if (action != null && action.isRequired)
-                    {
-                        hasRequiredAction = true;
-                        break;
-                    }
-                }
-                
-                if (!hasRequiredAction && step.actions.Count > 0)
-                {
-                    issues.Add($"단계 {i + 1} ({step.stepName}): 필수 단계이지만 필수 행동이 없음");
-                }
+                issues.Add($"단계 {i + 1} ({step.stepName}): 상호작용 단계이나 interactionDataId가 누락됨");
+            }
+            
+            // 대화 검증
+            if (step.stepType == StepType.Dialogue && step.dialogueEntries.Count == 0)
+            {
+                issues.Add($"단계 {i + 1} ({step.stepName}): 대화 단계이나 dialogueEntries가 없음");
             }
         }
         

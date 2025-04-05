@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using DG.Tweening;
 
 /// <summary>
@@ -162,6 +163,31 @@ public class InteractionManager : MonoBehaviour
     }
 
     /// <summary>
+    /// interactionId로 상호작용을 시작합니다. (ProcedureManager에서 사용)
+    /// </summary>
+    public void StartInteraction(string interactionId)
+    {
+        // interactionId를 사용하여 베이스 인터랙션 시스템을 통해 상호작용 시작
+        if (interactionSystem != null && !string.IsNullOrEmpty(interactionId))
+        {
+            // 상호작용 ID로 직접 인터랙션 시스템에 명령 전달
+            interactionSystem.StartInteraction(interactionId);
+            
+            // 가이드 텍스트 업데이트 시도
+            if (UIManager.Instance != null && itemInteractionStepsDatabase.ContainsKey(interactionId) && 
+                itemInteractionStepsDatabase[interactionId].Count > 0)
+            {
+                var firstStep = itemInteractionStepsDatabase[interactionId][0];
+                UIManager.Instance.UpdateGuideText(firstStep.guideText);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"StartInteraction failed: interactionSystem is null or interactionId is empty");
+        }
+    }
+    
+    /// <summary>
     /// 아이템 상호작용을 시작합니다.
     /// </summary>
     public void StartItemInteraction(Item item)
@@ -172,20 +198,81 @@ public class InteractionManager : MonoBehaviour
             return;
         }
         
-        if (!itemInteractionStepsDatabase.ContainsKey(item.itemId))
+        string interactionId = !string.IsNullOrEmpty(item.interactionDataId) ? item.interactionDataId : item.itemId;
+        
+        // 첫 번째 시도: 등록된 상호작용 데이터베이스에서 검색
+        if (itemInteractionStepsDatabase.ContainsKey(interactionId))
         {
-            Debug.LogWarning($"No interaction steps defined for item {item.itemName}");
+            // 상호작용 시작
+            interactionSystem.StartInteraction(interactionId);
+            
+            // 가이드 텍스트 업데이트
+            if (UIManager.Instance != null)
+            {
+                var firstStep = itemInteractionStepsDatabase[interactionId][0];
+                UIManager.Instance.UpdateGuideText(firstStep.guideText);
+            }
+            
             return;
         }
         
-        // 상호작용 시작
-        interactionSystem.StartInteraction(item.itemId);
-        
-        // 가이드 텍스트 업데이트
-        if (UIManager.Instance != null)
+        // 두 번째 시도: InteractionDataAsset을 리소스에서 로드
+        InteractionDataAsset interactionAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
+        if (interactionAsset != null && interactionAsset.steps.Count > 0)
         {
-            var firstStep = itemInteractionStepsDatabase[item.itemId][0];
-            UIManager.Instance.UpdateGuideText(firstStep.guideText);
+            // InteractionData로 변환하여 등록
+            List<InteractionStep> convertedSteps = interactionAsset.steps
+                .Select(step => new InteractionStep
+                {
+                    actionId = step.stepId,
+                    interactionType = step.interactionType,
+                    guideText = step.guideText,
+                    // 기타 필요한 속성 복사
+                })
+                .ToList();
+                
+            // 상호작용 시스템에 등록
+            RegisterItemInteraction(interactionId, convertedSteps);
+            
+            // 상호작용 시작
+            interactionSystem.StartInteraction(interactionId);
+            
+            // 가이드 텍스트 업데이트
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateGuideText(convertedSteps[0].guideText);
+            }
+            
+            return;
+        }
+        
+        // 세 번째 시도: 빈 InteractionData 생성 (상호작용 없음)
+        if (!string.IsNullOrEmpty(interactionId))
+        {
+            Debug.LogWarning($"No interaction defined for {item.itemName}, creating empty interaction");
+            
+            List<InteractionStep> emptySteps = new List<InteractionStep>
+            {
+                new InteractionStep
+                {
+                    actionId = "default",
+                    interactionType = InteractionType.SingleClick,
+                    guideText = $"{item.itemName} 사용하기"
+                }
+            };
+            
+            RegisterItemInteraction(interactionId, emptySteps);
+            interactionSystem.StartInteraction(interactionId);
+            
+            // 가이드 텍스트 업데이트
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateGuideText(emptySteps[0].guideText);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Cannot start interaction for {item.itemName}, no valid interaction ID");
         }
     }
 
@@ -211,8 +298,10 @@ public class InteractionManager : MonoBehaviour
     /// </summary>
     private void HandleInteractionStarted(string interactionId, InteractionEventData eventData)
     {
-        // 현재 들고 있는 아이템과 연관된 상호작용인지 확인
-        if (currentHeldItem != null && currentHeldItem.interactionDataId == interactionId)
+        // 현재 들고 있는, 또는 현재 처리 중인 아이템과 연관된 상호작용인지 확인
+        if (currentHeldItem != null && 
+            (currentHeldItem.interactionDataId == interactionId || 
+             currentHeldItem.itemId == interactionId))
         {
             // 이벤트 발생 (단계별 처리를 위해 0 전달)
             OnInteractionStepCompleted?.Invoke(currentHeldItem, 0);
@@ -228,7 +317,9 @@ public class InteractionManager : MonoBehaviour
         PlaySound(successSound);
         
         // 현재 들고 있는 아이템과 연관된 상호작용인지 확인
-        if (currentHeldItem != null && currentHeldItem.interactionDataId == interactionId)
+        if (currentHeldItem != null && 
+            (currentHeldItem.interactionDataId == interactionId || 
+             currentHeldItem.itemId == interactionId))
         {
             // 이벤트 발생
             OnInteractionCompleted?.Invoke(currentHeldItem);

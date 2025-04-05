@@ -13,19 +13,11 @@ public class InteractionDataRegistrar : MonoBehaviour
     private static InteractionDataRegistrar instance;
     public static InteractionDataRegistrar Instance => instance;
     
-    [Header("Nursing Actions")]
-    [SerializeField] private List<NursingActionData> nursingActions = new List<NursingActionData>();
-    
-    [Header("Procedure Steps")]
-    [SerializeField] private List<ProcedureStepData> procedureSteps = new List<ProcedureStepData>();
-    
-    
-    
-    [Header("Generic Interaction Data")]
-    [SerializeField] private List<GenericInteractionData> genericInteractions = new List<GenericInteractionData>();
+    [Header("Interaction Data")]
+    [SerializeField] private List<InteractionDataAsset> interactionAssets = new List<InteractionDataAsset>();
     
     // 등록된 모든 상호작용 데이터 캐시
-    private Dictionary<string, GenericInteractionData> cachedInteractions = new Dictionary<string, GenericInteractionData>();
+    private Dictionary<string, InteractionDataAsset> cachedInteractions = new Dictionary<string, InteractionDataAsset>();
     
     private void Awake()
     {
@@ -54,24 +46,24 @@ public class InteractionDataRegistrar : MonoBehaviour
         try
         {
             // 디렉토리에서 모든 상호작용 데이터 로드
-            GenericInteractionData[] interactions = Resources.LoadAll<GenericInteractionData>("Interactions");
+            InteractionDataAsset[] interactions = Resources.LoadAll<InteractionDataAsset>("Interactions");
             
             if (interactions != null && interactions.Length > 0)
             {
                 foreach (var data in interactions)
                 {
-                    if (data != null && !string.IsNullOrEmpty(data.interactionId))
+                    if (data != null && !string.IsNullOrEmpty(data.id))
                     {
                         // 캐시에 저장
-                        cachedInteractions[data.interactionId] = data;
+                        cachedInteractions[data.id] = data;
                         
                         // 인스펙터에도 추가 (에디터에서 볼 수 있도록)
-                        if (!genericInteractions.Contains(data))
+                        if (!interactionAssets.Contains(data))
                         {
-                            genericInteractions.Add(data);
+                            interactionAssets.Add(data);
                         }
                         
-                        Debug.Log($"Loaded interaction data from Resources: {data.interactionName} (ID: {data.interactionId})");
+                        Debug.Log($"Loaded interaction data from Resources: {data.displayName} (ID: {data.id})");
                     }
                 }
             }
@@ -93,37 +85,37 @@ public class InteractionDataRegistrar : MonoBehaviour
             return;
         }
         
-        // 일반 상호작용 데이터 등록 (모든 상호작용을 범용화)
-        foreach (var interaction in genericInteractions)
+        // 모든 상호작용 데이터 등록
+        foreach (var interaction in interactionAssets)
         {
             if (interaction == null) continue;
             
             // 상호작용 단계 변환 및 등록
-            var steps = ConvertGenericSteps(interaction);
+            var steps = ConvertToInteractionSteps(interaction);
             InteractionManager.Instance.RegisterItemInteraction(
-                interaction.interactionId,
+                interaction.id,
                 steps
             );
             
             // 캐시에 저장
-            cachedInteractions[interaction.interactionId] = interaction;
+            cachedInteractions[interaction.id] = interaction;
             
-            Debug.Log($"Registered generic interaction: {interaction.interactionName} (ID: {interaction.interactionId})");
+            Debug.Log($"Registered interaction: {interaction.displayName} (ID: {interaction.id})");
         }
     }
     
     /// <summary>
-    /// 고급 기능
+    /// 고급 기능 - 특정 ID의 상호작용 데이터 등록
     /// </summary>
     private void RegisterAdvancedInteraction(string interactionId)
     {
         // 상호작용 데이터가 있는지 확인
-        GenericInteractionData interactionData = GetInteractionData(interactionId);
+        InteractionDataAsset interactionData = GetInteractionData(interactionId);
         
         if (interactionData == null)
         {
             // Resources에서 찾기
-            interactionData = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
+            interactionData = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
             
             if (interactionData == null)
             {
@@ -133,7 +125,7 @@ public class InteractionDataRegistrar : MonoBehaviour
         }
         
         // 상호작용 등록
-        var steps = ConvertGenericSteps(interactionData);
+        var steps = ConvertToInteractionSteps(interactionData);
         InteractionManager.Instance.RegisterItemInteraction(interactionId, steps);
         
         // 캐시에 저장
@@ -143,72 +135,71 @@ public class InteractionDataRegistrar : MonoBehaviour
     }
     
     /// <summary>
-    /// GenericInteractionData의 단계를 InteractionStep으로 변환합니다.
+    /// InteractionDataAsset을 BaseInteractionSystem에서 사용하는 InteractionStep 목록으로 변환합니다.
     /// </summary>
-    public List<InteractionStep> ConvertGenericSteps(GenericInteractionData data)
+    public List<InteractionStep> ConvertToInteractionSteps(InteractionDataAsset data)
     {
         List<InteractionStep> result = new List<InteractionStep>();
         
         if (data == null || data.steps == null)
             return result;
             
-        foreach (var genericStep in data.steps)
+        foreach (var stepData in data.steps)
         {
             InteractionStep step = new InteractionStep
             {
-                interactionType = genericStep.interactionType,
-                guideText = genericStep.guideText,
+                interactionType = stepData.interactionType,
+                guideText = stepData.guideText,
                 
                 // 드래그 관련 필드
-                requiredDragAngle = genericStep.requiredDragAngle,
-                dragAngleTolerance = genericStep.dragAngleTolerance,
-                dragDistance = genericStep.dragDistance,
+                requiredDragAngle = stepData.requiredDragAngle,
+                dragAngleTolerance = stepData.dragAngleTolerance,
+                dragDistance = stepData.dragDistance,
                 
                 // 클릭 관련 필드
-                validClickArea = genericStep.validClickArea,
+                validClickArea = stepData.validClickArea,
                 
                 // 퀴즈 관련 필드
-                quizQuestion = genericStep.quizQuestion,
-                quizOptions = genericStep.quizOptions,
-                correctOptionIndex = genericStep.correctOptionIndex,
+                quizQuestion = stepData.quizQuestion,
+                quizOptions = stepData.quizOptions,
+                correctOptionIndex = stepData.correctOptionIndex,
                 
                 // 튜토리얼 관련 필드
-                tutorialArrowSprite = genericStep.tutorialArrowSprite,
-                tutorialArrowPosition = genericStep.tutorialArrowPosition,
-                tutorialArrowRotation = genericStep.tutorialArrowRotation,
+                tutorialArrowSprite = stepData.tutorialArrowSprite,
+                tutorialArrowPosition = stepData.tutorialArrowPosition,
+                tutorialArrowRotation = stepData.tutorialArrowRotation,
                 
                 // 피드백 관련 필드
-                successMessage = genericStep.successMessage,
-                errorMessage = genericStep.errorMessage,
+                successMessage = stepData.successMessage,
+                errorMessage = stepData.errorMessage,
                 
                 // 초기 오브젝트 관련 필드
-                createInitialObjects = genericStep.createInitialObjects,
+                createInitialObjects = stepData.createInitialObjects,
                 
                 // 다중 단계 드래그 관련 필드
-                useMultiStageDrag = genericStep.useMultiStageDrag,
-                totalDragStages = genericStep.useMultiStageDrag ? genericStep.multiStageDragSteps.Count : 0,
+                useMultiStageDrag = stepData.useMultiStageDrag,
+                totalDragStages = stepData.useMultiStageDrag ? stepData.multiStageDragSteps.Count : 0,
                 
                 // 조건부 터치 관련 필드
-                useConditionalTouch = genericStep.useConditionalTouch,
+                useConditionalTouch = stepData.useConditionalTouch,
                 
                 // 오류 피드백 관련 필드
-                showErrorBorderFlash = genericStep.showErrorBorderFlash,
-                disableTouchDuration = genericStep.disableTouchDuration,
-                errorEntryText = genericStep.errorEntryText,
+                showErrorBorderFlash = stepData.showErrorBorderFlash,
+                disableTouchDuration = stepData.disableTouchDuration,
                 
                 // 물 효과 관련 필드
-                createWaterEffect = genericStep.createWaterEffect,
-                waterEffectPosition = genericStep.waterEffectPosition,
-                createWaterImageOnObject = genericStep.createWaterImageOnObject,
+                createWaterEffect = stepData.createWaterEffect,
+                waterEffectPosition = stepData.waterEffectPosition,
+                createWaterImageOnObject = stepData.createWaterImageOnObject,
             };
             
             // 조건부 터치 태그 설정
-            if (genericStep.useConditionalTouch && genericStep.touchOptions != null && genericStep.touchOptions.Count > 0)
+            if (stepData.useConditionalTouch && stepData.touchOptions != null && stepData.touchOptions.Count > 0)
             {
                 List<string> allTags = new List<string>();
                 List<string> correctTags = new List<string>();
                 
-                foreach (var option in genericStep.touchOptions)
+                foreach (var option in stepData.touchOptions)
                 {
                     if (!string.IsNullOrEmpty(option.targetTag))
                     {
@@ -234,19 +225,19 @@ public class InteractionDataRegistrar : MonoBehaviour
     /// <summary>
     /// ID로 상호작용 데이터를 가져옵니다.
     /// </summary>
-    public GenericInteractionData GetInteractionData(string interactionId)
+    public InteractionDataAsset GetInteractionData(string interactionId)
     {
         if (string.IsNullOrEmpty(interactionId))
             return null;
             
         // 캐시에서 찾기
-        if (cachedInteractions.TryGetValue(interactionId, out GenericInteractionData data))
+        if (cachedInteractions.TryGetValue(interactionId, out InteractionDataAsset data))
             return data;
             
         // 캐시에 없으면 Resources에서 다시 로드 시도
         try
         {
-            data = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
+            data = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
             if (data != null)
             {
                 cachedInteractions[interactionId] = data;
@@ -264,29 +255,29 @@ public class InteractionDataRegistrar : MonoBehaviour
     /// <summary>
     /// 런타임에 새 상호작용 데이터를 추가합니다.
     /// </summary>
-    public void AddInteractionData(GenericInteractionData data)
+    public void AddInteractionData(InteractionDataAsset data)
     {
-        if (data == null || string.IsNullOrEmpty(data.interactionId))
+        if (data == null || string.IsNullOrEmpty(data.id))
             return;
             
         // 캐시와 리스트에 추가
-        cachedInteractions[data.interactionId] = data;
+        cachedInteractions[data.id] = data;
         
         // 콜렉션에 없으면 추가
-        if (!genericInteractions.Contains(data))
+        if (!interactionAssets.Contains(data))
         {
-            genericInteractions.Add(data);
+            interactionAssets.Add(data);
         }
         
         // InteractionManager에 등록
         if (InteractionManager.Instance != null)
         {
-            var steps = ConvertGenericSteps(data);
+            var steps = ConvertToInteractionSteps(data);
             InteractionManager.Instance.RegisterItemInteraction(
-                data.interactionId,
+                data.id,
                 steps
             );
-            Debug.Log($"Runtime added interaction data: {data.interactionName} (ID: {data.interactionId})");
+            Debug.Log($"Runtime added interaction data: {data.displayName} (ID: {data.id})");
         }
     }
     

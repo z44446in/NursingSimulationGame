@@ -235,7 +235,7 @@ public void PickupItem(Item item)
     if (!string.IsNullOrEmpty(item.interactionDataId))
     {
         // 인터랙션 데이터 레지스트리에서 데이터 확인
-        GenericInteractionData interactionData = null;
+        InteractionDataAsset interactionData = null;
         
         if (InteractionDataRegistrar.Instance != null)
         {
@@ -249,7 +249,7 @@ public void PickupItem(Item item)
                 // 자동으로 Resources에서 로드 시도
                 try
                 {
-                    interactionData = Resources.Load<GenericInteractionData>($"Interactions/{item.interactionDataId}");
+                    interactionData = Resources.Load<InteractionDataAsset>($"Interactions/{item.interactionDataId}");
                     
                     if (interactionData != null)
                     {
@@ -271,8 +271,23 @@ public void PickupItem(Item item)
         // 없으면 생성
         if (interactionSystem == null)
         {
-            GameObject interactionObj = new GameObject("BaseInteractionSystem");
-            interactionSystem = interactionObj.AddComponent<BaseInteractionSystem>();
+            // InteractionManager가 이미 BaseInteractionSystem 컴포넌트를 가지고 있는지 확인
+            if (InteractionManager.Instance != null)
+            {
+                interactionSystem = InteractionManager.Instance.GetComponent<BaseInteractionSystem>();
+                
+                // 그래도 없으면 새로 생성
+                if (interactionSystem == null)
+                {
+                    GameObject interactionObj = new GameObject("BaseInteractionSystem");
+                    interactionSystem = interactionObj.AddComponent<BaseInteractionSystem>();
+                }
+            }
+            else
+            {
+                GameObject interactionObj = new GameObject("BaseInteractionSystem");
+                interactionSystem = interactionObj.AddComponent<BaseInteractionSystem>();
+            }
             
             // 팝업 컨테이너 설정
             if (popupParent != null)
@@ -298,11 +313,11 @@ public void PickupItem(Item item)
             if (interactionData != null)
             {
                 // InteractionStep으로 변환하여 등록
-                List<InteractionStep> steps = InteractionDataRegistrar.Instance.ConvertGenericSteps(interactionData);
+                List<InteractionStep> steps = InteractionDataRegistrar.Instance.ConvertToInteractionSteps(interactionData);
                 InteractionData convertedData = new InteractionData
                 {
-                    id = interactionData.interactionId,
-                    name = interactionData.interactionName,
+                    id = interactionData.id,
+                    name = interactionData.displayName,
                     description = interactionData.description,
                     steps = steps
                 };

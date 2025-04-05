@@ -6,10 +6,10 @@ using UnityEngine;
 [System.Serializable]
 public class DialogueOption
 {
-    public string optionText;  // ¹öÆ°¿¡ Ç¥½ÃµÉ ÅØ½ºÆ®
-    public string responseText;  // ¼±ÅÃ½Ã Ç¥½ÃµÉ ÀÀ´ä
-    public DialogueCharacterType responderType;  // ÀÀ´äÇÏ´Â Ä³¸¯ÅÍ (È¯ÀÚ/º¸È£ÀÚ)
-    public Sprite responderSprite;  // ÀÀ´äÇÏ´Â Ä³¸¯ÅÍÀÇ ÀÌ¹ÌÁö
-    public string responderName;  // ÀÀ´äÇÏ´Â Ä³¸¯ÅÍÀÇ ÀÌ¸§
+    public string optionText;  // ï¿½ï¿½Æ°ï¿½ï¿½ Ç¥ï¿½Ãµï¿½ ï¿½Ø½ï¿½Æ®
+    public string responseText;  // ï¿½ï¿½ï¿½Ã½ï¿½ Ç¥ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½
+    // public DialogueCharacterType responderType;  // ì‘ë‹µí•˜ëŠ” ìºë¦­í„° - íƒ€ì… ì •ì˜ê°€ í•„ìš”í•©ë‹ˆë‹¤
+    public Sprite responderSprite;  // ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½
+    public string responderName;  // ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½
 }
 

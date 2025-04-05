@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace NursingGame.Editor
 {
     /// <summary>
-    /// GenericInteractionData의 커스텀 에디터
+    /// InteractionDataAsset의 커스텀 에디터
     /// 인스펙터에서 시각적으로 상호작용 데이터를 편집할 수 있게 해줍니다.
     /// </summary>
-    [CustomEditor(typeof(GenericInteractionData))]
+    [CustomEditor(typeof(InteractionDataAsset))]
     public class GenericInteractionDataEditor : UnityEditor.Editor
     {
         // 폴드아웃 상태
@@ -30,7 +30,8 @@ namespace NursingGame.Editor
         {
             serializedObject.Update();
             
-            GenericInteractionData data = (GenericInteractionData)target;
+            var data = target as InteractionDataAsset;
+            if (data == null) return;
             
             // 스타일 설정
             GUIStyle headerStyle = new GUIStyle(EditorStyles.boldLabel);

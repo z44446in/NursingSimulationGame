@@ -97,6 +97,24 @@ public class BaseInteractionSystem : MonoBehaviour
     }
     
     /// <summary>
+    /// 등록된 상호작용 데이터를 가져옵니다.
+    /// </summary>
+    /// <param name="id">상호작용 ID</param>
+    /// <returns>상호작용 데이터, 없으면 null</returns>
+    public virtual InteractionData GetInteractionData(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+            return null;
+            
+        if (interactionsDatabase.TryGetValue(id, out InteractionData data))
+        {
+            return data;
+        }
+        
+        return null;
+    }
+    
+    /// <summary>
     /// 초기 오브젝트 생성 처리
     /// </summary>
     /// <param name="interactionId">상호작용 ID</param>
@@ -145,12 +163,12 @@ public class BaseInteractionSystem : MonoBehaviour
         {
             // 통합된 두 가지 방식을 지원
             
-            // 1. 새로운 InteractionData 방식 - 직접 인터랙션 데이터베이스에서 찾기
-            InteractionData interactionData = null;
+            // 1. 새로운 InteractionDataAsset 방식 - 직접 인터랙션 데이터베이스에서 찾기
+            InteractionDataAsset interactionDataAsset = null;
             
             // 리소스에서 찾기
             try {
-                interactionData = Resources.Load<InteractionData>($"Interactions/{interactionId}");
+                interactionDataAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
             } catch (System.Exception) {
                 // 리소스에서 찾지 못하면 무시
             }
@@ -165,15 +183,15 @@ public class BaseInteractionSystem : MonoBehaviour
             }
             initialObjectsCache.Clear();
             
-            // 새로운 방식: InteractionData를 직접 사용
-            if (interactionData != null)
+            // 새로운 방식: InteractionDataAsset을 직접 사용
+            if (interactionDataAsset != null)
             {
                 // 먼저 메인 초기 오브젝트 처리
-                if (interactionData.initialObjects != null && interactionData.initialObjects.Count > 0)
+                if (interactionDataAsset.initialObjects != null && interactionDataAsset.initialObjects.Count > 0)
                 {
-                    Debug.Log($"상호작용 레벨에서 {interactionData.initialObjects.Count}개의 초기 오브젝트 생성");
+                    Debug.Log($"상호작용 레벨에서 {interactionDataAsset.initialObjects.Count}개의 초기 오브젝트 생성");
                     
-                    foreach (var objData in interactionData.initialObjects)
+                    foreach (var objData in interactionDataAsset.initialObjects)
                     {
                         if (objData == null) continue;
                         
@@ -182,7 +200,7 @@ public class BaseInteractionSystem : MonoBehaviour
                 }
                 
                 // 각 단계의 초기 오브젝트 처리
-                foreach (var step in interactionData.steps)
+                foreach (var step in interactionDataAsset.steps)
                 {
                     if (step.createInitialObjects && step.initialObjects != null && step.initialObjects.Count > 0)
                     {
@@ -197,34 +215,28 @@ public class BaseInteractionSystem : MonoBehaviour
                     }
                 }
             }
-            // 기존 방식: GenericInteractionData에서 처리 (호환성 유지)
+            // 데이터베이스에서 직접 가져오기
             else
             {
-                // Resources에서 상호작용 데이터 가져오기
-                GenericInteractionData genericData = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
-                if (genericData == null)
+                // 데이터가 이미 등록되어 있는지 확인
+                if (interactionsDatabase.ContainsKey(interactionId) && interactionsDatabase[interactionId].steps.Count > 0)
+                {
+                    var registeredData = interactionsDatabase[interactionId];
+                    
+                    // 각 단계의 초기 오브젝트 확인 (기본 구현 호환성)
+                    foreach (var step in registeredData.steps)
+                    {
+                        if (step.createInitialObjects)
+                        {
+                            Debug.Log($"데이터베이스에서 단계의 초기 오브젝트 생성 시도");
+                            // 이 부분은 InteractionStep 클래스에 초기 오브젝트 목록이 없어서 처리 불가
+                        }
+                    }
+                }
+                else
                 {
                     Debug.LogWarning($"상호작용 데이터를 찾을 수 없습니다: {interactionId}");
                     return;
-                }
-                
-                // 각 단계를 순회하면서 초기 오브젝트가 있는 단계 처리
-                for (int i = 0; i < genericData.steps.Count; i++)
-                {
-                    var genericStep = genericData.steps[i];
-                    
-                    if (genericStep.createInitialObjects && genericStep.initialObjects != null && genericStep.initialObjects.Count > 0)
-                    {
-                        Debug.Log($"단계 {i+1}에서 {genericStep.initialObjects.Count}개의 초기 오브젝트 생성");
-                        
-                        // 각 초기 오브젝트 생성
-                        foreach (var objData in genericStep.initialObjects)
-                        {
-                            if (objData == null) continue;
-                            
-                            GameObject newObj = CreateInitialObject(objData);
-                        }
-                    }
                 }
             }
         }
@@ -322,10 +334,56 @@ public class BaseInteractionSystem : MonoBehaviour
     /// <param name="eventData">상호작용 이벤트 데이터</param>
     public virtual bool StartInteraction(string interactionId, InteractionEventData eventData = null)
     {
+        // 이미 등록된 상호작용인지 확인
         if (!interactionsDatabase.ContainsKey(interactionId))
         {
-            Debug.LogWarning($"상호작용 ID '{interactionId}'가 등록되어 있지 않습니다.");
-            return false;
+            // 등록되지 않은 경우, InteractionDataAsset으로 로드 시도
+            InteractionDataAsset interactionDataAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
+            
+            if (interactionDataAsset != null)
+            {
+                // InteractionDataAsset을 InteractionData로 변환하여 등록
+                InteractionData data = new InteractionData
+                {
+                    id = interactionDataAsset.id,
+                    name = interactionDataAsset.displayName,
+                    description = interactionDataAsset.description,
+                    steps = new List<InteractionStep>()
+                };
+                
+                // 각 단계를 변환
+                foreach (var stepData in interactionDataAsset.steps)
+                {
+                    InteractionStep step = new InteractionStep
+                    {
+                        actionId = stepData.stepId,
+                        interactionType = stepData.interactionType,
+                        guideText = stepData.guideText,
+                        // 기타 필요한 속성 복사
+                        createInitialObjects = stepData.createInitialObjects,
+                        useMultiStageDrag = stepData.useMultiStageDrag,
+                        requiredDragAngle = stepData.requiredDragAngle,
+                        dragAngleTolerance = stepData.dragAngleTolerance,
+                        dragDistance = stepData.dragDistance,
+                        successMessage = stepData.successMessage,
+                        errorMessage = stepData.errorMessage,
+                        showErrorBorderFlash = stepData.showErrorBorderFlash,
+                        createWaterEffect = stepData.createWaterEffect,
+                        waterEffectPosition = stepData.waterEffectPosition
+                    };
+                    
+                    data.steps.Add(step);
+                }
+                
+                // 등록
+                RegisterInteraction(interactionId, data);
+                Debug.Log($"상호작용 '{interactionId}'를 InteractionDataAsset에서 로드하여 등록했습니다.");
+            }
+            else
+            {
+                Debug.LogWarning($"상호작용 ID '{interactionId}'가 등록되어 있지 않고, 리소스에서도 찾을 수 없습니다.");
+                return false;
+            }
         }
         
         // 이미 진행 중인 상호작용이 있으면 중지
@@ -339,6 +397,9 @@ public class BaseInteractionSystem : MonoBehaviour
         currentDragStage = 0;
         isInteractionActive = true;
         isTouchDisabled = false;
+        
+        // 초기 오브젝트 생성
+        CreateInitialObjects(interactionId);
         
         // 이벤트 발생
         OnInteractionStarted?.Invoke(interactionId, eventData);
@@ -1044,8 +1105,12 @@ public class InteractionData
 [System.Serializable]
 public class InteractionStep
 {
+    public string actionId; // 행동 ID
     public InteractionType interactionType;
     public string guideText;
+    
+    // 순서 관련
+    public bool isOrderImportant = true; // 순서가 중요한지 여부
     
     // 초기 오브젝트 생성 관련
     public bool createInitialObjects = false;
@@ -1088,6 +1153,9 @@ public class InteractionStep
     public bool createWaterEffect = false;
     public Vector2 waterEffectPosition;
     public bool createWaterImageOnObject = false;
+    
+    // 필수 아이템 관련
+    public List<ItemRequirement> requiredItems = new List<ItemRequirement>();
     
     // ItemInteractionHandler와의 호환성을 위한 필드
     public int penaltyPoints = 5;

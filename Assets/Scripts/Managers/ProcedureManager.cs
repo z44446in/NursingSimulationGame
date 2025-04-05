@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -112,7 +113,7 @@ public class ProcedureManager : MonoBehaviour
         }
         
         // 절차 데이터 가져오기
-        CatheterizationProcedureData procedureData = GetProcedureData(procedureType);
+        ProcedureData procedureData = GetProcedureData(procedureType);
         if (procedureData == null)
         {
             Debug.LogError($"시술 유형 {procedureType}에 대한 데이터를 찾을 수 없습니다.");
@@ -288,29 +289,71 @@ public class ProcedureManager : MonoBehaviour
         if (string.IsNullOrEmpty(interactionDataId) || !isProcedureActive)
             return;
             
-        // 인터랙션 데이터 로드
-        InteractionData interactionData = Resources.Load<InteractionData>($"Interactions/{interactionDataId}");
-        if (interactionData == null)
+        // 인터랙션 데이터 로드 (새로운 InteractionDataAsset 형식만 지원)
+        InteractionDataAsset interactionDataAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionDataId}");
+        if (interactionDataAsset == null)
         {
-            Debug.LogError($"인터랙션 데이터 {interactionDataId}를 찾을 수 없습니다.");
-            CompleteCurrentStep(); // 인터랙션 데이터를 찾지 못했으므로 단계 완료 처리
-            return;
+            // InteractionData는 ScriptableObject가 아니므로 Resources.Load로 로드할 수 없음
+            // 대신 InteractionManager나 InteractionDataRegistrar에서 찾아보기
+            InteractionData interactionData = null;
+            
+            // InteractionManager에서 찾기 시도
+            if (InteractionManager.Instance != null && 
+                InteractionManager.Instance.GetComponent<BaseInteractionSystem>() != null)
+            {
+                var baseInteractionSystem = InteractionManager.Instance.GetComponent<BaseInteractionSystem>();
+                interactionData = baseInteractionSystem.GetInteractionData(interactionDataId);
+            }
+            
+            if (interactionData == null)
+            {
+                Debug.LogError($"인터랙션 데이터 {interactionDataId}를 찾을 수 없습니다.");
+                CompleteCurrentStep(); // 인터랙션 데이터를 찾지 못했으므로 단계 완료 처리
+                return;
+            }
+            
+            // 인터랙션 단계가 있는지 확인
+            if (interactionData.steps.Count == 0)
+            {
+                Debug.LogWarning($"인터랙션 {interactionDataId}에 단계가 없습니다.");
+                CompleteCurrentStep();
+                return;
+            }
+            
+            // 첫 번째 인터랙션 단계 설정
+            currentActionIndex = 0;
+            currentAction = interactionData.steps[0];
+            
+            // 이벤트 발생
+            OnActionStarted?.Invoke(currentAction, currentActionIndex);
         }
-        
-        // 인터랙션 단계가 있는지 확인
-        if (interactionData.steps.Count == 0)
+        else
         {
-            Debug.LogWarning($"인터랙션 {interactionDataId}에 단계가 없습니다.");
-            CompleteCurrentStep();
-            return;
+            // 새로운 InteractionDataAsset 형식 처리
+            if (interactionDataAsset.steps.Count == 0)
+            {
+                Debug.LogWarning($"인터랙션 {interactionDataId}에 단계가 없습니다.");
+                CompleteCurrentStep();
+                return;
+            }
+            
+            // 기존 InteractionStep 클래스로 변환
+            InteractionStep convertedStep = new InteractionStep();
+            InteractionStepData sourceStep = interactionDataAsset.steps[0];
+            
+            convertedStep.actionId = sourceStep.stepId;
+            convertedStep.guideText = sourceStep.guideText;
+            convertedStep.interactionType = sourceStep.interactionType;
+            
+            // 그 외 필요한 속성 복사
+            
+            // 첫 번째 인터랙션 단계 설정
+            currentActionIndex = 0;
+            currentAction = convertedStep;
+            
+            // 이벤트 발생
+            OnActionStarted?.Invoke(currentAction, currentActionIndex);
         }
-        
-        // 첫 번째 인터랙션 단계 설정
-        currentActionIndex = 0;
-        currentAction = interactionData.steps[0];
-        
-        // 이벤트 발생
-        OnActionStarted?.Invoke(currentAction, currentActionIndex);
         
         // 인터랙션 매니저를 통해 인터랙션 시작
         if (InteractionManager.Instance != null)
@@ -350,10 +393,10 @@ public class ProcedureManager : MonoBehaviour
     /// </summary>
     public void RegisterStep(object step)
     {
-        // ProcedureStepData 지원 (이전 버전 호환성)
-        if (step is ProcedureStepData)
+        // ProcedureStep 지원 (새 버전)
+        if (step is ProcedureStep)
         {
-            var procedureStep = step as ProcedureStepData;
+            var procedureStep = step as ProcedureStep;
             Debug.Log($"시술 단계 등록: {procedureStep.stepName}");
         }
     }
@@ -380,11 +423,78 @@ public class ProcedureManager : MonoBehaviour
         else
         {
             // 단계가 정해진 순서를 따르지 않는 경우
-            if (currentStep != null && !currentStep.isOrderImportant)
+            if (currentStep != null)
             {
                 // 모든 필수 행동이 완료되었는지 확인
                 CheckStepCompletion();
             }
+        }
+    }
+    
+    /// <summary>
+    /// 다음 인터랙션 액션으로 진행합니다.
+    /// </summary>
+    private void StartNextAction()
+    {
+        if (!isProcedureActive || currentStep == null || string.IsNullOrEmpty(currentStep.interactionDataId))
+            return;
+            
+        // 인터랙션 데이터가 로드되어 있는지 확인
+        InteractionDataAsset interactionData = null;
+        
+        try
+        {
+            // 인터랙션 데이터 레지스트리에서 먼저 확인
+            if (InteractionDataRegistrar.Instance != null)
+            {
+                interactionData = InteractionDataRegistrar.Instance.GetInteractionData(currentStep.interactionDataId);
+            }
+            
+            // 없으면 리소스에서 직접 로드
+            if (interactionData == null)
+            {
+                interactionData = Resources.Load<InteractionDataAsset>($"Interactions/{currentStep.interactionDataId}");
+            }
+            
+            if (interactionData == null || interactionData.steps.Count == 0)
+            {
+                // 로드 실패 시 단계 완료
+                Debug.LogWarning($"인터랙션 데이터를 찾을 수 없거나 단계가 없음: {currentStep.interactionDataId}");
+                CompleteCurrentStep();
+                return;
+            }
+            
+            // 다음 액션 인덱스 계산
+            currentActionIndex++;
+            
+            // 모든 액션 완료 확인
+            if (currentActionIndex >= interactionData.steps.Count)
+            {
+                // 모든 액션 완료
+                CompleteCurrentStep();
+                return;
+            }
+            
+            // 다음 액션 설정
+            InteractionStepData stepData = interactionData.steps[currentActionIndex];
+            InteractionStep nextAction = new InteractionStep();
+            
+            // 속성 복사
+            nextAction.actionId = stepData.stepId;
+            nextAction.guideText = stepData.guideText;
+            nextAction.interactionType = stepData.interactionType;
+            nextAction.isOrderImportant = true; // 기본값
+            
+            // 현재 액션 업데이트
+            currentAction = nextAction;
+            
+            // 이벤트 발생
+            OnActionStarted?.Invoke(currentAction, currentActionIndex);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"StartNextAction에서 오류 발생: {e.Message}");
+            CompleteCurrentStep();
         }
     }
     

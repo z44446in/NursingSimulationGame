@@ -27,6 +27,11 @@ public class ProcedureData : BaseData, IRequiresItems
     public int maxScore = 100;
     public int errorPenalty = 5;
     public bool trackErrors = true;
+    public float timeLimit = 300f; // 5분 기본 제한 시간
+    
+    [Header("음향 설정")]
+    public AudioClip backgroundMusic;
+    public AudioClip completionSound;
     
     /// <summary>
     /// 모든 필수 아이템 목록을 반환합니다
@@ -61,6 +66,14 @@ public class ProcedureData : BaseData, IRequiresItems
         }
         
         return items;
+    }
+    
+    /// <summary>
+    /// 모든 필수 아이템 목록을 반환합니다 (에디터용)
+    /// </summary>
+    public List<Item> GetAllRequiredItems()
+    {
+        return GetRequiredItems(true);
     }
     
     /// <summary>
@@ -103,6 +116,7 @@ public class ProcedureStep : IRequiresItems
     
     [Header("단계 설정")]
     public bool isRequired = true;
+    public bool isOrderImportant = true; // 순서가 중요한지 여부
     public int scoreWeight = 10;
     public float timeLimit = 0f; // 0은 제한 없음
     
@@ -143,5 +157,13 @@ public class ProcedureStep : IRequiresItems
         }
         
         return items;
+    }
+    
+    /// <summary>
+    /// 이 단계에 필요한 모든 아이템을 반환합니다 (에디터용)
+    /// </summary>
+    public List<Item> GetAllRequiredItems()
+    {
+        return GetRequiredItems(true);
     }
 }

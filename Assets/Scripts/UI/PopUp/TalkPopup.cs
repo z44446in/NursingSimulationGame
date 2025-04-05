@@ -8,16 +8,16 @@ using TMPro;
 public class TalkPopup : ScrollButtonPopup
 {
     [Header("Dialogue References")]
-    [SerializeField] private Transform buttonContainerbox;  // ¹öÆ°µéÀÌ »ý¼ºµÉ ºÎ¸ð Transform
-    [SerializeField] private Button dialogueButtonPrefab;  // ´ëÈ­ ¹öÆ° ÇÁ¸®ÆÕ
+    [SerializeField] private Transform buttonContainerbox;  // ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ Transform
+    [SerializeField] private Button dialogueButtonPrefab;  // ï¿½ï¿½È­ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [SerializeField] private DialogueManager dialogueManager;
-    [SerializeField] private List<ProcedureDialogueStep> dialogueSteps;  // ÀÎ½ºÆåÅÍ¿¡¼­ ÇÒ´ç
+    [SerializeField] private List<DialogueEntry> dialogueEntries;  // ì¸ìŠ¤íŽ™í„°ì—ì„œ í• ë‹¹
 
     private int currentStepIndex = 0;
 
     protected override void Start()
     {
-        base.Start(); // ºÎ¸ð Å¬·¡½ºÀÇ Start() ¸Þ¼­µå ½ÇÇà
+        base.Start(); // ï¿½Î¸ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Start() ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         UpdateDialogueOptions();
     }
     public void SetStep(int stepIndex)
@@ -28,21 +28,25 @@ public class TalkPopup : ScrollButtonPopup
 
     private void UpdateDialogueOptions()
     {
-        // ±âÁ¸ ¹öÆ°µé Á¦°Å
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         foreach (Transform child in buttonContainerbox)
         {
             Destroy(child.gameObject);
         }
 
-        // ÇöÀç ´Ü°èÀÇ ´ëÈ­ ¿É¼Ç Ã£±â
-        var currentStep = dialogueSteps.Find(step => step.stepIndex == currentStepIndex);
-        if (currentStep == null) return;
+        // í˜„ìž¬ ëŒ€í™” ì—”íŠ¸ë¦¬ ê°€ì ¸ì˜¤ê¸°
+        DialogueEntry currentEntry = null;
+        if (currentStepIndex < dialogueEntries.Count)
+        {
+            currentEntry = dialogueEntries[currentStepIndex];
+        }
+        if (currentEntry == null) return;
 
-        // »õ ¹öÆ°µé »ý¼º
-        foreach (var option in currentStep.dialogueOptions)
+        // ê° ì‘ë‹µ ì˜µì…˜ì— ëŒ€í•œ ë²„íŠ¼ ìƒì„±
+        foreach (var option in currentEntry.responseOptions)
         {
             Button newButton = Instantiate(dialogueButtonPrefab, buttonContainerbox).GetComponent<Button>();
-            newButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = option.optionText;
+            newButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = option;
 
            
         }

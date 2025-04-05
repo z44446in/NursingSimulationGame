@@ -6,10 +6,10 @@ using UnityEditorInternal;
 namespace NursingGame.Editor
 {
     /// <summary>
-    /// GenericProcedureData의 커스텀 에디터
+    /// ProcedureData의 커스텀 에디터
     /// 인스펙터에서 시각적으로 간호 절차 데이터를 편집할 수 있게 해줍니다.
     /// </summary>
-    [CustomEditor(typeof(GenericProcedureData))]
+    [CustomEditor(typeof(ProcedureData))]
     public class GenericProcedureDataEditor : UnityEditor.Editor
     {
         // 폴드아웃 상태
@@ -47,8 +47,12 @@ namespace NursingGame.Editor
                 SerializedProperty requiredProperty = element.FindPropertyRelative("isRequired");
                 bool isRequired = requiredProperty.boolValue;
                 
+                // 단계 유형 가져오기
+                SerializedProperty stepTypeProp = element.FindPropertyRelative("stepType");
+                string stepType = stepTypeProp != null ? stepTypeProp.enumNames[stepTypeProp.enumValueIndex] : "Unknown";
+                
                 // 단계 표시 (필수 여부에 따라 다르게 표시)
-                string displayName = isRequired ? $"{stepName} (필수)" : $"{stepName} (선택)";
+                string displayName = isRequired ? $"{stepName} ({stepType}, 필수)" : $"{stepName} ({stepType}, 선택)";
                 
                 rect.y += 2;
                 rect.height = EditorGUIUtility.singleLineHeight;
@@ -84,8 +88,6 @@ namespace NursingGame.Editor
         {
             serializedObject.Update();
             
-            GenericProcedureData data = (GenericProcedureData)target;
-            
             // 스타일 설정
             GUIStyle headerStyle = new GUIStyle(EditorStyles.boldLabel);
             headerStyle.fontSize = 13;
@@ -101,10 +103,11 @@ namespace NursingGame.Editor
             {
                 EditorGUI.indentLevel++;
                 
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("procedureId"), new GUIContent("절차 ID"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("procedureName"), new GUIContent("절차 이름"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("id"), new GUIContent("절차 ID"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("displayName"), new GUIContent("절차 이름"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("description"), new GUIContent("설명"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("icon"), new GUIContent("아이콘"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("procedureType"), new GUIContent("절차 유형"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("procedureTitle"), new GUIContent("절차 타이틀"));
                 
                 EditorGUI.indentLevel--;
             }
@@ -134,31 +137,45 @@ namespace NursingGame.Editor
                     EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("stepId"), new GUIContent("단계 ID"));
                     EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("stepName"), new GUIContent("단계 이름"));
                     EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("description"), new GUIContent("설명"));
-                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("stepIcon"), new GUIContent("아이콘"));
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("stepType"), new GUIContent("단계 유형"));
                     
                     EditorGUILayout.Space(5);
                     EditorGUILayout.LabelField("단계 설정", EditorStyles.boldLabel);
                     EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("isRequired"), new GUIContent("필수 여부"));
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("isOrderImportant"), new GUIContent("순서 중요"));
                     EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("scoreWeight"), new GUIContent("점수 가중치"));
-                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("requiredItems"), new GUIContent("필요 아이템"));
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("timeLimit"), new GUIContent("시간 제한 (초)"));
                     
-                    // 상호작용 목록
-                    EditorGUILayout.Space(5);
-                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("interactions"), new GUIContent("상호작용 목록"));
+                    // 상호작용 ID
+                    SerializedProperty stepTypeProp = selectedStep.FindPropertyRelative("stepType");
+                    if (stepTypeProp != null && stepTypeProp.enumValueIndex == (int)StepType.Interaction)
+                    {
+                        EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("interactionDataId"), new GUIContent("상호작용 데이터 ID"));
+                    }
+                    
+                    // 대화 항목
+                    if (stepTypeProp != null && stepTypeProp.enumValueIndex == (int)StepType.Dialogue)
+                    {
+                        EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("dialogueEntries"), new GUIContent("대화 항목"), true);
+                    }
+                    
+                    // 필요 아이템
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("requiredItems"), new GUIContent("필요 아이템"), true);
                     
                     // UI 및 가이드
                     EditorGUILayout.Space(5);
                     EditorGUILayout.LabelField("UI 및 가이드", EditorStyles.boldLabel);
                     EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("guideText"), new GUIContent("가이드 텍스트"));
-                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("backgroundOverlay"), new GUIContent("배경 오버레이"));
-                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("stepAudio"), new GUIContent("단계 오디오"));
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("backgroundImage"), new GUIContent("배경 이미지"));
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("cameraPosition"), new GUIContent("카메라 위치"));
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("cameraZoom"), new GUIContent("카메라 줌"));
                     
-                    // 설정
+                    // 완료 조건
                     EditorGUILayout.Space(5);
-                    EditorGUILayout.LabelField("설정", EditorStyles.boldLabel);
-                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("waitForAllInteractions"), new GUIContent("모든 상호작용 대기"));
+                    EditorGUILayout.LabelField("완료 조건", EditorStyles.boldLabel);
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("requireAllItems"), new GUIContent("모든 아이템 필요"));
+                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("requireCorrectResponses"), new GUIContent("정확한 응답 필요"));
                     EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("autoAdvanceDelay"), new GUIContent("자동 진행 지연 시간"));
-                    EditorGUILayout.PropertyField(selectedStep.FindPropertyRelative("requiredCompletedStepIds"), new GUIContent("필요 완료 단계 ID"));
                     
                     EditorGUILayout.EndVertical();
                 }
@@ -176,7 +193,8 @@ namespace NursingGame.Editor
                 
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("backgroundImage"), new GUIContent("배경 이미지"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("backgroundMusic"), new GUIContent("배경 음악"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("themeColor"), new GUIContent("테마 색상"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("completionSound"), new GUIContent("완료 사운드"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("titleColor"), new GUIContent("타이틀 색상"));
                 
                 EditorGUI.indentLevel--;
             }
@@ -189,25 +207,26 @@ namespace NursingGame.Editor
             {
                 EditorGUI.indentLevel++;
                 
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("isOrderImportant"), new GUIContent("순서 중요"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("allowSkipNonRequiredSteps"), new GUIContent("비필수 단계 건너뛰기 허용"));
+                SerializedProperty isOrderImportantProp = serializedObject.FindProperty("isOrderImportant");
+                if (isOrderImportantProp != null)
+                {
+                    EditorGUILayout.PropertyField(isOrderImportantProp, new GUIContent("순서 중요"));
+                }
+                
+                SerializedProperty allowSkipProp = serializedObject.FindProperty("allowSkipNonRequiredSteps");
+                if (allowSkipProp == null)
+                {
+                    allowSkipProp = serializedObject.FindProperty("allowSkipOptional");
+                }
+                
+                if (allowSkipProp != null)
+                {
+                    EditorGUILayout.PropertyField(allowSkipProp, new GUIContent("비필수 단계 건너뛰기 허용"));
+                }
+                
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("timeLimit"), new GUIContent("시간 제한 (초)"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("maxScore"), new GUIContent("최대 점수"));
-                
-                EditorGUI.indentLevel--;
-            }
-            
-            EditorGUILayout.Space(10);
-            
-            // 평가 기준 섹션
-            showEvaluation = EditorGUILayout.Foldout(showEvaluation, "평가 기준", true);
-            if (showEvaluation)
-            {
-                EditorGUI.indentLevel++;
-                
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("perfectScoreThreshold"), new GUIContent("우수 기준 점수"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("goodScoreThreshold"), new GUIContent("양호 기준 점수"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("passScoreThreshold"), new GUIContent("통과 기준 점수"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("errorPenalty"), new GUIContent("오류 패널티"));
                 
                 EditorGUI.indentLevel--;
             }
@@ -215,26 +234,39 @@ namespace NursingGame.Editor
             EditorGUILayout.Space(10);
             
             // 필수 아이템 버튼
-            if (GUILayout.Button("필요 아이템 목록 가져오기", GUILayout.Height(30)))
+            if (GUILayout.Button("필요 아이템 목록 보기", GUILayout.Height(30)))
             {
-                List<Item> requiredItems = data.GetAllRequiredItems();
-                string itemList = "필요 아이템 목록:\n";
+                // SerializedObject를 통해 안전하게 메서드 호출
+                var getAllItemsMethod = target.GetType().GetMethod("GetAllRequiredItems");
                 
-                foreach (var item in requiredItems)
+                if (getAllItemsMethod != null)
                 {
-                    if (item != null)
+                    var requiredItems = getAllItemsMethod.Invoke(target, null) as List<Item>;
+                    string itemList = "필요 아이템 목록:\n";
+                    
+                    if (requiredItems != null && requiredItems.Count > 0)
                     {
-                        itemList += $"- {item.itemName} ({item.itemId})\n";
+                        foreach (var item in requiredItems)
+                        {
+                            if (item != null)
+                            {
+                                itemList += $"- {item.name} ({item.itemId})\n";
+                            }
+                        }
                     }
+                    else
+                    {
+                        itemList += "필요한 아이템이 없습니다.";
+                    }
+                    
+                    EditorUtility.DisplayDialog("필요 아이템 목록", itemList, "확인");
                 }
-                
-                EditorUtility.DisplayDialog("필요 아이템 목록", itemList, "확인");
             }
             
             // ID 자동 생성 버튼
             if (GUILayout.Button("ID 자동 생성", GUILayout.Height(30)))
             {
-                serializedObject.FindProperty("procedureId").stringValue = System.Guid.NewGuid().ToString().Substring(0, 8);
+                serializedObject.FindProperty("id").stringValue = System.Guid.NewGuid().ToString().Substring(0, 8);
             }
             
             serializedObject.ApplyModifiedProperties();

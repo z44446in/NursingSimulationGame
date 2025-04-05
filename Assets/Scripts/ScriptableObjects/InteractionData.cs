@@ -6,10 +6,10 @@ using System.Collections.Generic;
 /// 아이템 상호작용 데이터 - 특정 아이템과의 상호작용을 정의
 /// </summary>
 [CreateAssetMenu(fileName = "New Interaction", menuName = "Nursing/Interaction Data")]
-public class InteractionData : BaseData
+public class InteractionDataAsset : BaseData
 {
     [Header("상호작용 단계")]
-    public List<InteractionStep> steps = new List<InteractionStep>();
+    public List<InteractionStepData> steps = new List<InteractionStepData>();
     
     [Header("피드백 정보")]
     public AudioClip successSound;
@@ -29,25 +29,53 @@ public class InteractionData : BaseData
         var interactionSystem = GameObject.FindObjectOfType<BaseInteractionSystem>();
         if (interactionSystem != null)
         {
-            InteractionData data = this;
-            
-            // InteractionData 형식을 BaseInteractionSystem이 사용하는 형식으로 변환
+            // InteractionStepData를 InteractionStep으로 변환
             List<InteractionStep> convertedSteps = new List<InteractionStep>();
-            foreach (var step in steps)
+            foreach (var stepData in steps)
             {
+                InteractionStep step = new InteractionStep
+                {
+                    actionId = stepData.stepId,
+                    interactionType = stepData.interactionType,
+                    guideText = stepData.guideText,
+                    
+                    // 다른 필드들 복사
+                    createInitialObjects = stepData.createInitialObjects,
+                    useMultiStageDrag = stepData.useMultiStageDrag,
+                    requiredDragAngle = stepData.requiredDragAngle,
+                    dragAngleTolerance = stepData.dragAngleTolerance,
+                    dragDistance = stepData.dragDistance,
+                    validClickArea = stepData.validClickArea,
+                    quizQuestion = stepData.quizQuestion,
+                    quizOptions = stepData.quizOptions,
+                    correctOptionIndex = stepData.correctOptionIndex,
+                    tutorialArrowSprite = stepData.tutorialArrowSprite,
+                    tutorialArrowPosition = stepData.tutorialArrowPosition,
+                    tutorialArrowRotation = stepData.tutorialArrowRotation,
+                    successMessage = stepData.successMessage,
+                    errorMessage = stepData.errorMessage,
+                    showErrorBorderFlash = stepData.showErrorBorderFlash,
+                    useConditionalTouch = stepData.useConditionalTouch,
+                    createWaterEffect = stepData.createWaterEffect,
+                    waterEffectPosition = stepData.waterEffectPosition,
+                    createWaterImageOnObject = stepData.createWaterImageOnObject
+                };
                 convertedSteps.Add(step);
             }
             
-            // BaseInteractionSystem에 등록
-            InteractionData convertedData = ScriptableObject.CreateInstance<InteractionData>();
-            convertedData.id = id;
-            convertedData.displayName = displayName;
-            convertedData.description = description;
-            convertedData.steps = convertedSteps;
-            convertedData.successSound = successSound;
-            convertedData.errorSound = errorSound;
+            // 런타임에 인스턴스 생성해서 등록
+            InteractionData convertedData = new InteractionData
+            {
+                id = id,
+                name = displayName,
+                description = description,
+                steps = convertedSteps
+            };
             
-            // 등록
+            // 베이스 인터랙션 시스템에 등록
+            interactionSystem.RegisterInteraction(id, convertedData);
+            
+            // 등록 완료 로그
             Debug.Log($"{displayName} 상호작용이 등록되었습니다.");
         }
         else
@@ -61,7 +89,7 @@ public class InteractionData : BaseData
 /// 상호작용 단계 정의
 /// </summary>
 [Serializable]
-public class InteractionStep
+public class InteractionStepData
 {
     public string stepId;
     public string stepName;
@@ -112,6 +140,7 @@ public class InteractionStep
     [Header("조건부 터치 설정")]
     public bool useConditionalTouch = false;
     public List<ConditionalTouchOption> touchOptions = new List<ConditionalTouchOption>();
+    public float disableTouchDuration = 0f;
     
     [Header("물 효과 설정")]
     public bool createWaterEffect = false;
