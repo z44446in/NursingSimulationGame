@@ -71,9 +71,69 @@ public class IntermediateManager : MonoBehaviour
     private void Start()
     {
         if (handImage != null)
-    {
-        handImage.gameObject.SetActive(false); // 초기에는 손 이미지 숨김
+        {
+            handImage.gameObject.SetActive(false); // 초기에는 손 이미지 숨김
+        }
+        
+        // 멸균증류수 상호작용 등록
+        RegisterDilutedWaterInteraction();
     }
+    
+    // 멸균증류수 상호작용 데이터 등록
+    private void RegisterDilutedWaterInteraction()
+    {
+        try {
+            // Resources/Interactions 폴더에서 모든 상호작용 데이터 로드
+            GenericInteractionData[] allInteractions = Resources.LoadAll<GenericInteractionData>("Interactions");
+            
+            if (allInteractions != null && allInteractions.Length > 0)
+            {
+                Debug.Log($"Resources/Interactions 폴더에서 {allInteractions.Length}개의 상호작용 데이터를 찾았습니다.");
+                
+                // 모든 상호작용 데이터 등록
+                foreach (var interaction in allInteractions)
+                {
+                    if (interaction != null)
+                    {
+                        Debug.Log($"상호작용 데이터 등록: {interaction.name} (ID: {interaction.interactionId})");
+                        interaction.RegisterToInteractionSystem();
+                    }
+                }
+            }
+            else
+            {
+                // 없으면 프로젝트 내에서 찾기 (에디터에서만 작동)
+#if UNITY_EDITOR
+                string[] guids = UnityEditor.AssetDatabase.FindAssets("t:GenericInteractionData");
+                if (guids.Length > 0)
+                {
+                    Debug.Log($"프로젝트에서 {guids.Length}개의 상호작용 데이터를 찾았습니다.");
+                    
+                    foreach (string guid in guids)
+                    {
+                        string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                        GenericInteractionData data = UnityEditor.AssetDatabase.LoadAssetAtPath<GenericInteractionData>(path);
+                        
+                        if (data != null)
+                        {
+                            Debug.Log($"상호작용 데이터 등록: {data.name} (ID: {data.interactionId})");
+                            data.RegisterToInteractionSystem();
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("프로젝트에서 상호작용 데이터를 찾을 수 없습니다.");
+                }
+#else
+                Debug.LogWarning("Resources/Interactions 폴더에서 상호작용 데이터를 찾을 수 없습니다.");
+#endif
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"상호작용 데이터 등록 중 오류 발생: {ex.Message}");
+        }
     }
 
     [SerializeField] private CartUI cartUI; // CartUI 참조 추가
@@ -225,148 +285,64 @@ public void PickupItem(Item item)
     // 손 이미지 업데이트
     UpdateHandImage(item);
     
-    // 고급 기능
-    // 특정 아이템에 대한 interactionDataId 설정은 에디터에서 직접 처리합니다
-    
-    // 상호작용 성공 여부 추적 변수
-    bool success = false;
-    
-    // interactionDataId가 설정된 경우 범용 상호작용 처리
+    // interactionDataId가 설정된 아이템 처리
     if (!string.IsNullOrEmpty(item.interactionDataId))
     {
-        // 인터랙션 데이터 레지스트리에서 데이터 확인
-        InteractionDataAsset interactionData = null;
-        
-        if (InteractionDataRegistrar.Instance != null)
-        {
-            // 먼저 레지스트리에서 상호작용 데이터 가져오기 시도
-            interactionData = InteractionDataRegistrar.Instance.GetInteractionData(item.interactionDataId);
-            
-            if (interactionData == null)
-            {
-                Debug.LogWarning($"상호작용 ID '{item.interactionDataId}'가 등록되어 있지 않습니다. Resources에서 로드를 시도합니다.");
-                
-                // 자동으로 Resources에서 로드 시도
-                try
-                {
-                    interactionData = Resources.Load<InteractionDataAsset>($"Interactions/{item.interactionDataId}");
-                    
-                    if (interactionData != null)
-                    {
-                        // 로드 성공하면 등록
-                        InteractionDataRegistrar.Instance.AddInteractionData(interactionData);
-                        Debug.Log($"상호작용 데이터 '{item.interactionDataId}'가 Resources에서 자동 로드되었습니다.");
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError($"Resources에서 상호작용 데이터 로드 중 오류: {ex.Message}");
-                }
-            }
-        }
-        
         // 베이스 인터랙션 시스템 찾기
         BaseInteractionSystem interactionSystem = FindObjectOfType<BaseInteractionSystem>();
         
         // 없으면 생성
         if (interactionSystem == null)
         {
-            // InteractionManager가 이미 BaseInteractionSystem 컴포넌트를 가지고 있는지 확인
-            if (InteractionManager.Instance != null)
-            {
-                interactionSystem = InteractionManager.Instance.GetComponent<BaseInteractionSystem>();
-                
-                // 그래도 없으면 새로 생성
-                if (interactionSystem == null)
-                {
-                    GameObject interactionObj = new GameObject("BaseInteractionSystem");
-                    interactionSystem = interactionObj.AddComponent<BaseInteractionSystem>();
-                }
-            }
-            else
-            {
-                GameObject interactionObj = new GameObject("BaseInteractionSystem");
-                interactionSystem = interactionObj.AddComponent<BaseInteractionSystem>();
-            }
+            Debug.Log("BaseInteractionSystem을 찾을 수 없어 새로 생성합니다.");
+            GameObject interactionSystemObj = new GameObject("BaseInteractionSystem");
+            interactionSystem = interactionSystemObj.AddComponent<BaseInteractionSystem>();
             
             // 팝업 컨테이너 설정
             if (popupParent != null)
             {
-                RectTransform rectTransform = popupParent.GetComponent<RectTransform>();
-                if (rectTransform != null)
-                {
-                    // 팝업 컨테이너 설정
-                    interactionSystem.SetPopupContainer(popupParent);
-                }
-                else
-                {
-                    Debug.LogWarning("popupParent에 RectTransform 컴포넌트가 없습니다.");
-                }
+                interactionSystem.SetPopupContainer(popupParent);
             }
-            
-            Debug.Log("BaseInteractionSystem이 자동으로 생성되었습니다.");
         }
         
-        try
+        if (interactionSystem != null)
         {
-            // interactionData가 있으면 직접 등록
-            if (interactionData != null)
+            // 상호작용 ID가 등록되어 있는지 확인
+            if (Resources.Load<GenericInteractionData>("Interactions/" + item.interactionDataId) != null)
             {
-                // InteractionStep으로 변환하여 등록
-                List<InteractionStep> steps = InteractionDataRegistrar.Instance.ConvertToInteractionSteps(interactionData);
-                InteractionData convertedData = new InteractionData
-                {
-                    id = interactionData.id,
-                    name = interactionData.displayName,
-                    description = interactionData.description,
-                    steps = steps
-                };
-                
-                // BaseInteractionSystem에 직접 등록
-                interactionSystem.RegisterInteraction(item.interactionDataId, convertedData);
-                Debug.Log($"상호작용 데이터 '{item.interactionDataId}'가 BaseInteractionSystem에 직접 등록되었습니다.");
-            }
-            
-            // 초기 오브젝트 생성
-            interactionSystem.CreateInitialObjects(item.interactionDataId);
-            
-            // 상호작용 시작
-            bool interactionSuccess = interactionSystem.StartInteraction(item.interactionDataId);
-            
-            if (interactionSuccess)
-            {
-                Debug.Log($"[아이템] 상호작용 절차가 시작되었습니다.(ID:{item.interactionDataId})");
-                return; // 성공했으므로 여기서 종료
+                Debug.Log($"상호작용 데이터 확인됨: {item.interactionDataId}");
             }
             else
             {
-                Debug.LogWarning($"상호작용을 시작할 수 없습니다. ID: {item.interactionDataId}");
-                // 실패 메시지 표시
-                if (DialogueManager.Instance != null)
-                {
-                    DialogueManager.Instance.ShowSmallDialogue($"아이템 상호작용을 시작할 수 없습니다: {item.itemName}");
-                }
+                Debug.LogWarning($"Resources/Interactions/{item.interactionDataId}.asset 파일을 찾을 수 없습니다.");
+            }
+            
+            try
+            {
+                // 초기 오브젝트 생성
+                interactionSystem.CreateInitialObjects(item.interactionDataId);
                 
-                // 실패 변수 설정 (ProcessItemInteraction 호출 위해)
-                success = false;
+                // 상호작용 시작
+                interactionSystem.StartInteraction(item.interactionDataId);
+                
+                // 로그 출력
+                Debug.Log($"{item.itemName} 상호작용 절차가 시작되었습니다. (ID: {item.interactionDataId})");
+                return;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"상호작용 시작 중 오류 발생: {ex.Message}");
+                Debug.LogException(ex);
             }
         }
-        catch (System.Exception ex)
+        else
         {
-            Debug.LogError($"상호작용 시작 중 오류 발생: {ex.Message}");
-            if (DialogueManager.Instance != null)
-            {
-                DialogueManager.Instance.ShowSmallDialogue($"상호작용 시작 중 오류가 발생했습니다: {ex.Message}");
-            }
+            Debug.LogError("BaseInteractionSystem을 생성할 수 없습니다. 상호작용 절차를 시작할 수 없습니다.");
         }
     }
     
-    // interactionDataId가 없거나 상호작용을 시작하지 못한 경우에만 
-    // 기존 아이템 타입에 따른 처리 실행
-    if (string.IsNullOrEmpty(item.interactionDataId) || !success)
-    {
-        ProcessItemInteraction(item);
-    }
+    // 기존 아이템 타입에 따른 처리
+    ProcessItemInteraction(item);
 }
 
 // 손 이미지 업데이트 메서드
