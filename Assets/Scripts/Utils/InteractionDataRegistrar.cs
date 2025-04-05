@@ -14,10 +14,10 @@ public class InteractionDataRegistrar : MonoBehaviour
     public static InteractionDataRegistrar Instance => instance;
     
     [Header("Interaction Data")]
-    [SerializeField] private List<InteractionDataAsset> interactionAssets = new List<InteractionDataAsset>();
+    [SerializeField] private List<InteractionData> interactionAssets = new List<InteractionData>();
     
     // 등록된 모든 상호작용 데이터 캐시
-    private Dictionary<string, InteractionDataAsset> cachedInteractions = new Dictionary<string, InteractionDataAsset>();
+    private Dictionary<string, InteractionData> cachedInteractions = new Dictionary<string, InteractionData>();
     
     private void Awake()
     {
@@ -46,24 +46,43 @@ public class InteractionDataRegistrar : MonoBehaviour
         try
         {
             // 디렉토리에서 모든 상호작용 데이터 로드
-            InteractionDataAsset[] interactions = Resources.LoadAll<InteractionDataAsset>("Interactions");
+            InteractionData[] interactions = Resources.LoadAll<InteractionData>("Interactions");
             
             if (interactions != null && interactions.Length > 0)
             {
                 foreach (var data in interactions)
                 {
-                    if (data != null && !string.IsNullOrEmpty(data.id))
+                    if (data != null)
                     {
-                        // 캐시에 저장
-                        cachedInteractions[data.id] = data;
-                        
-                        // 인스펙터에도 추가 (에디터에서 볼 수 있도록)
-                        if (!interactionAssets.Contains(data))
+                        // ID 유효성 확인 및 이전 필드에서 값 복사
+                        #if UNITY_EDITOR
+                        if (string.IsNullOrEmpty(data.id) && !string.IsNullOrEmpty(GetOldFieldValue(data, "interactionId")))
                         {
-                            interactionAssets.Add(data);
+                            data.id = GetOldFieldValue(data, "interactionId");
+                            data.displayName = GetOldFieldValue(data, "interactionName");
+                            UnityEditor.EditorUtility.SetDirty(data);
+                            UnityEditor.AssetDatabase.SaveAssets();
+                            Debug.Log($"Updated old field values for: {data.displayName} (ID: {data.id})");
                         }
+                        #endif
                         
-                        Debug.Log($"Loaded interaction data from Resources: {data.displayName} (ID: {data.id})");
+                        if (!string.IsNullOrEmpty(data.id))
+                        {
+                            // 캐시에 저장
+                            cachedInteractions[data.id] = data;
+                            
+                            // 인스펙터에도 추가 (에디터에서 볼 수 있도록)
+                            if (!interactionAssets.Contains(data))
+                            {
+                                interactionAssets.Add(data);
+                            }
+                            
+                            Debug.Log($"Loaded interaction data from Resources: {data.displayName} (ID: {data.id})");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"Skipped interaction data with empty ID: {data.name}");
+                        }
                     }
                 }
             }
@@ -110,12 +129,12 @@ public class InteractionDataRegistrar : MonoBehaviour
     private void RegisterAdvancedInteraction(string interactionId)
     {
         // 상호작용 데이터가 있는지 확인
-        InteractionDataAsset interactionData = GetInteractionData(interactionId);
+        InteractionData interactionData = GetInteractionData(interactionId);
         
         if (interactionData == null)
         {
             // Resources에서 찾기
-            interactionData = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
+            interactionData = Resources.Load<InteractionData>($"Interactions/{interactionId}");
             
             if (interactionData == null)
             {
@@ -135,9 +154,9 @@ public class InteractionDataRegistrar : MonoBehaviour
     }
     
     /// <summary>
-    /// InteractionDataAsset을 BaseInteractionSystem에서 사용하는 InteractionStep 목록으로 변환합니다.
+    /// InteractionData를 BaseInteractionSystem에서 사용하는 InteractionStep 목록으로 변환합니다.
     /// </summary>
-    public List<InteractionStep> ConvertToInteractionSteps(InteractionDataAsset data)
+    public List<InteractionStep> ConvertToInteractionSteps(InteractionData data)
     {
         List<InteractionStep> result = new List<InteractionStep>();
         
@@ -225,21 +244,33 @@ public class InteractionDataRegistrar : MonoBehaviour
     /// <summary>
     /// ID로 상호작용 데이터를 가져옵니다.
     /// </summary>
-    public InteractionDataAsset GetInteractionData(string interactionId)
+    public InteractionData GetInteractionData(string interactionId)
     {
         if (string.IsNullOrEmpty(interactionId))
             return null;
             
         // 캐시에서 찾기
-        if (cachedInteractions.TryGetValue(interactionId, out InteractionDataAsset data))
+        if (cachedInteractions.TryGetValue(interactionId, out InteractionData data))
             return data;
             
         // 캐시에 없으면 Resources에서 다시 로드 시도
         try
         {
-            data = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
+            data = Resources.Load<InteractionData>($"Interactions/{interactionId}");
             if (data != null)
             {
+                // ID 유효성 확인 및 이전 필드에서 값 복사
+                #if UNITY_EDITOR
+                if (string.IsNullOrEmpty(data.id) && !string.IsNullOrEmpty(GetOldFieldValue(data, "interactionId")))
+                {
+                    data.id = GetOldFieldValue(data, "interactionId");
+                    data.displayName = GetOldFieldValue(data, "interactionName");
+                    UnityEditor.EditorUtility.SetDirty(data);
+                    UnityEditor.AssetDatabase.SaveAssets();
+                    Debug.Log($"Updated old field values for: {data.displayName} (ID: {data.id})");
+                }
+                #endif
+                
                 cachedInteractions[interactionId] = data;
                 return data;
             }
@@ -253,9 +284,30 @@ public class InteractionDataRegistrar : MonoBehaviour
     }
     
     /// <summary>
+    /// 직렬화된 필드 값을 가져오는 유틸리티 메서드
+    /// </summary>
+    private string GetOldFieldValue(InteractionData data, string fieldName)
+    {
+        #if UNITY_EDITOR
+        if (data == null)
+            return string.Empty;
+            
+        UnityEditor.SerializedObject serializedObject = new UnityEditor.SerializedObject(data);
+        UnityEditor.SerializedProperty property = serializedObject.FindProperty(fieldName);
+        
+        if (property != null && property.propertyType == UnityEditor.SerializedPropertyType.String)
+        {
+            return property.stringValue;
+        }
+        #endif
+        
+        return string.Empty;
+    }
+    
+    /// <summary>
     /// 런타임에 새 상호작용 데이터를 추가합니다.
     /// </summary>
-    public void AddInteractionData(InteractionDataAsset data)
+    public void AddInteractionData(InteractionData data)
     {
         if (data == null || string.IsNullOrEmpty(data.id))
             return;

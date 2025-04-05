@@ -233,6 +233,32 @@ namespace NursingGame.Editor
             
             EditorGUILayout.Space(10);
             
+            // 평가 섹션
+            showEvaluation = EditorGUILayout.Foldout(showEvaluation, "평가", true);
+            if (showEvaluation)
+            {
+                EditorGUI.indentLevel++;
+                
+                SerializedProperty evaluationCriteriaProp = serializedObject.FindProperty("evaluationCriteria");
+                if (evaluationCriteriaProp != null)
+                {
+                    EditorGUILayout.PropertyField(evaluationCriteriaProp, new GUIContent("평가 기준"), true);
+                }
+                
+                SerializedProperty feedbackMessagesProp = serializedObject.FindProperty("feedbackMessages");
+                if (feedbackMessagesProp != null)
+                {
+                    EditorGUILayout.PropertyField(feedbackMessagesProp, new GUIContent("피드백 메시지"), true);
+                }
+                
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("passingScore"), new GUIContent("통과 점수"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("excellentScore"), new GUIContent("우수 점수"));
+                
+                EditorGUI.indentLevel--;
+            }
+            
+            EditorGUILayout.Space(10);
+            
             // 필수 아이템 버튼
             if (GUILayout.Button("필요 아이템 목록 보기", GUILayout.Height(30)))
             {

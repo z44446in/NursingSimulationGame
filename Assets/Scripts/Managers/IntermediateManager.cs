@@ -235,7 +235,7 @@ public void PickupItem(Item item)
     if (!string.IsNullOrEmpty(item.interactionDataId))
     {
         // 인터랙션 데이터 레지스트리에서 데이터 확인
-        InteractionDataAsset interactionData = null;
+        InteractionData interactionData = null;
         
         if (InteractionDataRegistrar.Instance != null)
         {
@@ -249,7 +249,7 @@ public void PickupItem(Item item)
                 // 자동으로 Resources에서 로드 시도
                 try
                 {
-                    interactionData = Resources.Load<InteractionDataAsset>($"Interactions/{item.interactionDataId}");
+                    interactionData = Resources.Load<InteractionData>($"Interactions/{item.interactionDataId}");
                     
                     if (interactionData != null)
                     {
@@ -314,7 +314,7 @@ public void PickupItem(Item item)
             {
                 // InteractionStep으로 변환하여 등록
                 List<InteractionStep> steps = InteractionDataRegistrar.Instance.ConvertToInteractionSteps(interactionData);
-                InteractionData convertedData = new InteractionData
+                RuntimeInteractionData convertedData = new RuntimeInteractionData
                 {
                     id = interactionData.id,
                     name = interactionData.displayName,

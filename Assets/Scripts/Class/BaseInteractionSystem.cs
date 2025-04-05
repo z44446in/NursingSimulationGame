@@ -47,7 +47,7 @@ public class BaseInteractionSystem : MonoBehaviour
     protected AudioSource audioSource;
     
     // 상호작용 데이터
-    protected Dictionary<string, InteractionData> interactionsDatabase = new Dictionary<string, InteractionData>();
+    protected Dictionary<string, RuntimeInteractionData> interactionsDatabase = new Dictionary<string, RuntimeInteractionData>();
     
     // 현재 진행 중인 상호작용
     protected string currentInteractionId;
@@ -85,7 +85,7 @@ public class BaseInteractionSystem : MonoBehaviour
     /// </summary>
     /// <param name="id">상호작용 ID</param>
     /// <param name="data">상호작용 데이터</param>
-    public virtual void RegisterInteraction(string id, InteractionData data)
+    public virtual void RegisterInteraction(string id, RuntimeInteractionData data)
     {
         if (interactionsDatabase.ContainsKey(id))
         {
@@ -101,12 +101,12 @@ public class BaseInteractionSystem : MonoBehaviour
     /// </summary>
     /// <param name="id">상호작용 ID</param>
     /// <returns>상호작용 데이터, 없으면 null</returns>
-    public virtual InteractionData GetInteractionData(string id)
+    public virtual RuntimeInteractionData GetInteractionData(string id)
     {
         if (string.IsNullOrEmpty(id))
             return null;
             
-        if (interactionsDatabase.TryGetValue(id, out InteractionData data))
+        if (interactionsDatabase.TryGetValue(id, out RuntimeInteractionData data))
         {
             return data;
         }
@@ -163,12 +163,12 @@ public class BaseInteractionSystem : MonoBehaviour
         {
             // 통합된 두 가지 방식을 지원
             
-            // 1. 새로운 InteractionDataAsset 방식 - 직접 인터랙션 데이터베이스에서 찾기
-            InteractionDataAsset interactionDataAsset = null;
+            // 1. 새로운 InteractionData 방식 - 직접 인터랙션 데이터베이스에서 찾기
+            InteractionData interactionDataAsset = null;
             
             // 리소스에서 찾기
             try {
-                interactionDataAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
+                interactionDataAsset = Resources.Load<InteractionData>($"Interactions/{interactionId}");
             } catch (System.Exception) {
                 // 리소스에서 찾지 못하면 무시
             }
@@ -337,13 +337,13 @@ public class BaseInteractionSystem : MonoBehaviour
         // 이미 등록된 상호작용인지 확인
         if (!interactionsDatabase.ContainsKey(interactionId))
         {
-            // 등록되지 않은 경우, InteractionDataAsset으로 로드 시도
-            InteractionDataAsset interactionDataAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
+            // 등록되지 않은 경우, InteractionData로 로드 시도
+            InteractionData interactionDataAsset = Resources.Load<InteractionData>($"Interactions/{interactionId}");
             
             if (interactionDataAsset != null)
             {
-                // InteractionDataAsset을 InteractionData로 변환하여 등록
-                InteractionData data = new InteractionData
+                // InteractionData를 RuntimeInteractionData로 변환하여 등록
+                RuntimeInteractionData data = new RuntimeInteractionData
                 {
                     id = interactionDataAsset.id,
                     name = interactionDataAsset.displayName,
@@ -377,7 +377,7 @@ public class BaseInteractionSystem : MonoBehaviour
                 
                 // 등록
                 RegisterInteraction(interactionId, data);
-                Debug.Log($"상호작용 '{interactionId}'를 InteractionDataAsset에서 로드하여 등록했습니다.");
+                Debug.Log($"상호작용 '{interactionId}'를 InteractionData에서 로드하여 등록했습니다.");
             }
             else
             {
@@ -1091,7 +1091,7 @@ public class BaseInteractionSystem : MonoBehaviour
 /// 여러 상호작용 단계를 정의합니다.
 /// </summary>
 [System.Serializable]
-public class InteractionData
+public class RuntimeInteractionData
 {
     public string id;
     public string name;

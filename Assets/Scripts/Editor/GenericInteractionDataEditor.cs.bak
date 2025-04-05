@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace NursingGame.Editor
 {
     /// <summary>
-    /// InteractionDataAsset의 커스텀 에디터
+    /// InteractionData의 커스텀 에디터
     /// 인스펙터에서 시각적으로 상호작용 데이터를 편집할 수 있게 해줍니다.
     /// </summary>
-    [CustomEditor(typeof(InteractionDataAsset))]
+    [CustomEditor(typeof(InteractionData))]
     public class GenericInteractionDataEditor : UnityEditor.Editor
     {
         // 폴드아웃 상태
@@ -28,10 +28,17 @@ namespace NursingGame.Editor
         
         public override void OnInspectorGUI()
         {
+            // 이벤트 처리 시작
+            Event e = Event.current;
+            
             serializedObject.Update();
             
-            var data = target as InteractionDataAsset;
-            if (data == null) return;
+            var data = target as InteractionData;
+            if (data == null) 
+            {
+                Debug.LogError("Target is not an InteractionData");
+                return;
+            }
             
             // 스타일 설정
             GUIStyle headerStyle = new GUIStyle(EditorStyles.boldLabel);
@@ -48,10 +55,9 @@ namespace NursingGame.Editor
             {
                 EditorGUI.indentLevel++;
                 
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("interactionId"), new GUIContent("상호작용 ID"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("interactionName"), new GUIContent("상호작용 이름"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("id"), new GUIContent("상호작용 ID"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("displayName"), new GUIContent("상호작용 이름"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("description"), new GUIContent("설명"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("icon"), new GUIContent("아이콘"));
                 
                 EditorGUI.indentLevel--;
             }
@@ -66,17 +72,49 @@ namespace NursingGame.Editor
                 EditorGUI.indentLevel++;
                 
                 // 단계 추가 버튼
-                if (GUILayout.Button("새 단계 추가", GUILayout.Height(25)))
+                bool buttonPressed = GUILayout.Button(new GUIContent("새 단계 추가"), GUILayout.Height(25));
+                if (buttonPressed)
                 {
-                    Debug.Log("단계 추가 버튼 클릭됨: 현재 단계 수: " + stepsProperty.arraySize);
-                    stepsProperty.arraySize++;
-                    Debug.Log("배열 크기 증가: 현재 단계 수: " + stepsProperty.arraySize);
-                    var newStep = stepsProperty.GetArrayElementAtIndex(stepsProperty.arraySize - 1);
-                    newStep.FindPropertyRelative("stepId").stringValue = "step_" + System.Guid.NewGuid().ToString().Substring(0, 8);
-                    newStep.FindPropertyRelative("stepName").stringValue = "단계 " + stepsProperty.arraySize;
-                    newStep.FindPropertyRelative("interactionType").enumValueIndex = 0; // None
-                    Debug.Log("새 단계 생성 완료: ID=" + newStep.FindPropertyRelative("stepId").stringValue);
-                    serializedObject.ApplyModifiedProperties(); // 변경사항 즉시 적용
+                    try
+                    {
+                        Debug.Log("단계 추가 버튼 클릭됨: 현재 단계 수: " + stepsProperty.arraySize);
+                        stepsProperty.arraySize++;
+                        Debug.Log("배열 크기 증가: 현재 단계 수: " + stepsProperty.arraySize);
+                        
+                        var newStep = stepsProperty.GetArrayElementAtIndex(stepsProperty.arraySize - 1);
+                        if (newStep != null)
+                        {
+                            var stepIdProp = newStep.FindPropertyRelative("stepId");
+                            if (stepIdProp != null)
+                            {
+                                stepIdProp.stringValue = "step_" + System.Guid.NewGuid().ToString().Substring(0, 8);
+                            }
+                            
+                            var stepNameProp = newStep.FindPropertyRelative("stepName");
+                            if (stepNameProp != null)
+                            {
+                                stepNameProp.stringValue = "단계 " + stepsProperty.arraySize;
+                            }
+                            
+                            var interactionTypeProp = newStep.FindPropertyRelative("interactionType");
+                            if (interactionTypeProp != null)
+                            {
+                                interactionTypeProp.enumValueIndex = 0; // None
+                            }
+                            
+                            Debug.Log("새 단계 생성 완료: ID=" + (stepIdProp != null ? stepIdProp.stringValue : "알 수 없음"));
+                        }
+                        else
+                        {
+                            Debug.LogError("새 단계를 생성할 수 없습니다: 배열 요소를 가져올 수 없습니다.");
+                        }
+                        
+                        serializedObject.ApplyModifiedProperties(); // 변경사항 즉시 적용
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogError($"단계 추가 중 오류 발생: {ex.Message}\n{ex.StackTrace}");
+                    }
                 }
                 
                 // 각 단계 표시
@@ -86,9 +124,16 @@ namespace NursingGame.Editor
                     
                     // 단계 기본 정보
                     SerializedProperty stepProp = stepsProperty.GetArrayElementAtIndex(i);
-                    SerializedProperty stepIdProp = stepProp.FindPropertyRelative("stepId");
-                    SerializedProperty stepNameProp = stepProp.FindPropertyRelative("stepName");
-                    SerializedProperty interactionTypeProp = stepProp.FindPropertyRelative("interactionType");
+                    SerializedProperty stepIdProp = stepProp != null ? stepProp.FindPropertyRelative("stepId") : null;
+                    SerializedProperty stepNameProp = stepProp != null ? stepProp.FindPropertyRelative("stepName") : null;
+                    SerializedProperty interactionTypeProp = stepProp != null ? stepProp.FindPropertyRelative("interactionType") : null;
+                    
+                    // 속성이 없으면 이벤트 처리 컨티뉴
+                    if (stepIdProp == null || stepNameProp == null || interactionTypeProp == null)
+                    {
+                        Debug.LogError($"단계 {i}의 필수 속성을 찾을 수 없습니다.");
+                        continue;
+                    }
                     
                     // 헤더
                     EditorGUILayout.BeginHorizontal();
@@ -232,10 +277,16 @@ namespace NursingGame.Editor
             // ID 자동 생성 버튼
             if (GUILayout.Button("ID 자동 생성", GUILayout.Height(30)))
             {
-                serializedObject.FindProperty("interactionId").stringValue = System.Guid.NewGuid().ToString().Substring(0, 8);
+                serializedObject.FindProperty("id").stringValue = System.Guid.NewGuid().ToString().Substring(0, 8);
             }
             
             serializedObject.ApplyModifiedProperties();
+            
+            // 변경사항이 있으면 에디터 재렌더링 요청
+            if (GUI.changed)
+            {
+                EditorUtility.SetDirty(target);
+            }
         }
         
         // 고급 기능 섹션 그리기

@@ -289,13 +289,13 @@ public class ProcedureManager : MonoBehaviour
         if (string.IsNullOrEmpty(interactionDataId) || !isProcedureActive)
             return;
             
-        // 인터랙션 데이터 로드 (새로운 InteractionDataAsset 형식만 지원)
-        InteractionDataAsset interactionDataAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionDataId}");
+        // 인터랙션 데이터 로드 (새로운 InteractionData 형식만 지원)
+        InteractionData interactionDataAsset = Resources.Load<InteractionData>($"Interactions/{interactionDataId}");
         if (interactionDataAsset == null)
         {
             // InteractionData는 ScriptableObject가 아니므로 Resources.Load로 로드할 수 없음
             // 대신 InteractionManager나 InteractionDataRegistrar에서 찾아보기
-            InteractionData interactionData = null;
+            RuntimeInteractionData interactionData = null;
             
             // InteractionManager에서 찾기 시도
             if (InteractionManager.Instance != null && 
@@ -322,14 +322,16 @@ public class ProcedureManager : MonoBehaviour
             
             // 첫 번째 인터랙션 단계 설정
             currentActionIndex = 0;
-            currentAction = interactionData.steps[0];
+            if (interactionData.steps.Count > 0) {
+                currentAction = interactionData.steps[0];
+            }
             
             // 이벤트 발생
             OnActionStarted?.Invoke(currentAction, currentActionIndex);
         }
         else
         {
-            // 새로운 InteractionDataAsset 형식 처리
+            // 새로운 InteractionData 형식 처리
             if (interactionDataAsset.steps.Count == 0)
             {
                 Debug.LogWarning($"인터랙션 {interactionDataId}에 단계가 없습니다.");
@@ -440,7 +442,7 @@ public class ProcedureManager : MonoBehaviour
             return;
             
         // 인터랙션 데이터가 로드되어 있는지 확인
-        InteractionDataAsset interactionData = null;
+        InteractionData interactionData = null;
         
         try
         {
@@ -453,7 +455,7 @@ public class ProcedureManager : MonoBehaviour
             // 없으면 리소스에서 직접 로드
             if (interactionData == null)
             {
-                interactionData = Resources.Load<InteractionDataAsset>($"Interactions/{currentStep.interactionDataId}");
+                interactionData = Resources.Load<InteractionData>($"Interactions/{currentStep.interactionDataId}");
             }
             
             if (interactionData == null || interactionData.steps.Count == 0)
@@ -476,7 +478,7 @@ public class ProcedureManager : MonoBehaviour
             }
             
             // 다음 액션 설정
-            InteractionStepData stepData = interactionData.steps[currentActionIndex];
+            var stepData = interactionData.steps[currentActionIndex];
             InteractionStep nextAction = new InteractionStep();
             
             // 속성 복사

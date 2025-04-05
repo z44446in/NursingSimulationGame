@@ -1,169 +1,118 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 /// <summary>
 /// 간호 시술 전체 데이터 - 시술 과정, 단계, 요구 조건 등을 정의
 /// </summary>
 [CreateAssetMenu(fileName = "New Procedure", menuName = "Nursing/Procedure Data")]
-public class ProcedureData : BaseData, IRequiresItems
+public class ProcedureData : ScriptableObject
 {
+    [Header("기본 정보")]
+    public string id; // 고유 ID
+    public string displayName; // 화면에 표시될 이름
+    [TextArea(3, 5)] public string description; // 설명
+    
     [Header("시술 정보")]
-    public NursingProcedureType procedureType;
+    public NursingProcedureType procedureType; // 시술 유형
+    public bool isGuidelineVersion = false; // 가이드라인 버전 여부 (false: 임상 버전)
     
     [Header("시술 단계")]
-    public List<ProcedureStep> steps = new List<ProcedureStep>();
-    
-    [Header("필요 아이템")]
-    public List<ItemRequirement> requiredItems = new List<ItemRequirement>();
-    
-    [Header("UI 설정")]
-    public Sprite backgroundImage;
-    public string procedureTitle;
-    public Color titleColor = Color.white;
+    public List<ProcedureStep> steps = new List<ProcedureStep>(); // 시술 단계들
     
     [Header("평가 설정")]
-    public int maxScore = 100;
-    public int errorPenalty = 5;
-    public bool trackErrors = true;
-    public float timeLimit = 300f; // 5분 기본 제한 시간
+    public int maxScore = 100; // 최대 점수
+    public float timeLimit = 300f; // 제한 시간(초)
+    
+    [Header("UI 설정")]
+    public Sprite backgroundImage; // 배경 이미지
+    public Color titleColor = Color.white; // 제목 색상
     
     [Header("음향 설정")]
-    public AudioClip backgroundMusic;
-    public AudioClip completionSound;
-    
-    /// <summary>
-    /// 모든 필수 아이템 목록을 반환합니다
-    /// </summary>
-    public List<Item> GetRequiredItems(bool includeOptional = false)
-    {
-        List<Item> items = new List<Item>();
-        
-        // 직접 지정된 필수 아이템
-        foreach (var req in requiredItems)
-        {
-            if (req.item != null && (includeOptional || !req.isOptional))
-            {
-                if (!items.Contains(req.item))
-                {
-                    items.Add(req.item);
-                }
-            }
-        }
-        
-        // 각 단계에서 필요한 아이템 추가
-        foreach (var step in steps)
-        {
-            List<Item> stepItems = step.GetRequiredItems(includeOptional);
-            foreach (var item in stepItems)
-            {
-                if (!items.Contains(item))
-                {
-                    items.Add(item);
-                }
-            }
-        }
-        
-        return items;
-    }
-    
-    /// <summary>
-    /// 모든 필수 아이템 목록을 반환합니다 (에디터용)
-    /// </summary>
-    public List<Item> GetAllRequiredItems()
-    {
-        return GetRequiredItems(true);
-    }
-    
-    /// <summary>
-    /// 시술의 모든 대화 단계를 반환합니다
-    /// </summary>
-    public List<ProcedureStep> GetDialogueSteps()
-    {
-        return steps.Where(s => s.stepType == StepType.Dialogue).ToList();
-    }
-    
-    /// <summary>
-    /// 시술의 모든 상호작용 단계를 반환합니다
-    /// </summary>
-    public List<ProcedureStep> GetInteractionSteps()
-    {
-        return steps.Where(s => s.stepType == StepType.Interaction).ToList();
-    }
-    
-    /// <summary>
-    /// 시술의 모든 준비 단계를 반환합니다
-    /// </summary>
-    public List<ProcedureStep> GetPreparationSteps()
-    {
-        return steps.Where(s => s.stepType == StepType.Preparation).ToList();
-    }
+    public AudioClip backgroundMusic; // 배경 음악
+    public AudioClip completionSound; // 완료 효과음
 }
 
 /// <summary>
-/// 간호 시술의 단계 정의
+/// 시술 단계 - 각 시술 단계의 세부 정보
 /// </summary>
 [Serializable]
-public class ProcedureStep : IRequiresItems
+public class ProcedureStep
 {
-    public string stepId;
-    public string stepName;
-    [TextArea(2, 4)] public string description;
+    [Header("기본 정보")]
+    public string id; // 고유 ID
+    public string stepName; // 단계 이름
+    [TextArea(2, 4)] public string description; // 설명
+    public string guideMessage; // 가이드 메시지
     
     [Header("단계 유형")]
-    public StepType stepType;
+    public ProcedureStepType stepType; // 단계 유형
     
-    [Header("단계 설정")]
-    public bool isRequired = true;
+    [Header("단계 순서")]
+    public bool isRequired = true; // 필수 단계 여부
     public bool isOrderImportant = true; // 순서가 중요한지 여부
-    public int scoreWeight = 10;
-    public float timeLimit = 0f; // 0은 제한 없음
     
-    [Header("대화 데이터 - 대화 단계용")]
-    public List<DialogueEntry> dialogueEntries = new List<DialogueEntry>();
+    [Header("페널티 설정")]
+    public PenaltyData orderViolationPenalty = new PenaltyData(); // 순서 위반 시 페널티
+    public PenaltyData skipPenalty = new PenaltyData(); // 건너뛰기 시 페널티
     
-    [Header("상호작용 데이터 - 상호작용 단계용")]
-    public string interactionDataId; // 관련 InteractionData ID
+    #region 아이템 클릭 설정
+    [Header("아이템 클릭 설정")]
+    public bool useItemInteraction = false; // 아이템 상호작용 사용 여부
+    public string itemInteractionId; // 관련 InteractionData ID
+    #endregion
     
-    [Header("필요 아이템")]
-    public List<ItemRequirement> requiredItems = new List<ItemRequirement>();
+    #region 액션 버튼 설정
+    [Header("액션 버튼 설정")]
+    public bool useActionButton = false; // 액션 버튼 사용 여부
+    public List<ActionButtonSetting> actionButtons = new List<ActionButtonSetting>(); // 액션 버튼 설정
+    #endregion
+}
+
+/// <summary>
+/// 시술 단계 유형
+/// </summary>
+public enum ProcedureStepType
+{
+    ItemInteraction,    // 아이템 상호작용
+    ActionButton,       // 액션 버튼 클릭
+    Dialogue,           // 대화
+    Observation         // 관찰
+}
+
+/// <summary>
+/// 액션 버튼 설정
+/// </summary>
+[Serializable]
+public class ActionButtonSetting
+{
+    public string buttonId; // 버튼 ID
+    public string buttonText; // 버튼 텍스트
+    public Sprite buttonIcon; // 버튼 아이콘
     
-    [Header("UI 설정")]
-    public Sprite backgroundImage;
-    public Vector2 cameraPosition;
-    public float cameraZoom = 1f;
+    public bool isCorrectOption; // 올바른 옵션인지 여부
+    public PenaltyData incorrectChoicePenalty = new PenaltyData(); // 잘못된 선택 시 페널티
     
-    [Header("완료 조건")]
-    public bool requireAllItems = true; // 모든 필수 아이템 필요
-    public bool requireCorrectResponses = true; // 대화에서 올바른 응답 필요
-    
-    /// <summary>
-    /// 이 단계에 필요한 모든 아이템을 반환합니다
-    /// </summary>
-    public List<Item> GetRequiredItems(bool includeOptional = false)
-    {
-        List<Item> items = new List<Item>();
-        
-        foreach (var req in requiredItems)
-        {
-            if (req.item != null && (includeOptional || !req.isOptional))
-            {
-                if (!items.Contains(req.item))
-                {
-                    items.Add(req.item);
-                }
-            }
-        }
-        
-        return items;
-    }
-    
-    /// <summary>
-    /// 이 단계에 필요한 모든 아이템을 반환합니다 (에디터용)
-    /// </summary>
-    public List<Item> GetAllRequiredItems()
-    {
-        return GetRequiredItems(true);
-    }
+    public bool requiresMultipleButtons = false; // 여러 버튼이 필요한지 여부
+    public string secondRequiredButtonId; // 두 번째로 필요한 버튼 ID
+}
+
+/// <summary>
+/// 간호 시술 유형
+/// </summary>
+public enum NursingProcedureType
+{
+    UrinaryCatheterization,  // 도뇨관 삽입
+    TracheostomyCare,        // 기관지절개 관리
+    OxygenTherapy,           // 산소 요법
+    Medication,              // 투약
+    WoundCare,               // 상처 관리
+    VitalSigns,              // 활력징후 측정
+    BloodTransfusion,        // 수혈
+    IVInjection,             // 정맥주사
+    PainManagement,          // 통증 관리
+    FallPrevention,          // 낙상 예방
+    InfectionControl,        // 감염 관리
+    PatientEducation,        // 환자 교육
+    Other                    // 기타
 }

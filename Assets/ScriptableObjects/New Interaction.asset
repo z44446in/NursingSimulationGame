@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e809afdce9403e4e8a6f9b659492fea, type: 3}
+  m_Name: New Interaction
+  m_EditorClassIdentifier: 
+  id: 
+  displayName: 
+  description: 
+  steps:
+  - stepId: step_4debe5ee
+    stepName: "\uC0C8 \uB2E8\uACC4 1"
+    interactionType: 2
+    guideText: 
+    order: 0
+    createInitialObjects: 0
+    initialObjects: []
+    requiredDragAngle: 0
+    dragAngleTolerance: 0
+    dragDistance: 0
+    useMultiStageDrag: 0
+    multiStageDragSteps: []
+    validClickArea:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    validTags: []
+    quizQuestion: 
+    quizOptions: []
+    correctOptionIndex: 0
+    tutorialArrowSprite: {fileID: 0}
+    tutorialArrowPosition: {x: 0, y: 0}
+    tutorialArrowRotation: 0
+    successMessage: 
+    errorMessage: 
+    showErrorBorderFlash: 0
+    useConditionalTouch: 0
+    touchOptions:
+    - optionId: 
+      targetTag: 
+      successMessage: 
+      errorMessage: 
+      isCorrectOption: 0
+      showErrorBorderFlash: 0
+      disableTouchDuration: 0
+      errorEntryText: 
+      waterEffectPosition: {x: 0, y: 0}
+      createWaterImageOnObject: 0
+    disableTouchDuration: 0
+    createWaterEffect: 0
+    waterEffectPosition: {x: 0, y: 0}
+    createWaterImageOnObject: 0
+  successSound: {fileID: 0}
+  errorSound: {fileID: 0}
+  successMessage: 
+  errorMessage: 
+  initialObjects: []

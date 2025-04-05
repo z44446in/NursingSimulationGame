@@ -151,7 +151,7 @@ public class InteractionManager : MonoBehaviour
         // BaseInteractionSystem에 등록
         if (interactionSystem != null)
         {
-            InteractionData data = new InteractionData
+            RuntimeInteractionData data = new RuntimeInteractionData
             {
                 id = itemId,
                 name = itemId,
@@ -216,8 +216,8 @@ public class InteractionManager : MonoBehaviour
             return;
         }
         
-        // 두 번째 시도: InteractionDataAsset을 리소스에서 로드
-        InteractionDataAsset interactionAsset = Resources.Load<InteractionDataAsset>($"Interactions/{interactionId}");
+        // 두 번째 시도: InteractionData를 리소스에서 로드
+        InteractionData interactionAsset = Resources.Load<InteractionData>($"Interactions/{interactionId}");
         if (interactionAsset != null && interactionAsset.steps.Count > 0)
         {
             // InteractionData로 변환하여 등록
