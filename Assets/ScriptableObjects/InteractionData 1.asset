@@ -9,21 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff4e5365505fe32499952c3a4ab7bf09, type: 3}
-  m_Name: ProcedureData
+  m_Script: {fileID: 11500000, guid: 5897e8db048dffb48b8499300fbcb7bc, type: 3}
+  m_Name: InteractionData 1
   m_EditorClassIdentifier: 
-  procedureId: 
-  procedureName: 
+  interactionId: 
+  interactionName: 
   description: 
   icon: {fileID: 0}
   steps: []
-  backgroundImage: {fileID: 0}
-  backgroundMusic: {fileID: 0}
-  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  successSound: {fileID: 0}
+  errorSound: {fileID: 0}
+  successFeedbackSprite: {fileID: 0}
+  errorFeedbackSprite: {fileID: 0}
   isOrderImportant: 1
-  allowSkipNonRequiredSteps: 1
+  allowSkipSteps: 0
   timeLimit: 0
-  maxScore: 100
-  perfectScoreThreshold: 95
-  goodScoreThreshold: 80
-  passScoreThreshold: 60

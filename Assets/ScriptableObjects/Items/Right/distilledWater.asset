@@ -25,6 +25,7 @@ MonoBehaviour:
   guideText: "\u3147\u3147\u3147\u3147"
   guideImage: {fileID: 0}
   handSprite: {fileID: 83288435, guid: a8e106c8a9f7841b6a5b0cc4cee300ad, type: 3}
+  interactionDataId: aa
   miniGamePrefab: {fileID: 0}
   requiresTwoFingers: 0
   timeLimit: 10
