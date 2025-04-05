@@ -12,7 +12,9 @@ public class ProcedureManager : MonoBehaviour
     private static ProcedureManager instance;
     public static ProcedureManager Instance => instance;
     
-   
+    [Header("Procedure References")]
+    [SerializeField] private CatheterizationProcedureData urinaryCatheterData;
+    
     [Header("UI References")]
     [SerializeField] private Transform popupContainer;
     
@@ -22,7 +24,7 @@ public class ProcedureManager : MonoBehaviour
     
     // 현재 시술 관련 데이터
     private NursingProcedureType currentProcedureType;
-    
+    private CatheterizationProcedureData currentProcedureData;
     private ProcedureStepData currentStep;
     private NursingActionData currentAction;
     private int currentStepIndex = -1;
@@ -479,7 +481,19 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 시술 유형에 따른 시술 데이터를 반환합니다.
     /// </summary>
-    
+    private CatheterizationProcedureData GetProcedureData(NursingProcedureType procedureType)
+    {
+        switch (procedureType)
+        {
+            case NursingProcedureType.UrinaryCatheterization:
+                return urinaryCatheterData;
+            case NursingProcedureType.TracheostomyCare:
+                // 필요시 추가
+                return null;
+            default:
+                return null;
+        }
+    }
     
     /// <summary>
     /// 시술 결과를 저장합니다.
@@ -536,7 +550,10 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 현재 시술 데이터를 반환합니다.
     /// </summary>
-  
+    public CatheterizationProcedureData GetCurrentProcedureData()
+    {
+        return currentProcedureData;
+    }
     
     /// <summary>
     /// 현재 단계를 반환합니다.

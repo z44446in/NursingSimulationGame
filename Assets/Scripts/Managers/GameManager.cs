@@ -83,102 +83,7 @@ public class GameManager : MonoBehaviour
     // 씬 전환 여부를 체크하는 플래그
     private bool isTransitioning = false;
 
-    private void Start()
-    {
-        // GameManager의 이벤트 구독 코드...
-
-        // CommonUI Canvas의 Alpha 값을 항상 1로 유지
-        GameObject commonUICanvas = GameObject.Find("CommonUI Canvas");
-        if (commonUICanvas != null)
-        {
-            CanvasGroup canvasGroup = commonUICanvas.GetComponent<CanvasGroup>();
-            if (canvasGroup != null)
-            {
-                canvasGroup.alpha = 1f;
-
-                // 게임 상태 변경 시 Alpha 값을 확인하고 복원하는 코드 추가
-                OnGameStateChanged += (GameState state) => {
-                    if (canvasGroup.alpha < 1f)
-                    {
-                        Debug.Log("Restoring CommonUI Canvas alpha to 1");
-                        canvasGroup.alpha = 1f;
-                    }
-                };
-            }
-        }
-        
-        // 상호작용 데이터 등록 처리
-        RegisterInteractionData();
-    }
-    
-    /// <summary>
-    /// 상호작용 데이터를 찾아서 등록합니다
-    /// </summary>
-    private void RegisterInteractionData()
-    {
-        // 1. 먼저 InteractionDataRegistrar가 씬에 있는지 확인
-        InteractionDataRegistrar registrar = FindObjectOfType<InteractionDataRegistrar>();
-        
-        // 2. 없으면 새로 생성
-        if (registrar == null)
-        {
-            GameObject registrarObj = new GameObject("InteractionDataRegistrar");
-            registrar = registrarObj.AddComponent<InteractionDataRegistrar>();
-            Debug.Log("Created InteractionDataRegistrar gameobject");
-        }
-        
-        // 3. Resources 폴더에서 모든 GenericInteractionData 에셋 로드
-        // Resources 폴더에 GenericInteractionData를 저장해야 합니다
-        // 예: Resources/Interactions/aa.asset
-        GenericInteractionData[] interactions = Resources.LoadAll<GenericInteractionData>("");
-        
-        if (interactions != null && interactions.Length > 0)
-        {
-            foreach (var interaction in interactions)
-            {
-                registrar.AddGenericInteraction(interaction);
-                Debug.Log($"Added interaction data: {interaction.interactionName} (ID: {interaction.interactionId})");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No GenericInteractionData assets found in Resources folder. " +
-                "Make sure your interaction data is in a Resources folder.");
-            
-            // 직접 경로를 지정하여 특정 상호작용 데이터 로드 (런타임에는 작동하지 않음)
-            #if UNITY_EDITOR
-            // 4. Resources 폴더에 없으면 직접 에셋 경로를 지정하여 로드 시도
-            string[] possiblePaths = new string[] 
-            { 
-                "Assets/ScriptableObjects",
-                "Assets/ScriptableObjects/Interactions"
-            };
-            
-            foreach (string path in possiblePaths)
-            {
-                string[] guids = UnityEditor.AssetDatabase.FindAssets("t:GenericInteractionData", new[] { path });
-                
-                if (guids != null && guids.Length > 0)
-                {
-                    foreach (string guid in guids)
-                    {
-                        string assetPath = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                        GenericInteractionData data = UnityEditor.AssetDatabase.LoadAssetAtPath<GenericInteractionData>(assetPath);
-                        
-                        if (data != null)
-                        {
-                            registrar.AddGenericInteraction(data);
-                            Debug.Log($"Added interaction data from path: {data.interactionName} (ID: {data.interactionId})");
-                        }
-                    }
-                    break; // 에셋을 찾았으면 루프 종료
-                }
-            }
-            #endif
-        }
-    }
-    // GameManager.cs의 Awake 메서드 수정
-    private void Awake()
+    private void Awake() // 초기화: 싱글톤 인스턴스 설정 및 이벤트 구독.
     {
         DOTween.SetTweensCapacity(500, 50);
 
@@ -186,19 +91,6 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject); // 씬 전환 시 파괴되지 않도록 설정
-
-            // CommonUI Canvas 찾아서 DontDestroyOnLoad 설정
-            GameObject commonUICanvas = GameObject.Find("CommonUI Canvas");
-            if (commonUICanvas != null)
-            {
-                DontDestroyOnLoad(commonUICanvas);
-                Debug.Log("CommonUI Canvas set to DontDestroyOnLoad");
-            }
-            else
-            {
-                Debug.LogWarning("CommonUI Canvas not found in the scene!");
-            }
-
             SceneManager.sceneLoaded += OnSceneLoaded; // 씬 로드 이벤트 구독
         }
         else

@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a863a8a1f27da47a2a9bbe3113bd6c32, type: 3}
+  m_Name: DistilledWaterPourWaste
+  m_EditorClassIdentifier: 
+  actionId: DW_PourWaste
+  actionName: 멸균증류수 의료폐기물통에 붓기
+  description: 멸균증류수를 의료폐기물통에 소량 부어 멸균상태를 확인합니다.
+  isRequired: 1
+  scoreWeight: 10
+  requiredItems:
+  - {fileID: 11400000, guid: 6e0ba54a8990ca242be16fd27b9c5bc6, type: 2}
+  hintText: 멸균증류수를 의료폐기물통에 소량 부어 확인하는 것이 올바른 절차입니다.
+  feedbackMessage: 멸균증류수를 의료폐기물통에 소량 부었습니다. 멸균상태를 확인했습니다.
+  interactionType: 1
+  guideText: 멸균증류수를 부을 곳을 클릭하세요. (의료폐기물통)
+  tutorialPrefab: {fileID: 0}
+  useDragInteraction: 0
+  requiredDragAngle: 0
+  dragAngleTolerance: 30
+  dragArrowSprite: {fileID: 0}
+  dragArrowPosition: {x: 0, y: 0}
+  dragArrowRotation: 0
+  dragStepsRequired: 0
+  useClickInteraction: 1
+  validClickArea:
+    serializedVersion: 2
+    x: 100
+    y: 100
+    width: 50
+    height: 50
+  validClickTargetTags:
+  - MedicalWaste
+  clickHighlightSprite: {fileID: 0}
+  useQuizInteraction: 0
+  quizQuestion: 
+  quizOptions: []
+  correctOptionIndex: 0
+  errorMessage: 먼저 의료폐기물통에 소량의 물을 부어야 합니다.
+  penaltyType: 1
+  successFeedbackSprite: {fileID: 0}
+  successSound: {fileID: 0}
+  errorFeedbackSprite: {fileID: 0}
+  errorSound: {fileID: 0}
+  waitForUserInput: 0
+  autoAdvanceDelay: 1.5
+  showDragSettings: 0
+  showClickSettings: 1
+  showQuizSettings: 0

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e1a693d31a944c04ad5f4cf11341b07, type: 3}
-  m_Name: "Step_\uC720\uCE58\uB3C4\uB1E8(Catheterization)_1"
+  m_Name: ProcedureStep
   m_EditorClassIdentifier: 
-  stepId: 56b237de
-  stepName: "\uB2E8\uACC4 1"
-  description: 
+  stepId: 1
+  stepName: dd
+  description: dddd
   isOrderImportant: 1
   isRequired: 1
-  scoreWeight: 1
+  scoreWeight: 0
   actions: []
   stepIcon: {fileID: 0}
   guideText: 

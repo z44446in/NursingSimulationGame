@@ -75,15 +75,6 @@ public class BaseInteractionSystem : MonoBehaviour
     }
     
     /// <summary>
-    /// 팝업 컨테이너를 설정합니다.
-    /// </summary>
-    public void SetPopupContainer(Transform container)
-    {
-        popupContainer = container;
-        Debug.Log($"팝업 컨테이너가 설정되었습니다: {container.name}");
-    }
-    
-    /// <summary>
     /// 상호작용 데이터를 등록합니다.
     /// </summary>
     /// <param name="id">상호작용 ID</param>
@@ -115,96 +106,11 @@ public class BaseInteractionSystem : MonoBehaviour
         if (data.steps.Count == 0)
             return;
         
+        // GenericInteractionStep의 정보를 갖고 있지 않으므로, 이 부분은 GenericInteractionData에서 처리하도록 변경해야 합니다.
+        // 이 메서드는 GenericInteractionData에서 호출됩니다.
+        
+        // 예시 코드 (실제 구현은 GenericInteractionData에서)
         Debug.Log($"초기 오브젝트 생성을 시작합니다. 상호작용: {interactionId}");
-        
-        // popupContainer가 지정되었는지 확인
-        if (popupContainer == null)
-        {
-            Debug.LogError("popupContainer가 설정되지 않았습니다. 오브젝트를 생성할 수 없습니다.");
-            return;
-        }
-        
-        // Resources에서 상호작용 데이터 가져오기
-        GenericInteractionData genericData = Resources.Load<GenericInteractionData>($"Interactions/{interactionId}");
-        if (genericData == null)
-        {
-            Debug.LogError($"Resources/Interactions/{interactionId}.asset 파일을 찾을 수 없습니다.");
-            return;
-        }
-        
-        // 각 단계를 순회하면서 initialObjects가 true인 단계의 오브젝트 생성
-        for (int i = 0; i < data.steps.Count && i < genericData.steps.Count; i++)
-        {
-            var step = data.steps[i];
-            var genericStep = genericData.steps[i];
-            
-            if (step.createInitialObjects && genericStep.initialObjects != null && genericStep.initialObjects.Count > 0)
-            {
-                Debug.Log($"단계 {i+1}: '{step.guideText}'에서 initialObjects {genericStep.initialObjects.Count}개 생성 시작");
-                
-                foreach (var objData in genericStep.initialObjects)
-                {
-                    if (objData == null)
-                    {
-                        Debug.LogWarning("초기 오브젝트 데이터가 null입니다.");
-                        continue;
-                    }
-                    
-                    Debug.Log($"오브젝트 생성: {objData.objectName}, 스프라이트: {(objData.objectSprite != null ? objData.objectSprite.name : "없음")}");
-                    
-                    GameObject newObj;
-                    
-                    // 커스텀 프리팹 사용 체크
-                    if (objData.useCustomPrefab && objData.customPrefab != null)
-                    {
-                        newObj = Instantiate(objData.customPrefab, popupContainer);
-                    }
-                    else
-                    {
-                        // 기본 오브젝트 생성
-                        newObj = new GameObject(objData.objectName);
-                        newObj.transform.SetParent(popupContainer, false);
-                        
-                        // 이미지 컴포넌트 추가
-                        Image image = newObj.AddComponent<Image>();
-                        if (objData.objectSprite != null)
-                        {
-                            image.sprite = objData.objectSprite;
-                        }
-                    }
-                    
-                    // 이름과 태그 설정
-                    newObj.name = objData.objectName;
-                    newObj.tag = objData.tag;
-                    
-                    // 위치, 회전, 크기 설정
-                    RectTransform rectTransform = newObj.GetComponent<RectTransform>();
-                    if (rectTransform != null)
-                    {
-                        rectTransform.anchoredPosition = objData.position;
-                        rectTransform.eulerAngles = objData.rotation;
-                        rectTransform.localScale = objData.scale;
-                        
-                        // 기본 크기 설정 (스프라이트가 있는 경우)
-                        if (!objData.useCustomPrefab && objData.objectSprite != null && rectTransform.sizeDelta.x <= 1)
-                        {
-                            rectTransform.sizeDelta = new Vector2(
-                                objData.objectSprite.rect.width, 
-                                objData.objectSprite.rect.height
-                            );
-                        }
-                    }
-                    
-                    // 객체 캐싱
-                    initialObjectsCache[objData.objectId] = newObj;
-                    Debug.Log($"오브젝트 '{objData.objectName}'가 생성되었습니다. 위치: {objData.position}");
-                }
-            }
-            else
-            {
-                Debug.Log($"단계 {i+1}에 initialObjects가 없거나 생성이 비활성화되어 있습니다.");
-            }
-        }
     }
     
     /// <summary>
@@ -952,10 +858,7 @@ public class InteractionStep
     public Sprite tutorialArrowSprite;
     public Vector2 tutorialArrowPosition;
     public float tutorialArrowRotation;
-
-    // 새로 추가하는 속성
-    public Sprite highlightSprite;
-
+    
     // 피드백 관련
     public string successMessage;
     public string errorMessage;

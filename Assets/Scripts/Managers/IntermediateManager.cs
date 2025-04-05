@@ -71,69 +71,9 @@ public class IntermediateManager : MonoBehaviour
     private void Start()
     {
         if (handImage != null)
-        {
-            handImage.gameObject.SetActive(false); // 초기에는 손 이미지 숨김
-        }
-        
-        // 멸균증류수 상호작용 등록
-        RegisterDilutedWaterInteraction();
-    }
-    
-    // 멸균증류수 상호작용 데이터 등록
-    private void RegisterDilutedWaterInteraction()
     {
-        try {
-            // Resources/Interactions 폴더에서 모든 상호작용 데이터 로드
-            GenericInteractionData[] allInteractions = Resources.LoadAll<GenericInteractionData>("Interactions");
-            
-            if (allInteractions != null && allInteractions.Length > 0)
-            {
-                Debug.Log($"Resources/Interactions 폴더에서 {allInteractions.Length}개의 상호작용 데이터를 찾았습니다.");
-                
-                // 모든 상호작용 데이터 등록
-                foreach (var interaction in allInteractions)
-                {
-                    if (interaction != null)
-                    {
-                        Debug.Log($"상호작용 데이터 등록: {interaction.name} (ID: {interaction.interactionId})");
-                        interaction.RegisterToInteractionSystem();
-                    }
-                }
-            }
-            else
-            {
-                // 없으면 프로젝트 내에서 찾기 (에디터에서만 작동)
-#if UNITY_EDITOR
-                string[] guids = UnityEditor.AssetDatabase.FindAssets("t:GenericInteractionData");
-                if (guids.Length > 0)
-                {
-                    Debug.Log($"프로젝트에서 {guids.Length}개의 상호작용 데이터를 찾았습니다.");
-                    
-                    foreach (string guid in guids)
-                    {
-                        string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                        GenericInteractionData data = UnityEditor.AssetDatabase.LoadAssetAtPath<GenericInteractionData>(path);
-                        
-                        if (data != null)
-                        {
-                            Debug.Log($"상호작용 데이터 등록: {data.name} (ID: {data.interactionId})");
-                            data.RegisterToInteractionSystem();
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("프로젝트에서 상호작용 데이터를 찾을 수 없습니다.");
-                }
-#else
-                Debug.LogWarning("Resources/Interactions 폴더에서 상호작용 데이터를 찾을 수 없습니다.");
-#endif
-            }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"상호작용 데이터 등록 중 오류 발생: {ex.Message}");
-        }
+        handImage.gameObject.SetActive(false); // 초기에는 손 이미지 숨김
+    }
     }
 
     [SerializeField] private CartUI cartUI; // CartUI 참조 추가
@@ -285,59 +225,26 @@ public void PickupItem(Item item)
     // 손 이미지 업데이트
     UpdateHandImage(item);
     
-    // interactionDataId가 설정된 아이템 처리
-    if (!string.IsNullOrEmpty(item.interactionDataId))
+    // 멸균증류수 아이템 처리
+    if (item.itemId == "distilledWater" || item.itemName == "멸균증류수")
     {
         // 베이스 인터랙션 시스템 찾기
         BaseInteractionSystem interactionSystem = FindObjectOfType<BaseInteractionSystem>();
-        
-        // 없으면 생성
-        if (interactionSystem == null)
-        {
-            Debug.Log("BaseInteractionSystem을 찾을 수 없어 새로 생성합니다.");
-            GameObject interactionSystemObj = new GameObject("BaseInteractionSystem");
-            interactionSystem = interactionSystemObj.AddComponent<BaseInteractionSystem>();
-            
-            // 팝업 컨테이너 설정
-            if (popupParent != null)
-            {
-                interactionSystem.SetPopupContainer(popupParent);
-            }
-        }
-        
         if (interactionSystem != null)
         {
-            // 상호작용 ID가 등록되어 있는지 확인
-            if (Resources.Load<GenericInteractionData>("Interactions/" + item.interactionDataId) != null)
-            {
-                Debug.Log($"상호작용 데이터 확인됨: {item.interactionDataId}");
-            }
-            else
-            {
-                Debug.LogWarning($"Resources/Interactions/{item.interactionDataId}.asset 파일을 찾을 수 없습니다.");
-            }
+            // 초기 오브젝트 생성 (뚜껑 등)
+            interactionSystem.CreateInitialObjects("dilutedWaterInteraction");
             
-            try
-            {
-                // 초기 오브젝트 생성
-                interactionSystem.CreateInitialObjects(item.interactionDataId);
-                
-                // 상호작용 시작
-                interactionSystem.StartInteraction(item.interactionDataId);
-                
-                // 로그 출력
-                Debug.Log($"{item.itemName} 상호작용 절차가 시작되었습니다. (ID: {item.interactionDataId})");
-                return;
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"상호작용 시작 중 오류 발생: {ex.Message}");
-                Debug.LogException(ex);
-            }
+            // 상호작용 시작
+            interactionSystem.StartInteraction("dilutedWaterInteraction");
+            
+            // 로그 출력
+            Debug.Log("멸균증류수 절차가 시작되었습니다.");
+            return;
         }
         else
         {
-            Debug.LogError("BaseInteractionSystem을 생성할 수 없습니다. 상호작용 절차를 시작할 수 없습니다.");
+            Debug.LogWarning("BaseInteractionSystem을 찾을 수 없습니다. 멸균증류수 절차를 시작할 수 없습니다.");
         }
     }
     

@@ -159,40 +159,21 @@ public class InteractionManager : MonoBehaviour
             return;
         }
         
-        // 아이템의 interactionDataId를 먼저 확인
-        if (!string.IsNullOrEmpty(item.interactionDataId) && itemInteractionStepsDatabase.ContainsKey(item.interactionDataId))
+        if (!itemInteractionStepsDatabase.ContainsKey(item.itemId))
         {
-            Debug.Log($"[아이템] 상호작용 절차가 시작되었습니다.(ID:{item.interactionDataId})");
-            
-            // 상호작용 시작
-            itemInteractionHandler.StartItemInteraction(item);
-            
-            // 가이드 텍스트 업데이트
-            if (UIManager.Instance != null)
-            {
-                var firstStep = itemInteractionStepsDatabase[item.interactionDataId][0];
-                UIManager.Instance.UpdateGuideText(firstStep.guideText);
-            }
+            Debug.LogWarning($"No interaction steps defined for item {item.itemName}");
             return;
         }
         
-        // 이전 방식으로 fallback (item.itemId 사용)
-        if (itemInteractionStepsDatabase.ContainsKey(item.itemId))
-        {
-            // 상호작용 시작
-            itemInteractionHandler.StartItemInteraction(item);
-            
-            // 가이드 텍스트 업데이트
-            if (UIManager.Instance != null)
-            {
-                var firstStep = itemInteractionStepsDatabase[item.itemId][0];
-                UIManager.Instance.UpdateGuideText(firstStep.guideText);
-            }
-            return;
-        }
+        // 상호작용 시작
+        itemInteractionHandler.StartItemInteraction(item);
         
-        // 두 가지 방법 모두 실패한 경우
-        Debug.LogWarning($"상호작용 ID '{item.interactionDataId}'가 등록되어 있지 않습니다. 아이템: {item.itemName}");
+        // 가이드 텍스트 업데이트
+        if (UIManager.Instance != null)
+        {
+            var firstStep = itemInteractionStepsDatabase[item.itemId][0];
+            UIManager.Instance.UpdateGuideText(firstStep.guideText);
+        }
     }
 
     /// <summary>

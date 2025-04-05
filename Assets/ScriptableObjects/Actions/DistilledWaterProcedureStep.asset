@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b7bbf46f1a5f4159a613ef643c47111, type: 3}
+  m_Name: DistilledWaterProcedureStep
+  m_EditorClassIdentifier: 
+  stepId: DW_Step1
+  stepName: 멸균증류수 준비
+  description: 멸균증류수를 열고 멸균 종지에 붓는 절차입니다.
+  isOrderImportant: 1
+  isRequired: 1
+  scoreWeight: 10
+  actions:
+  - {fileID: 11400000, guid: 12345abcdef123456789abcdef123456, type: 2}
+  - {fileID: 11400000, guid: 23456abcdef123456789abcdef123456, type: 2}
+  - {fileID: 11400000, guid: 34567abcdef123456789abcdef123456, type: 2}
+  - {fileID: 11400000, guid: 45678abcdef123456789abcdef123456, type: 2}
+  stepIcon: {fileID: 0}
+  guideText: 멸균증류수 병을 열고 종지에 부어주세요.
+  waitForAllActions: 1
+  autoAdvanceDelay: 1
+  backgroundImage: {fileID: 0}
+  backgroundSound: {fileID: 0}
