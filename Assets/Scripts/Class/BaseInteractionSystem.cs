@@ -6,6 +6,7 @@ using DG.Tweening;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Linq;
+using Nursing.Interaction;
 
 /// <summary>
 /// 모든 상호작용을 처리하는 범용 베이스 클래스

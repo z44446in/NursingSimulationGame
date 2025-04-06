@@ -3,15 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Nursing.Penalty;
+using Nursing.Procedure;
 
 /// <summary>
-/// 간호 시술 진행을 관리하는 매니저 클래스
+/// 간호 시술 진행을 관리하는 매니저 클래스 (레거시 버전)
 /// 단계 진행, 행동 유효성 검사, 점수 계산 등을 담당합니다.
 /// </summary>
-public class ProcedureManager : MonoBehaviour
+namespace Legacy
 {
-    private static ProcedureManager instance;
-    public static ProcedureManager Instance => instance;
+public class LegacyProcedureManager : MonoBehaviour
+{
+    private static LegacyProcedureManager instance;
+    public static LegacyProcedureManager Instance => instance;
     
     [Header("Procedure References")]
     [SerializeField] private ProcedureData urinaryCatheterData;
@@ -26,7 +30,7 @@ public class ProcedureManager : MonoBehaviour
     // 현재 시술 관련 데이터
     private NursingProcedureType currentProcedureType;
     private ProcedureData currentProcedureData;
-    private ProcedureStep currentStep;
+    private Nursing.Procedure.ProcedureStep currentStep;
     private InteractionStep currentAction;
     private int currentStepIndex = -1;
     private int currentActionIndex = -1;
@@ -34,7 +38,7 @@ public class ProcedureManager : MonoBehaviour
     // 점수 및 시간 관련
     private float remainingTime;
     private int currentScore;
-    private List<PenaltyRecord> penaltyRecords = new List<PenaltyRecord>();
+    private List<MgrPenaltyRecord> penaltyRecords = new List<MgrPenaltyRecord>();
     
     // 진행 상태
     private bool isProcedureActive = false;
@@ -45,8 +49,8 @@ public class ProcedureManager : MonoBehaviour
     // 이벤트
     public event Action<NursingProcedureType> OnProcedureStarted;
     public event Action<NursingProcedureType> OnProcedureCompleted;
-    public event Action<ProcedureStep, int> OnStepStarted;
-    public event Action<ProcedureStep, int> OnStepCompleted;
+    public event Action<Nursing.Procedure.ProcedureStep, int> OnStepStarted;
+    public event Action<Nursing.Procedure.ProcedureStep, int> OnStepCompleted;
     public event Action<InteractionStep, int> OnActionStarted;
     public event Action<InteractionStep, int> OnActionCompleted;
     public event Action<string, PenaltyType, int> OnPenaltyApplied;
@@ -271,7 +275,7 @@ public class ProcedureManager : MonoBehaviour
         OnStepStarted?.Invoke(currentStep, currentStepIndex);
         
         // 상호작용 단계인 경우 처리
-        if (currentStep.stepType == StepType.Interaction && !string.IsNullOrEmpty(currentStep.interactionDataId))
+        if (currentStep.stepType == Nursing.Procedure.ProcedureStepType.Interaction && !string.IsNullOrEmpty(currentStep.interactionDataId))
         {
             // 상호작용 시작
             if (InteractionManager.Instance != null)
@@ -290,7 +294,7 @@ public class ProcedureManager : MonoBehaviour
             return;
             
         // 인터랙션 데이터 로드 (새로운 InteractionData 형식만 지원)
-        InteractionData interactionDataAsset = Resources.Load<InteractionData>($"Interactions/{interactionDataId}");
+        Nursing.Interaction.InteractionData interactionDataAsset = Resources.Load<Nursing.Interaction.InteractionData>($"Interactions/{interactionDataId}");
         if (interactionDataAsset == null)
         {
             // InteractionData는 ScriptableObject가 아니므로 Resources.Load로 로드할 수 없음
@@ -332,7 +336,7 @@ public class ProcedureManager : MonoBehaviour
         else
         {
             // 새로운 InteractionData 형식 처리
-            if (interactionDataAsset.steps.Count == 0)
+            if (interactionDataAsset.stages.Count == 0)
             {
                 Debug.LogWarning($"인터랙션 {interactionDataId}에 단계가 없습니다.");
                 CompleteCurrentStep();
@@ -341,11 +345,11 @@ public class ProcedureManager : MonoBehaviour
             
             // 기존 InteractionStep 클래스로 변환
             InteractionStep convertedStep = new InteractionStep();
-            InteractionStepData sourceStep = interactionDataAsset.steps[0];
+            Nursing.Interaction.InteractionStage sourceStage = interactionDataAsset.stages[0];
             
-            convertedStep.actionId = sourceStep.stepId;
-            convertedStep.guideText = sourceStep.guideText;
-            convertedStep.interactionType = sourceStep.interactionType;
+            convertedStep.actionId = sourceStage.id;
+            convertedStep.guideText = sourceStage.guideMessage;
+            convertedStep.interactionType = InteractionType.SingleClick; // 기본값
             
             // 그 외 필요한 속성 복사
             
@@ -370,7 +374,7 @@ public class ProcedureManager : MonoBehaviour
     public void CompleteInteractionStep(string interactionId)
     {
         // 현재 단계가 상호작용 단계인지 확인
-        if (currentStep != null && currentStep.stepType == StepType.Interaction && 
+        if (currentStep != null && currentStep.stepType == Nursing.Procedure.ProcedureStepType.Interaction && 
             currentStep.interactionDataId == interactionId)
         {
             CompleteCurrentStep();
@@ -396,9 +400,9 @@ public class ProcedureManager : MonoBehaviour
     public void RegisterStep(object step)
     {
         // ProcedureStep 지원 (새 버전)
-        if (step is ProcedureStep)
+        if (step is Nursing.Procedure.ProcedureStep)
         {
-            var procedureStep = step as ProcedureStep;
+            var procedureStep = step as Nursing.Procedure.ProcedureStep;
             Debug.Log($"시술 단계 등록: {procedureStep.stepName}");
         }
     }
@@ -442,7 +446,7 @@ public class ProcedureManager : MonoBehaviour
             return;
             
         // 인터랙션 데이터가 로드되어 있는지 확인
-        InteractionData interactionData = null;
+        Nursing.Interaction.InteractionData interactionData = null;
         
         try
         {
@@ -455,10 +459,10 @@ public class ProcedureManager : MonoBehaviour
             // 없으면 리소스에서 직접 로드
             if (interactionData == null)
             {
-                interactionData = Resources.Load<InteractionData>($"Interactions/{currentStep.interactionDataId}");
+                interactionData = Resources.Load<Nursing.Interaction.InteractionData>($"Interactions/{currentStep.interactionDataId}");
             }
             
-            if (interactionData == null || interactionData.steps.Count == 0)
+            if (interactionData == null || interactionData.stages.Count == 0)
             {
                 // 로드 실패 시 단계 완료
                 Debug.LogWarning($"인터랙션 데이터를 찾을 수 없거나 단계가 없음: {currentStep.interactionDataId}");
@@ -470,7 +474,7 @@ public class ProcedureManager : MonoBehaviour
             currentActionIndex++;
             
             // 모든 액션 완료 확인
-            if (currentActionIndex >= interactionData.steps.Count)
+            if (currentActionIndex >= interactionData.stages.Count)
             {
                 // 모든 액션 완료
                 CompleteCurrentStep();
@@ -478,13 +482,13 @@ public class ProcedureManager : MonoBehaviour
             }
             
             // 다음 액션 설정
-            var stepData = interactionData.steps[currentActionIndex];
+            var stageData = interactionData.stages[currentActionIndex];
             InteractionStep nextAction = new InteractionStep();
             
             // 속성 복사
-            nextAction.actionId = stepData.stepId;
-            nextAction.guideText = stepData.guideText;
-            nextAction.interactionType = stepData.interactionType;
+            nextAction.actionId = stageData.id;
+            nextAction.guideText = stageData.guideMessage;
+            nextAction.interactionType = InteractionType.SingleClick; // 기본값
             nextAction.isOrderImportant = true; // 기본값
             
             // 현재 액션 업데이트
@@ -526,7 +530,7 @@ public class ProcedureManager : MonoBehaviour
         }
         
         // 인터랙션 완료 확인
-        if (currentStep.stepType == StepType.Interaction && !string.IsNullOrEmpty(currentStep.interactionDataId))
+        if (currentStep.stepType == Nursing.Procedure.ProcedureStepType.Interaction && !string.IsNullOrEmpty(currentStep.interactionDataId))
         {
             if (!completedActions.ContainsKey(currentStep.interactionDataId) || 
                 !completedActions[currentStep.interactionDataId])
@@ -580,7 +584,7 @@ public class ProcedureManager : MonoBehaviour
         currentScore = Mathf.Max(0, currentScore - penaltyPoints);
         
         // 오류 기록
-        PenaltyRecord record = new PenaltyRecord
+        MgrPenaltyRecord record = new MgrPenaltyRecord
         {
             timestamp = DateTime.Now,
             procedureType = currentProcedureType,
@@ -613,13 +617,22 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 점수 시스템의 페널티 이벤트를 처리합니다.
     /// </summary>
-    private void HandlePenaltyApplied(PenaltyRecord record)
+    private void HandlePenaltyApplied(NewPenaltyRecord record)
     {
         if (!isProcedureActive)
             return;
             
         // 동일한 처리를 방지하기 위해 기록만 추가
-        penaltyRecords.Add(record);
+        MgrPenaltyRecord mgrRecord = new MgrPenaltyRecord
+        {
+            timestamp = record.timestamp,
+            procedureType = currentProcedureType,
+            penaltyType = record.penaltyType,
+            penaltyPoints = record.penaltyScore,
+            errorMessage = record.message,
+            context = record.context
+        };
+        penaltyRecords.Add(mgrRecord);
     }
     
     /// <summary>
@@ -716,9 +729,9 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 페널티 기록 목록을 반환합니다.
     /// </summary>
-    public List<PenaltyRecord> GetPenaltyRecords()
+    public List<MgrPenaltyRecord> GetPenaltyRecords()
     {
-        return new List<PenaltyRecord>(penaltyRecords);
+        return new List<MgrPenaltyRecord>(penaltyRecords);
     }
     
     /// <summary>
@@ -732,7 +745,7 @@ public class ProcedureManager : MonoBehaviour
     /// <summary>
     /// 현재 단계를 반환합니다.
     /// </summary>
-    public ProcedureStep GetCurrentStep()
+    public Nursing.Procedure.ProcedureStep GetCurrentStep()
     {
         return currentStep;
     }
@@ -786,4 +799,21 @@ public class ProcedureManager : MonoBehaviour
             ScoringSystem.Instance.OnScoreChanged -= HandleScoreChanged;
         }
     }
+}
+}
+
+/// <summary>
+/// 관리자용 페널티 기록 클래스
+/// </summary>
+[System.Serializable]
+public class MgrPenaltyRecord
+{
+    public DateTime timestamp;
+    public NursingProcedureType procedureType;
+    public PenaltyType penaltyType;
+    public int penaltyPoints;
+    public string errorMessage;
+    public string itemName;
+    public string stepName;
+    public string context; // 추가 맥락 정보
 }

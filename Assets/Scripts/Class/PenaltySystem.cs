@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Nursing.Penalty;
 
 /// <summary>
 /// 페널티 시스템 클래스
@@ -21,11 +22,11 @@ public class PenaltySystem : MonoBehaviour
     [SerializeField] private float flashDuration = 0.3f; // 깜빡임 지속 시간
 
     // 페널티 이벤트
-    public event Action<PenaltyRecord> OnPenaltyApplied;
+    public event Action<NewPenaltyRecord> OnPenaltyApplied;
     public event Action<int> OnScoreDeducted;
 
     // 페널티 데이터베이스
-    private List<PenaltyRecord> penaltyDatabase = new List<PenaltyRecord>();
+    private List<NewPenaltyRecord> penaltyDatabase = new List<NewPenaltyRecord>();
 
     private void Awake()
     {
@@ -38,56 +39,46 @@ public class PenaltySystem : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        // 에러 보더 초기화
-        if (errorBorderFlash != null)
-        {
-            errorBorderFlash.SetActive(false);
-        }
     }
 
     /// <summary>
-    /// 페널티를 적용합니다.
+    /// 페널티를 적용하고 메시지 표시, 데이터베이스 기록을 수행
     /// </summary>
-    /// <param name="penaltyData">페널티 데이터</param>
     public void ApplyPenalty(PenaltyData penaltyData)
     {
-        if (penaltyData == null) return;
+        if (penaltyData == null)
+            return;
 
-        // 점수 계산
+        // 페널티 점수 계산
         int penaltyScore = GetPenaltyScore(penaltyData.penaltyType);
 
-        // 페널티 레코드 생성
-        PenaltyRecord record = new PenaltyRecord
-        {
-            timestamp = DateTime.Now,
-            penaltyType = penaltyData.penaltyType,
-            penaltyPoints = penaltyScore,
-            penaltyMessage = penaltyData.penaltyMessage,
-            databaseMessage = penaltyData.databaseMessage,
-            speaker = penaltyData.speaker
-        };
-
-        // 데이터베이스 메시지가 있는 경우에만 레코드에 기록
-        if (!string.IsNullOrEmpty(penaltyData.databaseMessage))
-        {
-            // 데이터베이스에 기록
-            penaltyDatabase.Add(record);
-        }
-
-        // 이벤트 발생
-        OnPenaltyApplied?.Invoke(record);
+        // 점수 감점 이벤트 발생
         OnScoreDeducted?.Invoke(penaltyScore);
 
-        // 오류 메시지 표시
+        // 메시지가 있을 경우 데이터베이스에 기록
+        if (!string.IsNullOrEmpty(penaltyData.databaseMessage))
+        {
+            NewPenaltyRecord record = new NewPenaltyRecord
+            {
+                timestamp = DateTime.Now,
+                penaltyType = penaltyData.penaltyType,
+                penaltyScore = penaltyScore,
+                message = penaltyData.databaseMessage
+            };
+
+            penaltyDatabase.Add(record);
+            OnPenaltyApplied?.Invoke(record);
+        }
+
+        // 메시지 표시
         ShowPenaltyMessage(penaltyData);
 
-        // 에러 보더 깜빡임 효과
+        // 화면 효과 표시
         FlashErrorBorder();
     }
 
     /// <summary>
-    /// 페널티 유형에 따라 감점 점수를 반환합니다.
+    /// 페널티 유형에 따른 점수 반환
     /// </summary>
     private int GetPenaltyScore(PenaltyType penaltyType)
     {
@@ -105,105 +96,91 @@ public class PenaltySystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 페널티 메시지를 표시합니다.
-    /// </summary>
-    private void ShowPenaltyMessage(PenaltyData penaltyData)
-    {
-        if (string.IsNullOrEmpty(penaltyData.penaltyMessage)) return;
-
-        // DialogueManager를 사용하여 작은 대화창 표시
-        if (DialogueManager.Instance != null)
-        {
-            string speakerName = GetSpeakerName(penaltyData.speaker);
-            DialogueManager.Instance.ShowSmallDialogue(speakerName, penaltyData.penaltyMessage);
-        }
-    }
-
-    /// <summary>
-    /// 화자 이름을 가져옵니다.
-    /// </summary>
-    private string GetSpeakerName(DialogueManager.Speaker speaker)
-    {
-        if (DialogueManager.Instance != null)
-        {
-            return DialogueManager.Instance.GetSpeakerName(speaker);
-        }
-        
-        return "간호사";
-    }
-
-    /// <summary>
-    /// 화면 가장자리 에러 표시를 깜빡입니다.
+    /// 화면 테두리 오류 표시 효과
     /// </summary>
     private void FlashErrorBorder()
     {
-        if (errorBorderFlash == null) return;
+        if (errorBorderFlash == null)
+            return;
 
         // 코루틴으로 깜빡임 효과 구현
-        StartCoroutine(FlashErrorBorderCoroutine());
+        StartCoroutine(FlashCoroutine());
     }
 
     /// <summary>
-    /// 에러 보더 깜빡임 코루틴
+    /// 깜빡임 코루틴
     /// </summary>
-    private System.Collections.IEnumerator FlashErrorBorderCoroutine()
+    private System.Collections.IEnumerator FlashCoroutine()
     {
-        // 첫 번째 깜빡임
+        // 시작
         errorBorderFlash.SetActive(true);
+        
+        // 지정된 시간만큼 대기
         yield return new WaitForSeconds(flashDuration);
+        
+        // 꺼짐
         errorBorderFlash.SetActive(false);
+        
+        // 잠시 대기
         yield return new WaitForSeconds(flashDuration);
-
-        // 두 번째 깜빡임
+        
+        // 다시 켜짐
         errorBorderFlash.SetActive(true);
+        
+        // 지정된 시간만큼 대기
         yield return new WaitForSeconds(flashDuration);
+        
+        // 완전 꺼짐
         errorBorderFlash.SetActive(false);
     }
 
     /// <summary>
-    /// 페널티 데이터베이스 전체를 반환합니다.
+    /// 페널티 메시지 표시
     /// </summary>
-    public List<PenaltyRecord> GetPenaltyDatabase()
+    private void ShowPenaltyMessage(PenaltyData penaltyData)
     {
-        return new List<PenaltyRecord>(penaltyDatabase);
+        if (string.IsNullOrEmpty(penaltyData.penaltyMessage))
+            return;
+
+        // DialogueManager가 있으면 대화창으로 표시
+        var dialogueManager = FindObjectOfType<DialogueManager>();
+        if (dialogueManager != null)
+        {
+            dialogueManager.ShowMessage("간호사", penaltyData.penaltyMessage);
+        }
+        else
+        {
+            // 없으면 디버그 메시지로만 표시
+            Debug.Log($"Penalty: {penaltyData.penaltyMessage}");
+        }
     }
 
     /// <summary>
-    /// 페널티 데이터베이스를 초기화합니다.
+    /// 페널티 기록 목록 반환
     /// </summary>
-    public void ClearPenaltyDatabase()
+    public List<NewPenaltyRecord> GetPenaltyRecords()
+    {
+        return new List<NewPenaltyRecord>(penaltyDatabase);
+    }
+
+    /// <summary>
+    /// 모든 페널티 기록 지우기
+    /// </summary>
+    public void ClearPenaltyRecords()
     {
         penaltyDatabase.Clear();
     }
 }
 
 /// <summary>
-/// 페널티 데이터 구조체 - 페널티 적용을 위한 정보를 담습니다.
+/// 페널티 기록 클래스
 /// </summary>
 [System.Serializable]
-public class PenaltyData
-{
-    public PenaltyType penaltyType = PenaltyType.Minor;
-    public DialogueManager.Speaker speaker = DialogueManager.Speaker.Character;
-    public string penaltyMessage = ""; // 사용자에게 표시할 메시지
-    public string databaseMessage = ""; // 데이터베이스에 기록할 메시지
-}
-
-/// <summary>
-/// 페널티 기록 - 적용된 페널티의 정보를 저장합니다.
-/// </summary>
-[System.Serializable]
-public class PenaltyRecord
+public class NewPenaltyRecord
 {
     public DateTime timestamp;
     public PenaltyType penaltyType;
-    public int penaltyPoints;
-    public string penaltyMessage;
-    public string databaseMessage;
-    public DialogueManager.Speaker speaker;
-
-    // 옵션 정보
-    public string itemName = "";
-    public string stepName = "";
-    public string procedureName = "";
+    public int penaltyScore;
+    public string message;
+    public string context; // 추가 맥락 정보 (예: 어떤 아이템, 환자 상태 등)
 }

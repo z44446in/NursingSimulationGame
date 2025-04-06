@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using DG.Tweening;
+using Nursing.Interaction;
 
 /// <summary>
 /// InteractionManager: 상호작용과 아이템 카트를 관리하는 클래스.
