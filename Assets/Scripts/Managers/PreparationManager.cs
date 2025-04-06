@@ -42,13 +42,14 @@ public class PreparationManager : MonoBehaviour
     [Header("Required Items")]
     [SerializeField] private ProcedureRequiredItems currentProcedureItems;
     [SerializeField] private List<ProcedureRequiredItems> ItemListForEachProcedure;
-
-    // 현재 선택된 아이템 관리
-    private List<Item> selectedItems = new List<Item>();
     private Queue<Item> optionalItemsToExplain = new Queue<Item>();
     // 이 변수는 추후 옵셔널 아이템 설명 기능에서 사용될 예정이므로 속성으로 변경
     public bool IsShowingOptionalItems { get; private set; } = false;
 
+    // 현재 선택된 아이템 관리
+    private List<Item> selectedItems = new List<Item>();
+    
+   
     // ItemSelectionPopup 참조
     private ItemSelectionPopup currentPopup;
 
@@ -183,21 +184,16 @@ public class PreparationManager : MonoBehaviour
 
     private void ProcessOptionalItems(List<RequiredItem> optionalItems)
     {
-        
+
         if (optionalItems.Count > 0)
         {
-       
-         
-            foreach (var items in optionalItems)
+            optionalItemsToExplain = new Queue<Item>();
+            foreach (var item in optionalItems)
             {
-                DialogueManager.Instance.ShowSmallDialogue($"{items.item.itemName}: {items.item.description}");
-                
-             
+                optionalItemsToExplain.Enqueue(item.item);
             }
-
-            
             IsShowingOptionalItems = true;
-            
+            ShowNextOptionalItemDialogue();
         }
         else
         {
@@ -209,12 +205,43 @@ public class PreparationManager : MonoBehaviour
     }
     private void ShowNextOptionalItemDialogue()
     {
-        
-         
-        DialogueManager.Instance.ShowSmallDialogue("어쨌든! 준비 잘했어!", false, () =>
+        if (optionalItemsToExplain.Count > 0)
         {
-            GoToIntermediateScreen();
-        });
+            var item = optionalItemsToExplain.Dequeue();
+
+            // 중요: 여기서 클릭 이벤트 핸들러를 직접 등록하여 다음 대화창을 표시하도록 함
+            DialogueManager.Instance.ShowSmallDialogue($"{item.itemName}: {item.description}", true, () => {
+                // 이 콜백은 대화창을 클릭할 때 호출됨
+                // 잠시 지연 후 다음 대화상자 표시
+                StartCoroutine(DelayNextDialogue());
+            });
+        }
+        else
+        {
+            // 모든 아이템을 다 보여줬을 경우
+            DialogueManager.Instance.ShowSmallDialogue("어쨌든! 준비 잘했어!", false, () => {
+                GoToIntermediateScreen();
+            });
+        }
+    }
+
+    // 다음 대화창 표시를 위한 지연 코루틴
+    private IEnumerator DelayNextDialogue()
+    {
+        // 짧은 지연 시간을 줘서 대화창이 완전히 닫히고 다음 대화창이 표시되도록 함
+        yield return new WaitForSeconds(0.3f);
+
+        if (optionalItemsToExplain.Count > 0)
+        {
+            ShowNextOptionalItemDialogue();
+        }
+        else
+        {
+            // 모든 아이템을 다 보여줬을 경우
+            DialogueManager.Instance.ShowSmallDialogue("어쨌든! 준비 잘했어!", false, () => {
+                GoToIntermediateScreen();
+            });
+        }
     }
 
     private void ShowMissingItemsDialogue(List<RequiredItem> missingItems)

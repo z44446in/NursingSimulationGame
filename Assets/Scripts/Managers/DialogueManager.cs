@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using DG.Tweening;
 
 namespace Nursing.Managers
 {
@@ -35,6 +36,12 @@ namespace Nursing.Managers
 
         [Header("화자 데이터")]
         [SerializeField] private SpeakerData[] speakerData; // 화자 데이터 배열
+
+        [Header("Animation Settings")]
+        [SerializeField] private float fadeInDuration = 0.3f;
+        [SerializeField] private float fadeOutDuration = 0.3f;
+        [SerializeField] private Ease fadeInEase = Ease.OutQuad;
+        [SerializeField] private Ease fadeOutEase = Ease.InQuad;
 
         // 현재 활성화된 대화창
         private GameObject currentSmallDialogue;
@@ -104,7 +111,30 @@ namespace Nursing.Managers
                 dialogueText.text = message;
             }
 
+            // 페이드인 애니메이션 추가
+            CanvasGroup canvasGroup = currentSmallDialogue.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = currentSmallDialogue.AddComponent<CanvasGroup>();
+            }
 
+            
+            currentSmallDialogue.SetActive(true);
+
+            // 초기 알파값을 0으로 설정하고 페이드인
+            canvasGroup.alpha = 0f;
+            canvasGroup.DOFade(1f, fadeInDuration).SetEase(fadeInEase);
+
+            dialogueButton.onClick.RemoveAllListeners();
+            dialogueButton.onClick.AddListener(() => {
+                // 페이드아웃 애니메이션 후 대화창 비활성화 및 콜백 실행
+                canvasGroup.DOFade(0f, fadeOutDuration)
+                    .SetEase(fadeOutEase)
+                    .OnComplete(() => {
+                        currentSmallDialogue.SetActive(false);
+                        onDialogueClosed?.Invoke();
+                    });
+            });
 
             // 버튼 클릭 이벤트 등록
             if (dialogueButton != null)
@@ -153,7 +183,6 @@ namespace Nursing.Managers
             {
                 dialogueButton = currentLargeDialogue.GetComponent<Button>();
             }
-
             if (dialogueText != null)
             {
                 dialogueText.text = message;
