@@ -6,7 +6,7 @@ using Nursing.Managers;
 
 namespace Nursing.Scoring
 {
-    public class NewScoringSystem : MonoBehaviour
+    public class ScoringSystem : MonoBehaviour
     {
         [Header("점수 설정")]
         [SerializeField] private int maximumScore = 100;
@@ -32,13 +32,13 @@ namespace Nursing.Scoring
             penaltyManager = FindObjectOfType<PenaltyManager>();
             penaltyDatabase = FindObjectOfType<PenaltyDatabase>();
             
-            ResetNewScore();
+            ResetScore();
         }
         
         /// <summary>
         /// 점수를 초기화합니다.
         /// </summary>
-        public void ResetNewScore()
+        public void ResetScore()
         {
             currentScore = maximumScore;
             totalPenaltyPoints = 0;
@@ -132,7 +132,7 @@ namespace Nursing.Scoring
         /// <summary>
         /// 현재 점수를 가져옵니다.
         /// </summary>
-        public int GetNewScore()
+        public int GetScore()
         {
             return currentScore;
         }

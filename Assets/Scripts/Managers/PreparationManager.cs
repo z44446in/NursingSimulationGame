@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Nursing.Procedure;
 
 
 public class PreparationManager : MonoBehaviour
@@ -295,7 +296,7 @@ public class PreparationManager : MonoBehaviour
             .ToList();
     }
 
-    public void SetCurrentProcedure(NursingProcedureType procedureType)
+    public void SetCurrentProcedure(Nursing.Procedure.ProcedureTypeEnum procedureType)
     {
         currentProcedureItems = ItemListForEachProcedure.Find(x => x.procedureType == procedureType);
         if (currentProcedureItems == null)

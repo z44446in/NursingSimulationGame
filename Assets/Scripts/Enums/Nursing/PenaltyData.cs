@@ -3,17 +3,10 @@ using UnityEngine;
 
 namespace Nursing.Penalty
 {
-    [Serializable]
-    public enum PenaltyType
-    {
-        [Tooltip("경미한 오류 - 작은 감점")]
-        Minor,      
-        [Tooltip("중요한 오류 - 중간 감점")]
-        Major,      
-        [Tooltip("치명적 오류 - 큰 감점")]
-        Critical    
-    }
-
+    /// <summary>
+    /// 패널티 데이터 클래스
+    /// 패널티 정보, 메시지, 시각적 효과 정의
+    /// </summary>
     [Serializable]
     public class PenaltyData
     {

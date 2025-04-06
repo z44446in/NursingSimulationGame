@@ -24,7 +24,7 @@ namespace Nursing.Managers
         [SerializeField] private bool isProcedureActive = false;
         [SerializeField] private bool isProcedureBlocked = false;
         
-        private NewScoringSystem scoringSystem;
+        private ScoringSystem scoringSystem;
         private PenaltyManager penaltyManager;
         private InteractionManager interactionManager;
         private DialogueManager dialogueManager;
@@ -33,7 +33,7 @@ namespace Nursing.Managers
         
         private void Awake()
         {
-            scoringSystem = FindObjectOfType<NewScoringSystem>();
+            scoringSystem = FindObjectOfType<ScoringSystem>();
             penaltyManager = FindObjectOfType<PenaltyManager>();
             interactionManager = FindObjectOfType<InteractionManager>();
             dialogueManager = FindObjectOfType<DialogueManager>();

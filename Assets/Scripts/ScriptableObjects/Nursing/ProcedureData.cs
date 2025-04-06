@@ -63,8 +63,11 @@ namespace Nursing.Procedure
 
     public enum ProcedureStepType
     {
+        [Tooltip("아이템 클릭 상호작용")]
         ItemClick,
+        [Tooltip("액션 버튼 클릭 상호작용")]
         ActionButtonClick,
+        [Tooltip("플레이어 직접 상호작용")]
         PlayerInteraction
     }
 }

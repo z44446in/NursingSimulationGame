@@ -23,7 +23,7 @@ namespace Nursing.Managers
         [SerializeField] private bool isInteractionActive = false;
         [SerializeField] private bool isInteractionBlocked = false;
         
-        private NewScoringSystem scoringSystem;
+        private ScoringSystem scoringSystem;
         private PenaltyManager penaltyManager;
         private DialogueManager dialogueManager;
         
@@ -32,7 +32,7 @@ namespace Nursing.Managers
         
         private void Awake()
         {
-            scoringSystem = FindObjectOfType<NewScoringSystem>();
+            scoringSystem = FindObjectOfType<ScoringSystem>();
             penaltyManager = FindObjectOfType<PenaltyManager>();
             dialogueManager = FindObjectOfType<DialogueManager>();
         }
