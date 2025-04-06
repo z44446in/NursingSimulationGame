@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Nursing.Procedure;
+using Nursing.Managers;
+
 
 
 public class PreparationManager : MonoBehaviour
@@ -73,16 +75,11 @@ public class PreparationManager : MonoBehaviour
         InitializeUI();
 
         // 카트 초기화
-        if (InteractionManager.Instance != null)
-        {
-            InteractionManager.Instance.ClearCart();
+        
+            cartUI?.ClearCart();
             selectedItems.Clear();
             cartUI?.UpdateCartDisplay();
-        }
-        else
-        {
-            Debug.LogError("InteractionManager instance is missing!");
-        }
+        
     }
 
     private void InitializeUI()
@@ -155,38 +152,52 @@ public class PreparationManager : MonoBehaviour
 
     private void AddItemToCart(Item item)
     {
-        if (item == null || InteractionManager.Instance == null) return;
+        if (item == null ) return;
 
-        if (InteractionManager.Instance.AddItemToCart(item))
-        {
+ 
             selectedItems.Add(item);
+            cartUI?.AddItemToCart(item);
             cartUI?.UpdateCartDisplay();
-        }
+            
+
     }
 
     public void RemoveItemFromCart(Item item)
     {
-        if (item == null || InteractionManager.Instance == null) return;
+        if (item == null) return;
 
-        if (InteractionManager.Instance.RemoveItemFromCart(item))
-        {
+        
             selectedItems.Remove(item);
-            cartUI?.UpdateCartDisplay();
-        }
+            if (item == null)
+            {
+                Debug.LogWarning("Attempted to remove a null item to the cart.");
+            return;
+            }
+            cartUI?.cartItems.Remove(item);
+            
+            
+             cartUI?.UpdateCartDisplay();
+        
     }
 
 
     private void ProcessOptionalItems(List<RequiredItem> optionalItems)
     {
+        
         if (optionalItems.Count > 0)
         {
-            optionalItemsToExplain = new Queue<Item>();
-            foreach (var item in optionalItems)
+       
+         
+            foreach (var items in optionalItems)
             {
-                optionalItemsToExplain.Enqueue(item.item);
+                DialogueManager.Instance.ShowSmallDialogue($"{items.item.itemName}: {items.item.description}");
+                
+             
             }
+
+            
             IsShowingOptionalItems = true;
-            ShowNextOptionalItemDialogue();
+            
         }
         else
         {
@@ -198,28 +209,17 @@ public class PreparationManager : MonoBehaviour
     }
     private void ShowNextOptionalItemDialogue()
     {
-        if (optionalItemsToExplain.Count > 0)
+        
+         
+        DialogueManager.Instance.ShowSmallDialogue("어쨌든! 준비 잘했어!", false, () =>
         {
-            var item = optionalItemsToExplain.Dequeue();
-            DialogueManager.Instance.ShowSmallDialogue($"{item.itemName}: {item.description}", true, () =>
-            {
-                if (optionalItemsToExplain.Count > 0)
-                {
-                    ShowNextOptionalItemDialogue();
-                }
-                else
-                {
-                    DialogueManager.Instance.ShowSmallDialogue("어쨌든! 준비 잘했어!", false, () =>
-                    {
-                        GoToIntermediateScreen();
-                    });
-                }
-            });
-        }
+            GoToIntermediateScreen();
+        });
     }
 
     private void ShowMissingItemsDialogue(List<RequiredItem> missingItems)
     {
+        
         string message = "지금 부족한 물건은 다음과 같아.\n\n";
         for (int i = 0; i < missingItems.Count; i++)
         {
@@ -240,10 +240,10 @@ public class PreparationManager : MonoBehaviour
 
     private bool isProcessingDialogue = false;
 
-    private void CheckPrepareComplete()
+    public void CheckPrepareComplete()
     {
         if (isProcessingDialogue) return;  // 이미 대화창 처리 중이면 리턴
-
+        
         List<RequiredItem> missingItems = GetMissingItems();
         List<Item> extraItems = GetExtraItems();
         List<RequiredItem> optionalItems = GetOptionalItems();
@@ -261,6 +261,7 @@ public class PreparationManager : MonoBehaviour
         {
             ShowExtraItemsDialogue(extraItems);
             isProcessingDialogue = false;
+
             return;
         }
 
@@ -377,9 +378,7 @@ public ProcedureRequiredItems GetCurrentProcedureItems()
 
     private void OnDestroy()
     {
-        if (prepareCompleteButton != null)
-            prepareCompleteButton.onClick.RemoveListener(CheckPrepareComplete);
-
+        
         if (currentPopup != null)
             Destroy(currentPopup.gameObject);
     }
@@ -398,19 +397,20 @@ public ProcedureRequiredItems GetCurrentProcedureItems()
         }
 
         // 현재 카트 초기화
-        InteractionManager.Instance.ClearCart();
+        cartUI?.ClearCart();
         selectedItems.Clear();
+        
 
         // 모든 필수 아이템 추가
         foreach (var requiredItem in currentProcedureItems.requiredItems)
         {
             if (!requiredItem.isOptional)  // 필수 아이템만 추가
             {
-                if (InteractionManager.Instance.AddItemToCart(requiredItem.item))
-                {
+               
                     selectedItems.Add(requiredItem.item);
+                    cartUI?.AddItemToCart(requiredItem.item);
 
-                }
+
             }
         }
 

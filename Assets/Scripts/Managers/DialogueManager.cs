@@ -104,17 +104,13 @@ namespace Nursing.Managers
                 dialogueText.text = message;
             }
 
-            // 선택적 아이템 메시지 처리 (예: 색상 변경 등)
-            if (isOptionalItemMessage)
-            {
-                // 선택적 아이템 메시지 스타일 적용
-            }
+
 
             // 버튼 클릭 이벤트 등록
             if (dialogueButton != null)
             {
                 dialogueButton.onClick.RemoveAllListeners();
-                dialogueButton.onClick.AddListener(() => 
+                dialogueButton.onClick.AddListener(() =>
                 {
                     onDialogueClosed?.Invoke();
                     CloseSmallDialogue();
@@ -123,7 +119,7 @@ namespace Nursing.Managers
 
             BringToFront(currentSmallDialogue);
         }
-        
+
         // 패널티 시스템과 호환되는 오버로드된 메서드 추가
         public void ShowSmallDialogue(
             string message,
@@ -132,33 +128,53 @@ namespace Nursing.Managers
         {
             // 스피커 이름으로 Speaker 열거형 값을 찾음
             Speaker foundSpeaker = Speaker.Character;
-            
-            // 이름으로 스피커 찾기
-            for (int i = 0; i < speakerData.Length; i++)
-            {
-                if (speakerData[i].displayName.Equals(speakerName, StringComparison.OrdinalIgnoreCase))
-                {
-                    foundSpeaker = (Speaker)i;
-                    break;
-                }
-            }
-            
+
             // 기존 메서드 호출
             ShowSmallDialogue(message, false, null, foundSpeaker);
         }
 
-        public void ShowLargeDialogue(string message, Speaker speaker = Speaker.Character)
+        public void ShowLargeDialogue(string message, Action onDialogueClosed = null)
         {
+            Button dialogueButton;
+
             if (currentLargeDialogue == null)
             {
                 currentLargeDialogue = Instantiate(largeDialoguePrefab, dialogueParent);
+
+                dialogueText = currentLargeDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
+                dialogueButton = currentLargeDialogue.GetComponent<Button>();
+                if (dialogueButton == null)
+                {
+                    dialogueButton = currentLargeDialogue.AddComponent<Button>();
+                }
             }
 
-            // 큰 대화창 구현은 필요에 따라 작성
-            // ...
+            else
+            {
+                dialogueButton = currentLargeDialogue.GetComponent<Button>();
+            }
+
+            if (dialogueText != null)
+            {
+                dialogueText.text = message;
+            }
+
+
+            // 버튼 클릭 이벤트 등록
+            if (dialogueButton != null)
+            {
+                dialogueButton.onClick.RemoveAllListeners();
+                dialogueButton.onClick.AddListener(() =>
+                {
+                    onDialogueClosed?.Invoke();
+                    CloseLargeDialogue();
+                });
+            }
 
             BringToFront(currentLargeDialogue);
         }
+    
+        
 
         public void CloseSmallDialogue()
         {

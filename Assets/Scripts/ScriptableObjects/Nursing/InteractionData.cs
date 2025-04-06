@@ -12,6 +12,7 @@ namespace Nursing.Interaction
         public string id;
         public string displayName;
         [TextArea(3, 5)] public string description;
+       
 
         [Header("인터랙션 스테이지")]
         public List<InteractionStage> stages = new List<InteractionStage>();
@@ -26,7 +27,9 @@ namespace Nursing.Interaction
         [Header("스테이지 정보")]
         public string id;
         public string name;
+        public int StageNum;
         [TextArea(2, 3)] public string guideMessage;
+        
         
         [Header("인터랙션 타입")]
         public InteractionType interactionType;
@@ -58,10 +61,11 @@ namespace Nursing.Interaction
         public float dragDistanceLimit;
         public string boundaryObjectTag;
         public string collisionZoneTag;
-        
+        public PenaltyData OverDrag; // dragDIstanceLimit를 넘거나, boundaryObjectTag를 벗어날 때 발생 
+
         [Header("오브젝트 생성")]
         public bool createObject;
-        public string objectToCreateTag;
+        public string[] objectToCreateTag;
         
         [Header("조건부 클릭")]
         public bool isConditionalClick;
@@ -73,11 +77,12 @@ namespace Nursing.Interaction
         public bool isSustainedClick;
         public float sustainedClickDuration;
         public PenaltyData earlyReleasePenalty;
+        public PenaltyData lateReleasePenalty;//특정단계 이상으로 오래 지속할 때 발생
         public string sustainedClickTargetTag;
         
         [Header("오브젝트 삭제")]
         public bool deleteObject;
-        public string objectToDeleteTag;
+        public string[] objectToDeleteTag;
         
         [Header("오브젝트 이동")]
         public bool moveObject;
@@ -93,7 +98,8 @@ namespace Nursing.Interaction
         public int correctAnswerIndex;
         public Sprite[] optionImages;
         public float timeLimit;
-        
+        public PenaltyData WrongAnswer;//틀린 답을 골랐을 때 발생 
+
         [Header("미니게임")]
         public bool startMiniGame;
         public GameObject miniGamePrefab;

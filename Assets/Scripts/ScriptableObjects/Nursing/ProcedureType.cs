@@ -22,4 +22,10 @@ namespace Nursing.Procedure
         Guideline,   // 가이드라인 버전
         Clinical     // 임상 버전
     }
+
+    public enum ProcedurePlayType
+    {
+        Game, //게임 버전
+        Practice //임상 버전 
+    }
 }

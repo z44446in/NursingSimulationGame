@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
-using System.Collections;
-using System.Linq; // 이 부분을 추가해주세요
+using Nursing.Managers;
+using System;
+
 
 public class CartUI : MonoBehaviour
 {
@@ -39,16 +40,20 @@ public class CartUI : MonoBehaviour
     private GameManager.GameScreen lastScreen;
     bool hasCartBeenClosedOnce = false;
 
+    // 카트 관련
+    public List<Item> cartItems = new List<Item>();
+
+
 
     private void Start()
     {
         currentScreen = GameManager.Instance.GetCurrentScreen(); // 현재 화면 가져오기
         InitializeUI();
         UpdateCartInstruction();
-        
+
     }
 
-    
+
 
     private void Update()
     {
@@ -69,7 +74,7 @@ public class CartUI : MonoBehaviour
         {
             cartPanel.SetActive(false);
         }
-       
+
         if (cartToggleButton != null)
         {
             cartToggleButton.onClick.AddListener(ToggleCart);
@@ -146,13 +151,14 @@ public class CartUI : MonoBehaviour
     {
         if (cartPanel == null) return;
 
-        if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE )
-        {   
-            
-            
+        if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE)
+        {
 
-            if ( hasCartBeenClosedOnce == false)
-            {bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
+
+
+            if (hasCartBeenClosedOnce == false)
+            {
+                bool itemsAllPicked = IntermediateManager.Instance.AreAllRequiredItemsPicked();
 
                 if (!itemsAllPicked)
                 {
@@ -161,29 +167,29 @@ public class CartUI : MonoBehaviour
                 }
 
                 hasCartBeenClosedOnce = true;
-                
+
                 cartPanel.SetActive(false);
                 UpdateToggleButtonText(false);
                 IntermediateManager.Instance.RefreshCartItems();
                 cartInstructionText.text = "어떤 물품을 꺼내시겠습니까?";
                 UpdateCartDisplay();
-                
+
 
                 return;
-            
+
             }
 
-            
+
 
         }
 
-       
+
 
         bool newState = !cartPanel.activeSelf;
         cartPanel.SetActive(newState);
         UpdateToggleButtonText(newState);
 
-       
+
     }
     private void UpdateToggleButtonText(bool isCartOpen)
     {
@@ -199,7 +205,8 @@ public class CartUI : MonoBehaviour
 
         ClearItemContainer();
 
-        List<Item> cartItems = InteractionManager.Instance?.GetCartItems();
+        List<Item> cartItems = GetCartItems();
+
         if (cartItems == null || cartItems.Count == 0)
         {
             Debug.Log("No items in the cart to display.");
@@ -229,13 +236,13 @@ public class CartUI : MonoBehaviour
 
         if (itemButton == null)
         {
-            Destroy(itemUI);
+            Debug.LogError("아이템 버튼이 업습니다.");
             return;
         }
 
         switch (currentScreen)
         {
-            
+
             case GameManager.GameScreen.INTERMEDIATE:
                 itemButton.Initialize(item, HandleIntermediateItemClick);
                 break;
@@ -253,42 +260,42 @@ public class CartUI : MonoBehaviour
     {
         ShowConfirmationPopup(item, INTERMEDIATE_CONFIRMATION_MESSAGE, TryPickItemFromCart);
 
-    
+
     }
 
     // TryPickItemFromCart 메서드 수정
     // CartUI.cs의 TryPickItemFromCart 메서드 수정
-private void TryPickItemFromCart(Item item)
-{
-    if (IntermediateManager.Instance.IsRequiredItem(item))
+    private void TryPickItemFromCart(Item item)
     {
-        // 선택한 아이템은 카트에서 제거
-        InteractionManager.Instance.RemoveItemFromCart(item);
-
-        if(hasCartBeenClosedOnce == true)
+        if (IntermediateManager.Instance.IsRequiredItem(item))
         {
-            IntermediateManager.Instance.PickupItem(item);
-            UpdateToggleButtonText(true);
-            cartPanel.SetActive(false);
+            // 선택한 아이템은 카트에서 제거
+            RemoveItemFromCart(item);
+
+            if (hasCartBeenClosedOnce == true)
+            {
+                IntermediateManager.Instance.PickupItem(item);
+                UpdateToggleButtonText(true);
+                cartPanel.SetActive(false);
+                UpdateCartDisplay();
+                return;
+            }
+            // 선택한 아이템 목록에 추가
+            IntermediateManager.Instance.AddPickedItem(item);
+
+
+            // 카트 UI 업데이트
             UpdateCartDisplay();
-            return;
+
+
         }
-        // 선택한 아이템 목록에 추가
-        IntermediateManager.Instance.AddPickedItem(item);
-        
-        
-        // 카트 UI 업데이트
-        UpdateCartDisplay();
-        
-        
-    }
-    else
-    {
-        DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
-    }
+        else
+        {
+            DialogueManager.Instance?.ShowSmallDialogue("이건 지금 필요한 게 아니야");
+        }
 
 
-}
+    }
 
     // OpenCart 메서드는 그대로 두고, 카트 UI 업데이트를 위한 메서드를 적절히 호출
     private void HandlePrepareScreenItemClick(Item item)
@@ -323,8 +330,9 @@ private void TryPickItemFromCart(Item item)
         if (PreparationManager.Instance != null)
         {
             PreparationManager.Instance.RemoveItemFromCart(item);
-            UpdateCartDisplay();
+           
         }
+        cartItems.Remove(item);
     }
 
     private T InstantiatePopup<T>(GameObject prefab, Transform parent) where T : Component
@@ -334,4 +342,43 @@ private void TryPickItemFromCart(Item item)
         var popupObject = Instantiate(prefab, parent);
         return popupObject.GetComponent<T>();
     }
+
+
+    /// <summary>
+    /// 아이템을 카트에 추가.
+    /// </summary>
+    public bool AddItemToCart(Item item)
+    {
+        if (item == null)
+        {
+            Debug.LogWarning("Attempted to add a null item to the cart.");
+            return false;
+        }
+
+        cartItems.Add(item);
+       
+        
+       
+        return true;
+    }
+
+  
+
+    /// <summary>
+    /// 현재 카트에 있는 아이템 리스트를 반환.
+    /// </summary>
+    public List<Item> GetCartItems()
+    {
+        return new List<Item>(cartItems);
+    }
+
+    /// <summary>
+    /// 카트를 초기화.
+    /// </summary>
+    public void ClearCart()
+    {
+        cartItems.Clear();
+        Debug.Log("Cart cleared.");
+    }
+
 }
