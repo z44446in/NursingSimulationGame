@@ -17,7 +17,10 @@ namespace Nursing.Managers
         
         [Header("액션 버튼 설정")]
         [SerializeField] private GameObject actionPopupPrefab;
-        
+
+        [Header("프로시저 타입 참조")]
+        [SerializeField] private ProcedureType[] availableProcedureTypes;
+
         private ProcedureType currentProcedureType;
         private ProcedureData currentProcedure;
         private int currentStepIndex = -1;
@@ -36,7 +39,40 @@ namespace Nursing.Managers
             if (dialogueManager == null)
                 dialogueManager = FindObjectOfType<DialogueManager>();
         }
-        
+        private void Start()
+        {
+            // GameManager로부터 선택된 정보 가져오기
+            ProcedureTypeEnum selectedType = GameManager.Instance.currentProcedureType;
+            ProcedureVersionType selectedVersion = GameManager.Instance.currentVersionType;
+            ProcedurePlayType selectedPlayType = GameManager.Instance.currentPlayType;
+
+            // 선택된 정보에 맞는 ProcedureType 찾기
+            ProcedureType procedureToLoad = FindMatchingProcedureType(selectedType, selectedVersion, selectedPlayType);
+
+            if (procedureToLoad != null)
+            {
+                // 해당 프로시저 시작
+                StartProcedure(procedureToLoad);
+            }
+            else
+            {
+                Debug.LogError("선택한 조건에 맞는 프로시저를 찾을 수 없습니다!");
+            }
+        }
+
+        private ProcedureType FindMatchingProcedureType(ProcedureTypeEnum type, ProcedureVersionType version, ProcedurePlayType playType)
+        {
+            foreach (var procedure in availableProcedureTypes)
+            {
+                if (procedure.ProcdureTypeName == type &&
+                    procedure.versionType == version &&
+                    procedure.procedurePlayType == playType)
+                {
+                    return procedure;
+                }
+            }
+            return null;
+        }
         /// <summary>
         /// 프로시저를 시작합니다.
         /// </summary>

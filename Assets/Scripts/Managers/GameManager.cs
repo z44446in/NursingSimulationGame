@@ -256,21 +256,21 @@ public class GameManager : MonoBehaviour
     {
         // 프로시저 타입 설정 로직
         currentProcedureType = procedureType;
-        Debug.Log($"GameManager: Set current procedure type to {procedureType}");
+      
     }
 
     public void SetProcedureVersionType(ProcedureVersionType versionType)
     {
         // 버전 타입 설정 로직
         currentVersionType = versionType;
-        Debug.Log($"GameManager: Set version type to {versionType}");
+      
     }
 
     public void SetProcedurePlayType(ProcedurePlayType playType)
     {
         // 플레이 타입 설정 로직
         currentPlayType = playType;
-        Debug.Log($"GameManager: Set play type to {playType}");
+       
     }
 
 

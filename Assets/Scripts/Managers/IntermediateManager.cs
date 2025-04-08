@@ -228,9 +228,7 @@ private void UpdateHandImageInIntermediateScreen(Item item)
             handImage.sprite = item.handSprite[0];
             handImage.gameObject.SetActive(true);
         }
-            // 아니면 기본 손 스프라이트 중에서 선택
-
-            Debug.Log("설정된 손 모양이 없습니다.");
+           
     }
 }
 

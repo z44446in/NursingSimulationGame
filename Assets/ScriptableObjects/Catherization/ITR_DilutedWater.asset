@@ -12,8 +12,100 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7, type: 3}
   m_Name: ITR_DilutedWater
   m_EditorClassIdentifier: 
-  id: 
-  displayName: 
-  description: 
-  stages: []
+  id: DilutedWaterInteraction
+  displayName: "\uBA78\uADE0\uC99D\uB958\uC218 \uC0C1\uD638\uC791\uC6A9"
+  description: "\u3147\u3147"
+  stages:
+  - id: stage_0
+    name: "\uC2A4\uD14C\uC774\uC9C0 0"
+    StageNum: 0
+    guideMessage: 
+    interactionType: 1
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 0
+      targetObjectTag: 
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreateTag:
+      - Bottle
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
   guideMessage: 
