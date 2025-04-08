@@ -137,7 +137,7 @@ public class IntermediateManager : MonoBehaviour
         if (!requiredPickedItems.Contains(item))
         {
             requiredPickedItems.Add(item);
-            Debug.Log($"Added picked item: {item.itemName}");
+           
         }
 
         List<Item> cartItems = cartUI?.GetCartItems();

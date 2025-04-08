@@ -1,63 +1,74 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Nursing.Procedure;
-
+using System.Collections; 
 
 public class DebugManager : MonoBehaviour
 {
-    [Header("Debug Settings")]
-    [SerializeField] private ProcedureType debugProcedureType;
-    [SerializeField] private Button applyProcedureTypeButton;
-
+    [Header("Procedure Data")]
+    [SerializeField] private ProcedureType procedureType;
+    [SerializeField] private Button startGameButton;
+    [SerializeField] private MonoBehaviour targetScript; // 리셋할 스크립트
 
     private void Start()
     {
-        InitializeDebugControls();
-
-
+        if (startGameButton != null)
+            startGameButton.onClick.AddListener(StartGame);
     }
 
-    private void InitializeDebugControls()
+    public void StartGame()
     {
-        if (applyProcedureTypeButton != null)
+        if (GameManager.Instance != null && procedureType != null)
         {
-            applyProcedureTypeButton.onClick.AddListener(ApplyDebugProcedureType);
+            // ProcedureType 정보를 GameManager에 설정
+            GameManager.Instance.SetCurrentProcedureType(procedureType.ProcdureTypeName);
+            GameManager.Instance.SetProcedureVersionType(procedureType.versionType);
+            GameManager.Instance.SetProcedurePlayType(procedureType.procedurePlayType);
+
+            // 게임 시작
+            GameManager.Instance.StartGameScene();
+            ResetScript();
+        }
+        else
+        {
+            Debug.LogError("GameManager 또는 ProcedureType이 설정되지 않았습니다!");
         }
     }
 
-    public void ApplyDebugProcedureType()
+    private void OnDestroy()
     {
-        if (debugProcedureType == null)
+        if (startGameButton != null)
+            startGameButton.onClick.RemoveAllListeners();
+    }
+
+    private void ResetScript()
+    {
+        if (targetScript != null)
         {
-            Debug.LogError("No ProcedureType assigned in DebugManager!");
-            return;
+            // 스크립트 비활성화 후 다시 활성화
+            targetScript.enabled = false;
+            targetScript.enabled = true;
+
+
+            // 강제로 Start 메서드를 호출하고 싶다면 아래 코드를 추가
+            StartCoroutine(CallStartMethodNextFrame());
         }
-
-     
-        GameManager.Instance.SetCurrentProcedureType(debugProcedureType.ProcdureTypeName);
-
-        // 기타 필요한 로직 (버전, 플레이 타입 설정 등)
-        ApplyProcedureSettings(debugProcedureType);
-        Debug.Log("지금 술기 타입은" + debugProcedureType.displayName+ "지금 버전은" + debugProcedureType.versionType + "지금 모드는"  + debugProcedureType.procedurePlayType);
-
     }
 
-    private ProcedureTypeEnum GetProcedureTypeEnum(ProcedureType procType)
+
+    private IEnumerator CallStartMethodNextFrame()
     {
-        // 직접 ProcedureTypeEnum 값을 가져옴
-        return procType.ProcdureTypeName;
+        yield return null; // 다음 프레임까지 대기
 
-       
+        // Reflection을 사용하여 Start 메서드 호출 (비공개 메서드도 호출 가능)
+        System.Reflection.MethodInfo startMethod = targetScript.GetType().GetMethod("Start",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        if (startMethod != null)
+        {
+            startMethod.Invoke(targetScript, null);
+           
+        }
     }
 
-    private void ApplyProcedureSettings(ProcedureType procType)
-    {
-       
-        GameManager.Instance.SetProcedureVersionType(procType.versionType);
-        GameManager.Instance.SetProcedurePlayType(procType.procedurePlayType);
-
-        Debug.Log($"Applied procedure settings - Version: {procType.versionType}, Play Type: {procType.procedurePlayType}");
-    }
-
-    
 }

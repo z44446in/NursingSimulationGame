@@ -53,6 +53,7 @@ namespace Nursing.Managers
             {
                 // 해당 프로시저 시작
                 StartProcedure(procedureToLoad);
+                Debug.Log("프로시저 시작합니다!:"+ selectedType + selectedVersion + selectedPlayType );
             }
             else
             {

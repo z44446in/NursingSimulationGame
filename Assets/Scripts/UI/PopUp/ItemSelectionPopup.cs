@@ -34,7 +34,7 @@ public class ItemSelectionPopup : BasePopup
             if (item != null)
             {
                 CreateItemButton(item);
-                Debug.Log($"Created button for: {item.itemName}");
+               
             }
         }
     }
