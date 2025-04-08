@@ -105,10 +105,7 @@ namespace Nursing.Managers
             procedureInProgress = true;
             
             // 가이드 메시지 표시
-            if (!string.IsNullOrEmpty(currentProcedure.guideMessage) && dialogueManager != null)
-            {
-                dialogueManager.ShowGuideMessage(currentProcedure.guideMessage);
-            }
+            
             
             // 첫 스텝으로 진행
             AdvanceToNextStep();
@@ -250,6 +247,7 @@ namespace Nursing.Managers
         /// </summary>
         public bool HandleItemClick(string itemId)
         {
+            Debug.Log("item감지는 됐습니다. ");
             if (!procedureInProgress || currentStep == null || currentStep.stepType != ProcedureStepType.ItemClick)
                 return false;
             

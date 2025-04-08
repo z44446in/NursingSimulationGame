@@ -26,7 +26,7 @@ namespace Nursing.Editor
             displayNameProperty = serializedObject.FindProperty("displayName");
             descriptionProperty = serializedObject.FindProperty("description");
             stagesProperty = serializedObject.FindProperty("stages");
-            guideMessageProperty = serializedObject.FindProperty("guideMessage");
+            
             
             // 스타일 초기화는 OnInspectorGUI에서 수행
         }
@@ -45,7 +45,7 @@ namespace Nursing.Editor
             EditorGUILayout.PropertyField(idProperty, new GUIContent("ID", "인터랙션의 고유 식별자"));
             EditorGUILayout.PropertyField(displayNameProperty, new GUIContent("표시 이름", "인터랙션의 화면에 표시될 이름"));
             EditorGUILayout.PropertyField(descriptionProperty, new GUIContent("설명", "인터랙션에 대한 설명"));
-            EditorGUILayout.PropertyField(guideMessageProperty, new GUIContent("가이드 메시지", "인터랙션 시작 시 표시될 가이드 메시지"));
+            
             
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();

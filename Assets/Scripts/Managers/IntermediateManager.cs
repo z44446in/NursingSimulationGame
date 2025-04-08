@@ -211,11 +211,13 @@ public void PickupItem(Item item)
     currentHeldItem = item;
 
         // 손 이미지 업데이트
-        UpdateHandImageInIntermediateScreen(item);
+        UpdateHandImageInIntermediateScreen(currentHeldItem);
 
         //아이템별 상호작용 메서드 (작성 필요함)
     
-}
+        ProcedureManager.HandleItemClick(currentHeldItem.itemId);
+
+    }
 
 // 손 이미지 업데이트 메서드
 private void UpdateHandImageInIntermediateScreen(Item item)

@@ -16,8 +16,7 @@ namespace Nursing.Procedure
         [Header("프로시저 스텝")]
         public List<ProcedureStep> steps = new List<ProcedureStep>();
         
-        [Header("가이드 메시지")]
-        public string guideMessage;
+      
     }
 
     [Serializable]
@@ -30,7 +29,10 @@ namespace Nursing.Procedure
         
         [Header("스텝 타입")]
         public ProcedureStepType stepType;
-        
+
+        [Header("인터랙션 설정")]
+        public ProcedureStepSettings settings;
+
         [Header("순서 요구사항")]
         public bool requireSpecificOrder;
         public List<string> requiredPreviousStepIds;
@@ -39,8 +41,7 @@ namespace Nursing.Procedure
         public PenaltyData incorrectOrderPenalty;
         public PenaltyData incorrectActionPenalty;
         
-        [Header("인터랙션 설정")]
-        public ProcedureStepSettings settings;
+       
     }
 
     [Serializable]

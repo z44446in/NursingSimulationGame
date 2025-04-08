@@ -59,10 +59,7 @@ namespace Nursing.Managers
             currentStageIndex = -1;
             
             // 가이드 메시지 표시
-            if (!string.IsNullOrEmpty(currentInteraction.guideMessage) && dialogueManager != null)
-            {
-                dialogueManager.ShowGuideMessage(currentInteraction.guideMessage);
-            }
+            
             
             // 첫 스테이지로 진행
             AdvanceToNextStage();

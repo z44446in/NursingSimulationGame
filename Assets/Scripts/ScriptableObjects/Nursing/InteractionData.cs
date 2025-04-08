@@ -17,8 +17,7 @@ namespace Nursing.Interaction
         [Header("인터랙션 스테이지")]
         public List<InteractionStage> stages = new List<InteractionStage>();
 
-        [Header("가이드 메시지")]
-        public string guideMessage;
+       
     }
 
     [Serializable]
@@ -33,7 +32,10 @@ namespace Nursing.Interaction
         
         [Header("인터랙션 타입")]
         public InteractionType interactionType;
-        
+
+        [Header("인터랙션 설정")]
+        public InteractionSettings settings;
+
         [Header("순서 요구사항")]
         public bool requireSpecificOrder;
         public List<string> requiredPreviousStageIds;
@@ -42,8 +44,7 @@ namespace Nursing.Interaction
         public PenaltyData incorrectOrderPenalty;
         public PenaltyData incorrectInteractionPenalty;
         
-        [Header("인터랙션 설정")]
-        public InteractionSettings settings;
+        
     }
 
     [Serializable]
