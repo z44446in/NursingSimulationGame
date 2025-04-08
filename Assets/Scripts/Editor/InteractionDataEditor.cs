@@ -326,13 +326,13 @@ namespace Nursing.Editor
         private void DrawObjectCreationSettings(SerializedProperty settingsProp)
         {
             SerializedProperty createObjectProp = settingsProp.FindPropertyRelative("createObject");
-            SerializedProperty objectToCreateTagProp = settingsProp.FindPropertyRelative("objectToCreateTag");
+            SerializedProperty objectToCreateProp = settingsProp.FindPropertyRelative("objectToCreate");
             
             // 이 인터랙션 타입을 활성화하기 위한 플래그
             createObjectProp.boolValue = true;
             
             // 기본 설정
-            EditorGUILayout.PropertyField(objectToCreateTagProp, new GUIContent("생성할 오브젝트 태그", "활성화할 오브젝트의 태그 배열"));
+            EditorGUILayout.PropertyField(objectToCreateProp, new GUIContent("생성할 오브젝트 태그", "활성화할 오브젝트의 태그 배열"));
         }
         
         private void DrawConditionalClickSettings(SerializedProperty settingsProp)

@@ -196,34 +196,24 @@ namespace Nursing.Managers
            
             var settings = currentStage.settings;
             
-            if (settings == null || settings.objectToCreateTag == null || settings.objectToCreateTag.Length == 0)
+            if (settings == null || settings.objectToCreate == null || settings.objectToCreate.Length == 0)
             {
                 Debug.LogError("오브젝트 생성 설정이 없거나 생성할 오브젝트 태그가 없습니다.");
                 AdvanceToNextStage();
                 return;
             }
-            
+
             // 태그 지정된 모든 오브젝트 활성화
-            foreach (var tag in settings.objectToCreateTag)
+            foreach (var obj in settings.objectToCreate)
             {
-               
-                var objects = GameObject.FindGameObjectsWithTag(tag);
 
-                Debug.Log( objects[0].name);
+                Debug.Log(obj.name);
+                obj.SetActive(true);
 
-                foreach (var obj in objects)
-                { 
 
-                    if (!obj.activeSelf)
-                    {
-                        
-                        obj.SetActive(true);
-                        Debug.Log($"오브젝트 활성화: {obj.name} (태그: {tag})");
-                    }
-
-                    
-                }
             }
+
+
             
             // 오브젝트 생성 후 다음 단계로 진행
             AdvanceToNextStage();
