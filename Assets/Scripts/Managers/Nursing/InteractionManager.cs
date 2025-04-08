@@ -193,6 +193,7 @@ namespace Nursing.Managers
         /// </summary>
         private void SetupObjectCreation()
         {
+           
             var settings = currentStage.settings;
             
             if (settings == null || settings.objectToCreateTag == null || settings.objectToCreateTag.Length == 0)
@@ -205,15 +206,22 @@ namespace Nursing.Managers
             // 태그 지정된 모든 오브젝트 활성화
             foreach (var tag in settings.objectToCreateTag)
             {
+               
                 var objects = GameObject.FindGameObjectsWithTag(tag);
-                
+
+                Debug.Log( objects[0].name);
+
                 foreach (var obj in objects)
-                {
+                { 
+
                     if (!obj.activeSelf)
                     {
+                        
                         obj.SetActive(true);
                         Debug.Log($"오브젝트 활성화: {obj.name} (태그: {tag})");
                     }
+
+                    
                 }
             }
             

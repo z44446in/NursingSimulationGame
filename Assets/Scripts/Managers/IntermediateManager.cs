@@ -47,6 +47,7 @@ public class IntermediateManager : MonoBehaviour
     [SerializeField] private List<Item> itemsToExclude; // 인스펙터에서 제외할 아이템 설정
 
 
+    [SerializeField] private ProcedureManager procedureManager;
     private void Awake()
     {
        
@@ -214,8 +215,8 @@ public void PickupItem(Item item)
         UpdateHandImageInIntermediateScreen(currentHeldItem);
 
         //아이템별 상호작용 메서드 (작성 필요함)
-    
-        ProcedureManager.HandleItemClick(currentHeldItem.itemId);
+
+        procedureManager.HandleItemClick(currentHeldItem.itemId);
 
     }
 

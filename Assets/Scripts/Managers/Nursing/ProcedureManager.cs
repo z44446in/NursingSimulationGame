@@ -27,7 +27,9 @@ namespace Nursing.Managers
         private ProcedureStep currentStep;
         private List<string> completedStepIds = new List<string>();
         private bool procedureInProgress = false;
-        
+
+        [SerializeField] private List<InteractionData> availableInteractions; //클로드가 scriptableobject 폴더에서 찾고싶으면 추가하라고 한 코드 
+
         private void Awake()
         {
             if (interactionManager == null)
@@ -262,12 +264,13 @@ namespace Nursing.Managers
                 // 인터랙션 데이터가 있으면 인터랙션 시작
                 if (!string.IsNullOrEmpty(settings.interactionDataId) && interactionManager != null)
                 {
-                    InteractionData interactionData = Resources.Load<InteractionData>("Interactions/" + settings.interactionDataId);
-                    
+                    // ScriptableObjects 폴더에서 ID로 InteractionData 찾기
+                    InteractionData interactionData = FindInteractionDataById(settings.interactionDataId);
+
                     if (interactionData != null)
                     {
                         interactionManager.StartInteraction(interactionData);
-                        
+
                         // 인터랙션이 완료되면 스텝 완료 처리 (인터랙션 매니저에서 이벤트를 통해 알림)
                         // TODO: InteractionManager에 OnInteractionComplete 이벤트 추가
                     }
@@ -293,7 +296,16 @@ namespace Nursing.Managers
             
             return false;
         }
-        
+
+        private InteractionData FindInteractionDataById(string id)
+        {
+            foreach (var interaction in availableInteractions)
+            {
+                if (interaction != null && interaction.id == id)
+                    return interaction;
+            }
+            return null;
+        }
         /// <summary>
         /// 플레이어 상호작용을 처리합니다.
         /// </summary>

@@ -19,26 +19,8 @@ MonoBehaviour:
   - id: stage_0
     name: "\uC2A4\uD14C\uC774\uC9C0 0"
     StageNum: 0
-    guideMessage: 
+    guideMessage: "\uB69C\uAED1 \uC0DD\uC131~"
     interactionType: 1
-    requireSpecificOrder: 0
-    requiredPreviousStageIds: []
-    incorrectOrderPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-    incorrectInteractionPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
     settings:
       isDragInteraction: 1
       showDirectionArrows: 0
@@ -108,4 +90,21 @@ MonoBehaviour:
         flashCount: 0
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
-  guideMessage: 
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0

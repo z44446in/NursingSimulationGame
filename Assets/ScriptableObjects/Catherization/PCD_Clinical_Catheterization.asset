@@ -13,13 +13,22 @@ MonoBehaviour:
   m_Name: PCD_Clinical_Catheterization
   m_EditorClassIdentifier: 
   id: Catheterization_Clinical
-  displayName: 
-  description: 
+  displayName: "\u3147\u3147"
+  description: "\u3141\u3134"
   steps:
   - id: step_0
     name: "\uC2A4\uD15D 0"
-    guideMessage: 
+    guideMessage: "\uC2A4\uD15D \uC601 \uC2DC\uC791 \u314B\u314B"
     stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: distilledWater
+      interactionDataId: DilutedWaterInteraction
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
     requireSpecificOrder: 0
     requiredPreviousStepIds: []
     incorrectOrderPenalty:
@@ -38,6 +47,10 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
+  - id: step_1
+    name: "\uC2A4\uD15D 1"
+    guideMessage: "\uC2A4\uD15D 2 \uC2DC\uC791 "
+    stepType: 0
     settings:
       isItemClick: 1
       itemId: distilledWater
@@ -47,4 +60,21 @@ MonoBehaviour:
       requireAllButtons: 0
       isPlayerInteraction: 0
       validInteractionTags: []
-  guideMessage: 
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
