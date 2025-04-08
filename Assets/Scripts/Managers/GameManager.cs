@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using DG.Tweening;
+using Nursing.Procedure;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class GameManager : MonoBehaviour
     /// GameManager의 전역 인스턴스에 접근하는 프로퍼티.
     /// </summary>
     public static GameManager Instance => instance;
+
+    public ProcedureTypeEnum currentProcedureType;
+    public ProcedureVersionType currentVersionType;
+    public ProcedurePlayType currentPlayType;
 
     public enum GameState // 게임 상태 정의
     {
@@ -197,6 +202,7 @@ public class GameManager : MonoBehaviour
 
         
     }
+    
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -245,6 +251,27 @@ public class GameManager : MonoBehaviour
         return GameScreen.PREPARING; // Default 값
     }
 
+    // proceduretype설정 
+    public void SetCurrentProcedureType(ProcedureTypeEnum procedureType)
+    {
+        // 프로시저 타입 설정 로직
+        currentProcedureType = procedureType;
+        Debug.Log($"GameManager: Set current procedure type to {procedureType}");
+    }
+
+    public void SetProcedureVersionType(ProcedureVersionType versionType)
+    {
+        // 버전 타입 설정 로직
+        currentVersionType = versionType;
+        Debug.Log($"GameManager: Set version type to {versionType}");
+    }
+
+    public void SetProcedurePlayType(ProcedurePlayType playType)
+    {
+        // 플레이 타입 설정 로직
+        currentPlayType = playType;
+        Debug.Log($"GameManager: Set play type to {playType}");
+    }
 
 
 

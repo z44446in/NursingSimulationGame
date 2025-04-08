@@ -9,13 +9,19 @@ namespace Nursing.Procedure
         public string id;
         public string displayName;
         [TextArea(3, 5)] public string description;
-        
+
+        [Header("술기 종류")]
+        public ProcedureTypeEnum ProcdureTypeName;
+
         [Header("프로시저 버전")]
         public ProcedureVersionType versionType;
         public ProcedurePlayType procedurePlayType; // 추가된 필드
 
         [Header("프로시저 데이터")]
         public ProcedureData procedureData;
+
+       
+        
     }
 
     public enum ProcedureVersionType
