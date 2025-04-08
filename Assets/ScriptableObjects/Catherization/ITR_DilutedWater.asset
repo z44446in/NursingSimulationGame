@@ -42,8 +42,8 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       createObject: 1
-      objectToCreateTag:
-      - Bottle
+      objectToCreate:
+      - {fileID: 1291302089044735830, guid: 604a493084ab00841a9672708a438848, type: 3}
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
