@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Nursing.Procedure;
 
 [CreateAssetMenu(fileName = "ProcedureRequiredItems", menuName = "Nursing/ProcedureRequiredItems")]
 public class ProcedureRequiredItems : ScriptableObject
 {
-    public ProcedureTypeEnum procedureType;
+    public NursingProcedureType procedureType;
     public List<RequiredItem> requiredItems;
 }
 

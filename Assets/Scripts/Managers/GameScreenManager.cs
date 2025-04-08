@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using DG.Tweening; // Make sure DOTween is imported
 using UnityEngine.EventSystems;
 using System.Linq;
-using Nursing.Managers;
-using Nursing.Interaction;
 
 public class GameScreenManager : MonoBehaviour
 {
@@ -42,6 +40,14 @@ public class GameScreenManager : MonoBehaviour
     [SerializeField] private GameObject actPopup; // ���� �ִ� ActPopup ����
     [SerializeField] private Button actButton;    // �ൿ�ϱ� ��ư ����
 
+    [Header("Popup References")]
+    [SerializeField] private GameObject talkPopup; // ���� �ִ� TalkPopup ����
+    [SerializeField] private Button talkButton;    // �ൿ�ϱ� ��ư ����
+
+    [Header("UI Elements")]
+    [SerializeField] private Button addAllRequiredItemsButton; // "�ʿ��� ���� �� ���" ��ư
+    [SerializeField] private List<Item> requiredItemsToAdd; // �ν����Ϳ��� ������ �ʼ� ������ ����Ʈ
+    [SerializeField] private Button debugModeButton; // ����� ���� ��ư
 
 
     private CanvasGroup canvasGroup;
@@ -89,7 +95,10 @@ public class GameScreenManager : MonoBehaviour
    
 
         }
-     
+        if (talkPopup != null)
+        {
+            talkPopup.SetActive(false); // ���۽� ��Ȱ��ȭ
+        }
 
     }
 
@@ -100,6 +109,46 @@ public class GameScreenManager : MonoBehaviour
         actPopup.SetActive(true);
     }
 
+    private void ShowTalkPopup()
+    {
+      
+     talkPopup.SetActive(true);
+    }
+
+    private void AddAllRequiredItemsToCart()
+    {
+        if (requiredItemsToAdd == null || requiredItemsToAdd.Count == 0)
+        {
+            Debug.LogWarning("No required items are set in the inspector!");
+            return;
+        }
+
+        if (InteractionManager.Instance == null)
+        {
+            Debug.LogError("InteractionManager instance is missing!");
+            return;
+        }
+
+        // �ʿ��� �������� īƮ�� �߰�
+        foreach (var item in requiredItemsToAdd)
+        {
+            if (item != null)
+            {
+                bool success = InteractionManager.Instance.AddItemToCart(item);
+                if (success)
+                {
+                   
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to add item: {item.itemName} to cart.");
+                }
+            }
+        }
+
+        // UI ������Ʈ
+        cartUI?.UpdateCartDisplay();
+    }
 
 
     private void InitializeGameScreen()
@@ -181,6 +230,13 @@ public class GameScreenManager : MonoBehaviour
        
        if (actButton != null)
            actButton.onClick.RemoveAllListeners();
+       if (talkButton != null)
+           talkButton.onClick.RemoveAllListeners();
+
+        if (addAllRequiredItemsButton != null)
+        {
+            addAllRequiredItemsButton.onClick.RemoveListener(AddAllRequiredItemsToCart);
+        }
       
 
     }
@@ -195,7 +251,32 @@ public class GameScreenManager : MonoBehaviour
 
     private void InitializeCart()
     {
-        //작성필요
+        if (InteractionManager.Instance != null)
+        {
+            // ���� īƮ�� �����۵��� �ӽ� ����
+            List<Item> intermediateCartItems = InteractionManager.Instance.GetCartItems();
+
+            // īƮ �ʱ�ȭ
+            InteractionManager.Instance.ClearCart();
+
+            // �߰�ȭ�鿡�� ������ �����۵� �ٽ� �߰�
+            foreach (var item in intermediateCartItems)
+            {
+                InteractionManager.Instance.AddItemToCart(item);
+            }
+
+            // �߰��� �ʿ��� ����ȭ�� ���� �����۵� �߰�
+            foreach (var item in initialCartItems)
+            {
+                // �̹� īƮ�� �ִ� �������� �ƴ� ��쿡�� �߰�
+                if (!intermediateCartItems.Any(x => x.itemId == item.itemId))
+                {
+                    InteractionManager.Instance.AddItemToCart(item);
+                }
+            }
+
+            cartUI?.UpdateCartDisplay();
+        }
     }
 
     public void SwitchToPanel(string panelType)
@@ -230,9 +311,76 @@ public class GameScreenManager : MonoBehaviour
             });
     }
 
-    
+    // GameScreenManager.cs에 추가할 메서드
 
+public void HandleItemPickup(Item item)
+{
+    if (item == null) return;
 
+    // 현재 화면에서 아이템 상호작용 처리
+    switch (item.interactionType)
+    {
+        case InteractionType.None:
+            // 기본 동작 - 손에 들기
+            if (InteractionManager.Instance != null)
+            {
+                InteractionManager.Instance.PickupItem(item);
+                cartUI?.UpdateCartDisplay();
+            }
+            break;
 
+        case InteractionType.SingleClick:
+            // 클릭 인터랙션 - 간단한 설명이나 효과
+            DialogueManager.Instance?.ShowSmallDialogue(item.guideText);
+            break;
+
+        case InteractionType.Drag:
+        case InteractionType.TwoFingerDrag:
+        case InteractionType.Draw:
+        case InteractionType.RotateDrag:
+            // 복잡한 인터랙션 - 미니게임 또는 특수 상호작용
+            StartItemInteraction(item);
+            break;
+    }
+}
+
+private void StartItemInteraction(Item item)
+{
+    if (item.miniGamePrefab == null)
+    {
+        DialogueManager.Instance?.ShowSmallDialogue("이 아이템의 인터랙션은 아직 구현되지 않았습니다.");
+        return;
+    }
+
+    // 미니게임 인스턴스화 및 초기화
+    Transform miniGameParent = FindObjectOfType<Canvas>().transform;
+    GameObject miniGameObj = Instantiate(item.miniGamePrefab, miniGameParent);
+    MiniGameBase miniGame = miniGameObj.GetComponent<MiniGameBase>();
+
+    if (miniGame != null)
+    {
+        miniGame.Initialize(
+            item.timeLimit,
+            item.successThreshold,
+            (success) => {
+                // 미니게임 완료 콜백
+                if (success)
+                {
+                    DialogueManager.Instance?.ShowSmallDialogue("성공했습니다!");
+                    // 추가 보상이나 진행 상태 업데이트
+                }
+                else
+                {
+                    DialogueManager.Instance?.ShowSmallDialogue("실패했습니다. 다시 시도하세요.");
+                }
+            }
+        );
+    }
+    else
+    {
+        Debug.LogError($"MiniGameBase component not found on prefab for item: {item.itemName}");
+        Destroy(miniGameObj);
+    }
+}
 
 }

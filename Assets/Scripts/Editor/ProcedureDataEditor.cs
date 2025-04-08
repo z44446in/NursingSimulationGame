@@ -1,372 +1,456 @@
 using UnityEngine;
 using UnityEditor;
-using Nursing.Procedure;
-using Nursing.Interaction;
 using System.Collections.Generic;
+using UnityEditorInternal;
+using System.Reflection;
 
-namespace Nursing.Editor
+/// <summary>
+/// 시술 데이터를 위한 커스텀 에디터
+/// </summary>
+public class ProcedureDataEditor : Editor
 {
-    [CustomEditor(typeof(ProcedureData))]
-    public class ProcedureDataEditor : UnityEditor.Editor
+    private SerializedProperty procedureTypeProp;
+    private SerializedProperty procedureNameProp;
+    private SerializedProperty descriptionProp;
+    private SerializedProperty stepsProp;
+    private SerializedProperty timeLimitProp;
+    private SerializedProperty maxScoreProp;
+    private SerializedProperty timeBonusProp;
+    private SerializedProperty maxTimeBonusProp;
+    private SerializedProperty procedureIconProp;
+    private SerializedProperty procedureBannerProp;
+    private SerializedProperty procedureColorProp;
+    private SerializedProperty backgroundMusicProp;
+    private SerializedProperty completionSoundProp;
+    
+    private ReorderableList stepsList;
+    
+    private bool showBasicInfo = true;
+    private bool showStepsList = true;
+    private bool showSettings = true;
+    private bool showUISettings = true;
+    private bool showAudioSettings = true;
+    
+    private void OnEnable()
     {
-        private SerializedProperty idProperty;
-        private SerializedProperty displayNameProperty;
-        private SerializedProperty descriptionProperty;
-        private SerializedProperty stepsProperty;
-        private SerializedProperty guideMessageProperty;
+        procedureTypeProp = serializedObject.FindProperty("procedureType");
+        procedureNameProp = serializedObject.FindProperty("displayName");
+        descriptionProp = serializedObject.FindProperty("description");
+        stepsProp = serializedObject.FindProperty("steps");
+        timeLimitProp = serializedObject.FindProperty("timeLimit");
+        maxScoreProp = serializedObject.FindProperty("maxScore");
+        timeBonusProp = serializedObject.FindProperty("errorPenalty"); // 임시
+        maxTimeBonusProp = serializedObject.FindProperty("maxScore"); // 임시
+        procedureIconProp = serializedObject.FindProperty("backgroundImage");
+        procedureBannerProp = serializedObject.FindProperty("backgroundImage"); // 임시
+        procedureColorProp = serializedObject.FindProperty("titleColor");
+        backgroundMusicProp = serializedObject.FindProperty("backgroundMusic");
+        completionSoundProp = serializedObject.FindProperty("completionSound");
         
-        private Dictionary<int, bool> stepFoldouts = new Dictionary<int, bool>();
-        private Dictionary<int, bool> settingsFoldouts = new Dictionary<int, bool>();
+        // 단계 리스트 초기화
+        InitializeStepsList();
+    }
+    
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
         
-        private GUIStyle headerStyle;
-        private GUIStyle subheaderStyle;
+        ProcedureData procedureData = (ProcedureData)target;
         
-        private void OnEnable()
+        // 헤더
+        EditorGUILayout.Space(10);
+        EditorGUILayout.LabelField("시술 데이터", EditorStyles.boldLabel);
+        EditorGUILayout.Space(5);
+        
+        // 기본 정보 섹션
+        showBasicInfo = EditorGUILayout.Foldout(showBasicInfo, "기본 정보", true);
+        if (showBasicInfo)
         {
-            idProperty = serializedObject.FindProperty("id");
-            displayNameProperty = serializedObject.FindProperty("displayName");
-            descriptionProperty = serializedObject.FindProperty("description");
-            stepsProperty = serializedObject.FindProperty("steps");
-            guideMessageProperty = serializedObject.FindProperty("guideMessage");
-            
-            // 스타일 초기화는 OnInspectorGUI에서 수행
-        }
-        
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update();
-            
-            // 스타일 초기화
-            InitializeStyles();
-            
-            // 기본 정보 섹션
-            EditorGUILayout.LabelField("기본 정보", headerStyle);
             EditorGUI.indentLevel++;
             
-            EditorGUILayout.PropertyField(idProperty, new GUIContent("ID", "프로시저의 고유 식별자"));
-            EditorGUILayout.PropertyField(displayNameProperty, new GUIContent("표시 이름", "프로시저의 화면에 표시될 이름"));
-            EditorGUILayout.PropertyField(descriptionProperty, new GUIContent("설명", "프로시저에 대한 설명"));
-            EditorGUILayout.PropertyField(guideMessageProperty, new GUIContent("가이드 메시지", "프로시저 시작 시 표시될 가이드 메시지"));
+            EditorGUILayout.PropertyField(procedureTypeProp, new GUIContent("시술 유형"));
+            EditorGUILayout.PropertyField(procedureNameProp, new GUIContent("시술 이름"));
+            EditorGUILayout.PropertyField(descriptionProp, new GUIContent("설명"));
             
             EditorGUI.indentLevel--;
-            EditorGUILayout.Space();
-            
-            // 프로시저 스텝 섹션
-            EditorGUILayout.LabelField("프로시저 스텝", headerStyle);
-            EditorGUILayout.Space();
-            
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("스텝 추가", GUILayout.Width(150)))
-            {
-                AddStep();
-            }
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
-            
-            EditorGUILayout.Space();
-            
-            // 스텝 표시
-            for (int i = 0; i < stepsProperty.arraySize; i++)
-            {
-                DrawStep(i);
-            }
-            
-            serializedObject.ApplyModifiedProperties();
         }
         
-        private void InitializeStyles()
-        {
-            if (headerStyle == null)
-            {
-                headerStyle = new GUIStyle(EditorStyles.boldLabel);
-                headerStyle.fontSize = 14;
-                headerStyle.margin = new RectOffset(0, 0, 10, 5);
-            }
-            
-            if (subheaderStyle == null)
-            {
-                subheaderStyle = new GUIStyle(EditorStyles.boldLabel);
-                subheaderStyle.fontSize = 12;
-                subheaderStyle.margin = new RectOffset(0, 0, 5, 3);
-            }
-        }
+        EditorGUILayout.Space(10);
         
-        private void AddStep()
+        // 단계 목록 섹션
+        showStepsList = EditorGUILayout.Foldout(showStepsList, "시술 단계 목록", true);
+        if (showStepsList)
         {
-            // 새 스텝 추가
-            stepsProperty.arraySize++;
-            int newIndex = stepsProperty.arraySize - 1;
+            // 단계 리스트 표시
+            stepsList.DoLayoutList();
             
-            // 기본값 설정
-            SerializedProperty newStep = stepsProperty.GetArrayElementAtIndex(newIndex);
-            
-            SerializedProperty idProp = newStep.FindPropertyRelative("id");
-            idProp.stringValue = "step_" + newIndex;
-            
-            SerializedProperty nameProp = newStep.FindPropertyRelative("name");
-            nameProp.stringValue = "스텝 " + newIndex;
-            
-            // 새 스텝의 폴드아웃 상태를 열림으로 설정
-            stepFoldouts[newIndex] = true;
-            settingsFoldouts[newIndex] = true;
-        }
-        
-        private void DrawStep(int index)
-        {
-            SerializedProperty stepProperty = stepsProperty.GetArrayElementAtIndex(index);
-            
-            SerializedProperty idProp = stepProperty.FindPropertyRelative("id");
-            SerializedProperty nameProp = stepProperty.FindPropertyRelative("name");
-            SerializedProperty guideMessageProp = stepProperty.FindPropertyRelative("guideMessage");
-            SerializedProperty stepTypeProp = stepProperty.FindPropertyRelative("stepType");
-            SerializedProperty requireSpecificOrderProp = stepProperty.FindPropertyRelative("requireSpecificOrder");
-            SerializedProperty requiredPreviousStepIdsProp = stepProperty.FindPropertyRelative("requiredPreviousStepIds");
-            SerializedProperty incorrectOrderPenaltyProp = stepProperty.FindPropertyRelative("incorrectOrderPenalty");
-            SerializedProperty incorrectActionPenaltyProp = stepProperty.FindPropertyRelative("incorrectActionPenalty");
-            SerializedProperty settingsProp = stepProperty.FindPropertyRelative("settings");
-            
-            if (!stepFoldouts.ContainsKey(index))
+            if (stepsProp.arraySize > 0)
             {
-                stepFoldouts[index] = false;
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.LabelField("시술 단계 순서", EditorStyles.boldLabel);
+                
+                // 단계 흐름 시각화
+                DrawStepsFlow();
+                
+                EditorGUILayout.EndVertical();
             }
             
-            // 스텝 헤더 (폴드아웃)
-            EditorGUILayout.BeginHorizontal();
+            // 아이템 요약
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.LabelField("필요 아이템 요약", EditorStyles.boldLabel);
             
-            stepFoldouts[index] = EditorGUILayout.Foldout(stepFoldouts[index], "", true);
-            
-            // 스텝 헤더 표시 (이름 + 스텝 타입)
-            EditorGUILayout.LabelField("스텝 " + index + ": " + nameProp.stringValue + " (" + stepTypeProp.enumDisplayNames[stepTypeProp.enumValueIndex] + ")", EditorStyles.boldLabel);
-            
-            // 삭제 버튼
-            if (GUILayout.Button("삭제", GUILayout.Width(60)))
+            List<Item> allItems = procedureData.GetAllRequiredItems();
+            if (allItems.Count > 0)
             {
-                if (EditorUtility.DisplayDialog("스텝 삭제", "정말로 이 스텝을 삭제하시겠습니까?", "삭제", "취소"))
+                foreach (Item item in allItems)
                 {
-                    DeleteStep(index);
-                    return; // 더 이상 처리하지 않고 리턴
-                }
-            }
-            
-            // 위로 이동 버튼
-            GUI.enabled = index > 0;
-            if (GUILayout.Button("↑", GUILayout.Width(25)))
-            {
-                MoveStep(index, index - 1);
-                return; // 더 이상 처리하지 않고 리턴
-            }
-            
-            // 아래로 이동 버튼
-            GUI.enabled = index < stepsProperty.arraySize - 1;
-            if (GUILayout.Button("↓", GUILayout.Width(25)))
-            {
-                MoveStep(index, index + 1);
-                return; // 더 이상 처리하지 않고 리턴
-            }
-            GUI.enabled = true;
-            
-            EditorGUILayout.EndHorizontal();
-            
-            // 폴드아웃이 열려있는 경우 세부 정보 표시
-            if (stepFoldouts[index])
-            {
-                EditorGUI.indentLevel++;
-                
-                // 기본 정보
-                EditorGUILayout.PropertyField(idProp, new GUIContent("ID", "스텝의 고유 식별자"));
-                EditorGUILayout.PropertyField(nameProp, new GUIContent("이름", "스텝의 이름"));
-                EditorGUILayout.PropertyField(guideMessageProp, new GUIContent("가이드 메시지", "이 스텝 실행 시 표시될 가이드 메시지"));
-                
-                EditorGUILayout.Space();
-                
-                // 스텝 타입
-                EditorGUILayout.PropertyField(stepTypeProp, new GUIContent("스텝 타입", "이 스텝의 유형"));
-                
-                EditorGUILayout.Space();
-                
-                // 순서 요구사항
-                EditorGUILayout.PropertyField(requireSpecificOrderProp, new GUIContent("특정 순서 요구", "이 스텝이 특정 순서로 실행되어야 하는지 여부"));
-                
-                if (requireSpecificOrderProp.boolValue)
-                {
-                    EditorGUILayout.PropertyField(requiredPreviousStepIdsProp, new GUIContent("필요한 이전 스텝 ID", "이 스텝 전에 완료되어야 하는 스텝 ID 목록"));
-                    
-                    EditorGUILayout.PropertyField(incorrectOrderPenaltyProp, new GUIContent("잘못된 순서 패널티", "순서가 잘못되었을 때 적용할 패널티"));
-                }
-                
-                EditorGUILayout.Space();
-                
-                // 패널티 설정
-                EditorGUILayout.PropertyField(incorrectActionPenaltyProp, new GUIContent("잘못된 행동 패널티", "잘못된 행동을 했을 때 적용할 패널티"));
-                
-                EditorGUILayout.Space();
-                
-                // 인터랙션 설정
-                if (!settingsFoldouts.ContainsKey(index))
-                {
-                    settingsFoldouts[index] = false;
-                }
-                
-                settingsFoldouts[index] = EditorGUILayout.Foldout(settingsFoldouts[index], "스텝 설정", true);
-                
-                if (settingsFoldouts[index])
-                {
-                    EditorGUI.indentLevel++;
-                    
-                    // 스텝 타입에 따른 설정 표시
-                    DrawStepSettings(settingsProp, (ProcedureStepType)stepTypeProp.enumValueIndex);
-                    
-                    EditorGUI.indentLevel--;
-                }
-                
-                EditorGUI.indentLevel--;
-            }
-            
-            EditorGUILayout.Space();
-        }
-        
-        private void DrawStepSettings(SerializedProperty settingsProp, ProcedureStepType stepType)
-        {
-            switch (stepType)
-            {
-                case ProcedureStepType.ItemClick:
-                    DrawItemClickSettings(settingsProp);
-                    break;
-                    
-                case ProcedureStepType.ActionButtonClick:
-                    DrawActionButtonClickSettings(settingsProp);
-                    break;
-                    
-                case ProcedureStepType.PlayerInteraction:
-                    DrawPlayerInteractionSettings(settingsProp);
-                    break;
-            }
-        }
-        
-        #region 스텝 타입별 설정 드로잉 메서드
-        
-        private void DrawItemClickSettings(SerializedProperty settingsProp)
-        {
-            SerializedProperty isItemClickProp = settingsProp.FindPropertyRelative("isItemClick");
-            SerializedProperty itemIdProp = settingsProp.FindPropertyRelative("itemId");
-            SerializedProperty interactionDataIdProp = settingsProp.FindPropertyRelative("interactionDataId");
-            
-            // 이 스텝 타입을 활성화하기 위한 플래그
-            isItemClickProp.boolValue = true;
-            
-            // 기본 설정
-            EditorGUILayout.PropertyField(itemIdProp, new GUIContent("아이템 ID", "클릭할 아이템의 ID"));
-            
-            // 인터랙션 데이터 설정
-            EditorGUILayout.PropertyField(interactionDataIdProp, new GUIContent("인터랙션 데이터 ID", "실행할 인터랙션 데이터의 ID"));
-            
-            // 인터랙션 데이터 찾기 버튼
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("인터랙션 데이터 찾기", GUILayout.Width(150)))
-            {
-                // 인터랙션 데이터 찾기 기능 (선택적 구현)
-                // 예: 프로젝트 내의 모든 InteractionData 자산을 찾아서 선택할 수 있게 함
-                string[] guids = AssetDatabase.FindAssets("t:InteractionData");
-                if (guids.Length > 0)
-                {
-                    GenericMenu menu = new GenericMenu();
-                    
-                    foreach (string guid in guids)
+                    if (item != null)
                     {
-                        string path = AssetDatabase.GUIDToAssetPath(guid);
-                        InteractionData data = AssetDatabase.LoadAssetAtPath<InteractionData>(path);
-                        
-                        if (data != null)
-                        {
-                            menu.AddItem(new GUIContent(data.displayName + " (" + data.id + ")"), 
-                                interactionDataIdProp.stringValue == data.id,
-                                () => {
-                                    serializedObject.Update();
-                                    interactionDataIdProp.stringValue = data.id;
-                                    serializedObject.ApplyModifiedProperties();
-                                });
-                        }
+                        EditorGUILayout.LabelField("• " + item.itemName);
                     }
-                    
-                    menu.ShowAsContext();
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("인터랙션 데이터 없음", "프로젝트에 인터랙션 데이터가 없습니다.", "확인");
                 }
             }
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
-        }
-        
-        private void DrawActionButtonClickSettings(SerializedProperty settingsProp)
-        {
-            SerializedProperty isActionButtonClickProp = settingsProp.FindPropertyRelative("isActionButtonClick");
-            SerializedProperty correctButtonIdsProp = settingsProp.FindPropertyRelative("correctButtonIds");
-            SerializedProperty requireAllButtonsProp = settingsProp.FindPropertyRelative("requireAllButtons");
-            
-            // 이 스텝 타입을 활성화하기 위한 플래그
-            isActionButtonClickProp.boolValue = true;
-            
-            // 기본 설정
-            EditorGUILayout.PropertyField(correctButtonIdsProp, new GUIContent("올바른 버튼 ID", "올바른 버튼의 ID 목록"));
-            EditorGUILayout.PropertyField(requireAllButtonsProp, new GUIContent("모든 버튼 필요", "모든 올바른 버튼을 클릭해야 하는지 여부"));
-        }
-        
-        private void DrawPlayerInteractionSettings(SerializedProperty settingsProp)
-        {
-            SerializedProperty isPlayerInteractionProp = settingsProp.FindPropertyRelative("isPlayerInteraction");
-            SerializedProperty validInteractionTagsProp = settingsProp.FindPropertyRelative("validInteractionTags");
-            
-            // 이 스텝 타입을 활성화하기 위한 플래그
-            isPlayerInteractionProp.boolValue = true;
-            
-            // 기본 설정
-            EditorGUILayout.PropertyField(validInteractionTagsProp, new GUIContent("유효한 상호작용 태그", "유효한 플레이어 상호작용 태그 목록"));
-        }
-        
-        #endregion
-        
-        private void DeleteStep(int index)
-        {
-            stepsProperty.DeleteArrayElementAtIndex(index);
-            
-            // 폴드아웃 상태 업데이트
-            var newFoldouts = new Dictionary<int, bool>();
-            var newSettingsFoldouts = new Dictionary<int, bool>();
-            
-            for (int i = 0; i < stepsProperty.arraySize; i++)
+            else
             {
-                if (i < index)
+                EditorGUILayout.LabelField("필요한 아이템이 없습니다.");
+            }
+            
+            EditorGUILayout.EndVertical();
+        }
+        
+        EditorGUILayout.Space(10);
+        
+        // 설정 섹션
+        showSettings = EditorGUILayout.Foldout(showSettings, "시술 설정", true);
+        if (showSettings)
+        {
+            EditorGUI.indentLevel++;
+            
+            // 시간 설정
+            EditorGUILayout.LabelField("시간 설정", EditorStyles.boldLabel);
+            
+            // 분:초 형식으로 표시
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("제한 시간");
+            
+            float timeInSeconds = timeLimitProp.floatValue;
+            int minutes = Mathf.FloorToInt(timeInSeconds / 60);
+            int seconds = Mathf.FloorToInt(timeInSeconds % 60);
+            
+            int newMinutes = EditorGUILayout.IntField(minutes, GUILayout.Width(30));
+            EditorGUILayout.LabelField("분", GUILayout.Width(20));
+            int newSeconds = EditorGUILayout.IntField(seconds, GUILayout.Width(30));
+            EditorGUILayout.LabelField("초", GUILayout.Width(20));
+            
+            if (newMinutes != minutes || newSeconds != seconds)
+            {
+                timeLimitProp.floatValue = newMinutes * 60 + newSeconds;
+            }
+            
+            EditorGUILayout.EndHorizontal();
+            
+            // 점수 설정
+            EditorGUILayout.LabelField("점수 설정", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(maxScoreProp, new GUIContent("최대 점수"));
+            EditorGUILayout.PropertyField(timeBonusProp, new GUIContent("시간 보너스 계수"));
+            EditorGUILayout.PropertyField(maxTimeBonusProp, new GUIContent("최대 시간 보너스"));
+            
+            EditorGUILayout.HelpBox(
+                $"시간 보너스 계산: (남은 시간 / 제한 시간) * {timeBonusProp.floatValue} * {maxTimeBonusProp.intValue}", 
+                MessageType.Info
+            );
+            
+            EditorGUI.indentLevel--;
+        }
+        
+        EditorGUILayout.Space(10);
+        
+        // UI 설정 섹션
+        showUISettings = EditorGUILayout.Foldout(showUISettings, "UI 설정", true);
+        if (showUISettings)
+        {
+            EditorGUI.indentLevel++;
+            
+            // 아이콘 (미리보기 포함)
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(procedureIconProp, new GUIContent("시술 아이콘"));
+            
+            if (procedureIconProp.objectReferenceValue != null)
+            {
+                GUILayout.Box((procedureIconProp.objectReferenceValue as Sprite).texture, 
+                    GUILayout.Width(48), GUILayout.Height(48));
+            }
+            EditorGUILayout.EndHorizontal();
+            
+            // 배너 (미리보기 포함)
+            EditorGUILayout.PropertyField(procedureBannerProp, new GUIContent("시술 배너"));
+            
+            if (procedureBannerProp.objectReferenceValue != null)
+            {
+                Texture2D tex = (procedureBannerProp.objectReferenceValue as Sprite).texture;
+                float ratio = (float)tex.width / tex.height;
+                float previewWidth = EditorGUIUtility.currentViewWidth - 40;
+                float previewHeight = previewWidth / ratio;
+                
+                previewHeight = Mathf.Min(previewHeight, 80); // 최대 높이 제한
+                previewWidth = previewHeight * ratio;  // 비율 유지
+                
+                Rect rect = EditorGUILayout.GetControlRect(false, previewHeight);
+                rect.width = previewWidth;
+                rect.x = (EditorGUIUtility.currentViewWidth - previewWidth) * 0.5f;
+                
+                EditorGUI.DrawPreviewTexture(rect, tex);
+            }
+            
+            // 색상 (미리보기 포함)
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(procedureColorProp, new GUIContent("시술 색상"));
+            
+            // 색상 견본 표시
+            Rect colorRect = EditorGUILayout.GetControlRect(false, 20, GUILayout.Width(40));
+            EditorGUI.DrawRect(colorRect, procedureColorProp.colorValue);
+            
+            EditorGUILayout.EndHorizontal();
+            
+            EditorGUI.indentLevel--;
+        }
+        
+        EditorGUILayout.Space(10);
+        
+        // 오디오 설정 섹션
+        showAudioSettings = EditorGUILayout.Foldout(showAudioSettings, "오디오 설정", true);
+        if (showAudioSettings)
+        {
+            EditorGUI.indentLevel++;
+            
+            EditorGUILayout.PropertyField(backgroundMusicProp, new GUIContent("배경 음악"));
+            EditorGUILayout.PropertyField(completionSoundProp, new GUIContent("완료 효과음"));
+            
+            // 오디오 미리듣기 버튼
+            EditorGUILayout.BeginHorizontal();
+            
+            if (GUILayout.Button("배경 음악 미리듣기", EditorStyles.miniButton))
+            {
+                if (backgroundMusicProp.objectReferenceValue != null)
                 {
-                    newFoldouts[i] = stepFoldouts[i];
-                    newSettingsFoldouts[i] = settingsFoldouts[i];
-                }
-                else
-                {
-                    newFoldouts[i] = stepFoldouts[i + 1];
-                    newSettingsFoldouts[i] = settingsFoldouts[i + 1];
+                    AudioClip clip = backgroundMusicProp.objectReferenceValue as AudioClip;
+                    PlayClip(clip);
                 }
             }
             
-            stepFoldouts = newFoldouts;
-            settingsFoldouts = newSettingsFoldouts;
+            if (GUILayout.Button("완료 효과음 미리듣기", EditorStyles.miniButton))
+            {
+                if (completionSoundProp.objectReferenceValue != null)
+                {
+                    AudioClip clip = completionSoundProp.objectReferenceValue as AudioClip;
+                    PlayClip(clip);
+                }
+            }
+            
+            EditorGUILayout.EndHorizontal();
+            
+            EditorGUI.indentLevel--;
         }
         
-        private void MoveStep(int fromIndex, int toIndex)
+        EditorGUILayout.Space(10);
+        
+        // 유틸리티 버튼
+        EditorGUILayout.BeginHorizontal();
+        
+        if (GUILayout.Button("단계 생성", GUILayout.Height(30)))
         {
-            stepsProperty.MoveArrayElement(fromIndex, toIndex);
+            CreateNewStep();
+        }
+        
+        if (GUILayout.Button("단계 순서 검증", GUILayout.Height(30)))
+        {
+            ValidateStepOrder();
+        }
+        
+        EditorGUILayout.EndHorizontal();
+        
+        serializedObject.ApplyModifiedProperties();
+    }
+    
+    private void InitializeStepsList()
+    {
+        stepsList = new ReorderableList(serializedObject, stepsProp, true, true, true, true);
+        
+        // 헤더 그리기
+        stepsList.drawHeaderCallback = (Rect rect) => {
+            EditorGUI.LabelField(rect, "시술 단계");
+        };
+        
+        // 요소 높이 설정
+        stepsList.elementHeightCallback = (int index) => {
+            return EditorGUIUtility.singleLineHeight * 2 + 6;
+        };
+        
+        // 요소 그리기
+        stepsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            SerializedProperty element = stepsProp.GetArrayElementAtIndex(index);
+            rect.y += 2;
             
-            // 폴드아웃 상태 교환
-            bool tempFoldout = stepFoldouts[fromIndex];
-            stepFoldouts[fromIndex] = stepFoldouts[toIndex];
-            stepFoldouts[toIndex] = tempFoldout;
+            SerializedProperty stepId = element.FindPropertyRelative("stepId");
+            SerializedProperty stepName = element.FindPropertyRelative("stepName");
+            SerializedProperty isRequired = element.FindPropertyRelative("isRequired");
+            SerializedProperty isOrderImportant = element.FindPropertyRelative("isOrderImportant");
             
-            tempFoldout = settingsFoldouts[fromIndex];
-            settingsFoldouts[fromIndex] = settingsFoldouts[toIndex];
-            settingsFoldouts[toIndex] = tempFoldout;
+            // 단계 번호와 이름
+            EditorGUI.PropertyField(
+                new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
+                stepName, 
+                new GUIContent($"단계 {index + 1}")
+            );
+            
+            // 단계 정보 표시
+            string info = "";
+            if (isRequired.boolValue)
+            {
+                info += "필수 | ";
+            }
+            
+            if (isOrderImportant.boolValue)
+            {
+                info += "순서 중요";
+            }
+            
+            EditorGUI.LabelField(
+                new Rect(rect.x + 15, rect.y + EditorGUIUtility.singleLineHeight + 2, rect.width - 15, EditorGUIUtility.singleLineHeight),
+                info,
+                EditorStyles.miniLabel
+            );
+        };
+    }
+    
+    private void DrawStepsFlow()
+    {
+        int stepCount = stepsProp.arraySize;
+        if (stepCount == 0)
+            return;
+            
+        // 단계 흐름 그리기
+        EditorGUILayout.BeginHorizontal();
+        
+        GUIStyle boxStyle = new GUIStyle(EditorStyles.helpBox);
+        boxStyle.alignment = TextAnchor.MiddleCenter;
+        boxStyle.fontStyle = FontStyle.Bold;
+        
+        for (int i = 0; i < stepCount; i++)
+        {
+            SerializedProperty element = stepsProp.GetArrayElementAtIndex(i);
+            SerializedProperty stepName = element.FindPropertyRelative("stepName");
+            
+            // 단계 박스
+            GUILayout.Box($"{i + 1}. {stepName.stringValue}", boxStyle, GUILayout.Height(30));
+            
+            // 화살표 (마지막 단계 제외)
+            if (i < stepCount - 1)
+            {
+                GUILayout.Label("→", GUILayout.Width(20));
+            }
+        }
+        
+        EditorGUILayout.EndHorizontal();
+    }
+    
+    private void CreateNewStep()
+    {
+        ProcedureData procedureData = (ProcedureData)target;
+        
+        // 새 단계 추가
+        stepsProp.arraySize++;
+        SerializedProperty newStep = stepsProp.GetArrayElementAtIndex(stepsProp.arraySize - 1);
+        
+        // 기본값 설정
+        SerializedProperty stepId = newStep.FindPropertyRelative("stepId");
+        SerializedProperty stepName = newStep.FindPropertyRelative("stepName");
+        
+        if (stepId != null && stepName != null)
+        {
+            // 기본값 설정
+            stepId.stringValue = System.Guid.NewGuid().ToString().Substring(0, 8);
+            stepName.stringValue = $"단계 {procedureData.steps.Count}";
+        }
+        else
+        {
+            Debug.LogError("Failed to find properties in the new step");
+        }
+        
+        // 변경사항 적용
+        serializedObject.ApplyModifiedProperties();
+    }
+    
+    private void ValidateStepOrder()
+    {
+        ProcedureData procedureData = (ProcedureData)target;
+        
+        List<string> issues = new List<string>();
+        
+        // 단계 순서 검증
+        for (int i = 0; i < procedureData.steps.Count; i++)
+        {
+            ProcedureStep step = procedureData.steps[i];
+            
+            if (string.IsNullOrEmpty(step.stepId))
+            {
+                issues.Add($"단계 {i + 1}: stepId가 누락됨");
+            }
+            
+            if (string.IsNullOrEmpty(step.stepName))
+            {
+                issues.Add($"단계 {i + 1}: stepName이 누락됨");
+            }
+            
+            // 상호작용 검증
+            if (step.stepType == StepType.Interaction && string.IsNullOrEmpty(step.interactionDataId))
+            {
+                issues.Add($"단계 {i + 1} ({step.stepName}): 상호작용 단계이나 interactionDataId가 누락됨");
+            }
+            
+            // 대화 검증
+            if (step.stepType == StepType.Dialogue && step.dialogueEntries.Count == 0)
+            {
+                issues.Add($"단계 {i + 1} ({step.stepName}): 대화 단계이나 dialogueEntries가 없음");
+            }
+        }
+        
+        // 결과 표시
+        string message;
+        if (issues.Count == 0)
+        {
+            message = "모든 단계가 유효합니다!";
+        }
+        else
+        {
+            message = "다음 문제가 발견되었습니다:\n\n";
+            foreach (var issue in issues)
+            {
+                message += "• " + issue + "\n";
+            }
+        }
+        
+        EditorUtility.DisplayDialog("단계 순서 검증 결과", message, "확인");
+    }
+    
+    // 오디오 클립 재생 (에디터 전용)
+    private void PlayClip(AudioClip clip)
+    {
+        if (clip == null)
+            return;
+            
+        // Unity 에디터의 AudioUtil 클래스 접근 (리플렉션 사용)
+        // 이렇게 접근하는 이유는 AudioUtil이 공개 API가 아니기 때문
+        System.Type audioUtilClass = System.Type.GetType("UnityEditor.AudioUtil,UnityEditor");
+        if (audioUtilClass != null)
+        {
+            MethodInfo method = audioUtilClass.GetMethod("PlayPreviewClip", 
+                BindingFlags.Static | BindingFlags.Public, null, new System.Type[] { typeof(AudioClip) }, null);
+            
+            if (method != null)
+            {
+                method.Invoke(null, new object[] { clip });
+            }
         }
     }
 }
