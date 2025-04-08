@@ -17,7 +17,8 @@ namespace Nursing.Managers
             Patient,     // 환자 
             Guardian,    // 보호자
             Player,      // 플레이어
-            HeadNurse    // 수간호사
+            HeadNurse,   // 수간호사
+            Guide        // 가이드 메시지
         }
 
         [System.Serializable]
@@ -30,6 +31,10 @@ namespace Nursing.Managers
         [Header("대화창 프리팹")]
         [SerializeField] private GameObject smallDialoguePrefab; // 작은 대화창 프리팹
         [SerializeField] private GameObject largeDialoguePrefab; // 큰 대화창 프리팹
+        
+        [Header("가이드 UI")]
+        [SerializeField] private GameObject guidePanel; // 가이드 메시지 패널
+        [SerializeField] private TextMeshProUGUI guideText; // 가이드 메시지 텍스트
 
         [Header("대화창 부모 오브젝트")]
         [SerializeField] private Transform dialogueParent; // 대화창 부모 오브젝트
@@ -203,7 +208,63 @@ namespace Nursing.Managers
             BringToFront(currentLargeDialogue);
         }
     
+        /// <summary>
+        /// 가이드 메시지를 표시합니다.
+        /// </summary>
+        public void ShowGuideMessage(string message)
+        {
+            if (guidePanel == null || guideText == null)
+            {
+                Debug.LogWarning("가이드 패널 또는 텍스트가 설정되지 않았습니다.");
+                return;
+            }
+            
+            guideText.text = message;
+            
+            // 가이드 패널이 비활성화 상태라면 활성화
+            if (!guidePanel.activeSelf)
+            {
+                guidePanel.SetActive(true);
+                
+                // 페이드인 애니메이션 (선택적)
+                CanvasGroup canvasGroup = guidePanel.GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 0f;
+                    canvasGroup.DOFade(1f, fadeInDuration).SetEase(fadeInEase);
+                }
+            }
+            else
+            {
+                // 이미 활성화 상태라면 텍스트 변경 효과 (선택적)
+                guideText.DOFade(0f, 0.1f).OnComplete(() => {
+                    guideText.DOFade(1f, 0.3f);
+                });
+            }
+        }
         
+        /// <summary>
+        /// 가이드 메시지를 닫습니다.
+        /// </summary>
+        public void HideGuideMessage()
+        {
+            if (guidePanel == null)
+                return;
+                
+            // 페이드아웃 애니메이션 (선택적)
+            CanvasGroup canvasGroup = guidePanel.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.DOFade(0f, fadeOutDuration).SetEase(fadeOutEase)
+                    .OnComplete(() => {
+                        guidePanel.SetActive(false);
+                    });
+            }
+            else
+            {
+                guidePanel.SetActive(false);
+            }
+        }
 
         public void CloseSmallDialogue()
         {
