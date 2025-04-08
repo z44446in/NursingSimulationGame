@@ -89,6 +89,7 @@ public class CartUI : MonoBehaviour
 
     private void OnDisable()
     {
+        // 이벤트 구독 해제
         if (GameManager.Instance != null)
         {
             GameManager.Instance.OnGameScreenChanged -= HandleScreenChange;

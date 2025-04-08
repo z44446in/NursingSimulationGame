@@ -12,7 +12,8 @@ namespace Nursing.Procedure
         
         [Header("프로시저 버전")]
         public ProcedureVersionType versionType;
-        
+        public ProcedurePlayType procedurePlayType; // 추가된 필드
+
         [Header("프로시저 데이터")]
         public ProcedureData procedureData;
     }

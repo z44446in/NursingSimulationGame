@@ -9,7 +9,7 @@ namespace Nursing.UI
         [Header("화살표 설정")]
         [SerializeField] private Image arrowImage;
         [SerializeField] private float blinkDuration = 0.5f;
-        [SerializeField] private float blinkInterval = 0.3f;
+        //[SerializeField] private float blinkInterval = 0.3f;
         
         [Header("애니메이션 설정")]
         [SerializeField] private float moveDistance = 30f;

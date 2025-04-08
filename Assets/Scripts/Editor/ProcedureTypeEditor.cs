@@ -12,7 +12,8 @@ namespace Nursing.Editor
         private SerializedProperty descriptionProperty;
         private SerializedProperty versionTypeProperty;
         private SerializedProperty procedureDataProperty;
-        
+        private SerializedProperty procedurePlayTypeProperty;
+
         private GUIStyle headerStyle;
         
         private void OnEnable()
@@ -22,7 +23,8 @@ namespace Nursing.Editor
             descriptionProperty = serializedObject.FindProperty("description");
             versionTypeProperty = serializedObject.FindProperty("versionType");
             procedureDataProperty = serializedObject.FindProperty("procedureData");
-            
+            procedurePlayTypeProperty = serializedObject.FindProperty("procedurePlayType");
+
             // 스타일 초기화는 OnInspectorGUI에서 수행
         }
         
@@ -49,10 +51,13 @@ namespace Nursing.Editor
             EditorGUI.indentLevel++;
             
             EditorGUILayout.PropertyField(versionTypeProperty, new GUIContent("버전 타입", "프로시저의 버전 유형 (가이드라인 또는 임상)"));
-            
+
+            //  ProcedurePlayType 
+            EditorGUILayout.PropertyField(procedurePlayTypeProperty, new GUIContent("플레이 타입", "프로시저의 플레이 유형 (연습 또는 실전)"));
+
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
-            
+
             // 프로시저 데이터 섹션
             EditorGUILayout.LabelField("프로시저 데이터", headerStyle);
             EditorGUI.indentLevel++;
