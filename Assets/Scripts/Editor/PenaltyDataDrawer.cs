@@ -13,9 +13,9 @@ namespace Nursing.Editor
         {
             if (!isExpanded)
                 return EditorGUIUtility.singleLineHeight;
-            
+
             // 기본 높이 + 필드 수 * 한 줄 높이 + 패딩
-            return EditorGUIUtility.singleLineHeight * 7 + EditorGUIUtility.standardVerticalSpacing * 6;
+            return EditorGUIUtility.singleLineHeight * 13 + EditorGUIUtility.standardVerticalSpacing * 2;
         }
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -41,37 +41,37 @@ namespace Nursing.Editor
                 
                 float lineHeight = EditorGUIUtility.singleLineHeight;
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
-                float yPos = position.y + lineHeight + spacing;
+                float yPos = position.y + lineHeight + spacing * 0;
                 
                 // 패널티 타입 필드
                 EditorGUI.PropertyField(
                     new Rect(position.x, yPos, position.width, lineHeight),
                     penaltyTypeProp, new GUIContent("패널티 타입", "패널티의 심각도 유형"));
-                yPos += lineHeight + spacing;
+                yPos += lineHeight + spacing ;
                 
                 // 패널티 점수 필드
                 EditorGUI.PropertyField(
                     new Rect(position.x, yPos, position.width, lineHeight),
                     penaltyScoreProp, new GUIContent("패널티 점수", "이 패널티로 감점될 점수"));
-                yPos += lineHeight + spacing;
-                
+                yPos += lineHeight + spacing ;
+
                 // 화자 필드
                 EditorGUI.PropertyField(
                     new Rect(position.x, yPos, position.width, lineHeight),
                     speakerProp, new GUIContent("화자", "패널티 메시지를 말하는 화자"));
-                yPos += lineHeight + spacing;
+                yPos += lineHeight + spacing ;
                 
                 // 패널티 메시지 필드
                 EditorGUI.PropertyField(
                     new Rect(position.x, yPos, position.width, lineHeight),
                     penaltyMessageProp, new GUIContent("패널티 메시지", "사용자에게 표시할 패널티 메시지"));
-                yPos += lineHeight + spacing;
+                yPos += lineHeight + spacing ;
                 
                 // 데이터베이스 메시지 필드
                 EditorGUI.PropertyField(
                     new Rect(position.x, yPos, position.width, lineHeight),
                     databaseMessageProp, new GUIContent("데이터베이스 메시지", "데이터베이스에 기록할 패널티 메시지 (비워두면 기록하지 않음)"));
-                yPos += lineHeight + spacing;
+                yPos += lineHeight + spacing + 12f;
                 
                 // 화면 깜빡임 설정
                 EditorGUI.PropertyField(
@@ -80,7 +80,7 @@ namespace Nursing.Editor
                 
                 if (flashRedScreenProp.boolValue)
                 {
-                    yPos += lineHeight + spacing;
+                    yPos += lineHeight + spacing ;
                     
                     // 깜빡임 횟수 필드
                     EditorGUI.PropertyField(

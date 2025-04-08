@@ -27,7 +27,7 @@ namespace Nursing.Editor
             displayNameProperty = serializedObject.FindProperty("displayName");
             descriptionProperty = serializedObject.FindProperty("description");
             stepsProperty = serializedObject.FindProperty("steps");
-            guideMessageProperty = serializedObject.FindProperty("guideMessage");
+            
             
             // 스타일 초기화는 OnInspectorGUI에서 수행
         }
@@ -46,7 +46,7 @@ namespace Nursing.Editor
             EditorGUILayout.PropertyField(idProperty, new GUIContent("ID", "프로시저의 고유 식별자"));
             EditorGUILayout.PropertyField(displayNameProperty, new GUIContent("표시 이름", "프로시저의 화면에 표시될 이름"));
             EditorGUILayout.PropertyField(descriptionProperty, new GUIContent("설명", "프로시저에 대한 설명"));
-            EditorGUILayout.PropertyField(guideMessageProperty, new GUIContent("가이드 메시지", "프로시저 시작 시 표시될 가이드 메시지"));
+            
             
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
@@ -196,29 +196,32 @@ namespace Nursing.Editor
                 }
                 
                 EditorGUILayout.Space();
-                
+
+
+                // 인터랙션 설정
+                if (!settingsFoldouts.ContainsKey(index))
+                {
+                    settingsFoldouts[index] = true;
+                }
+
+                settingsFoldouts[index] = EditorGUILayout.Foldout(settingsFoldouts[index], "스텝 설정", true);
+
+                if (settingsFoldouts[index])
+                {
+                    EditorGUI.indentLevel++;
+
+                    // 스텝 타입에 따른 설정 표시
+                    DrawStepSettings(settingsProp, (ProcedureStepType)stepTypeProp.enumValueIndex);
+
+                    EditorGUI.indentLevel--;
+                }
+                EditorGUILayout.Space();
+
                 // 패널티 설정
                 EditorGUILayout.PropertyField(incorrectActionPenaltyProp, new GUIContent("잘못된 행동 패널티", "잘못된 행동을 했을 때 적용할 패널티"));
                 
                 EditorGUILayout.Space();
                 
-                // 인터랙션 설정
-                if (!settingsFoldouts.ContainsKey(index))
-                {
-                    settingsFoldouts[index] = false;
-                }
-                
-                settingsFoldouts[index] = EditorGUILayout.Foldout(settingsFoldouts[index], "스텝 설정", true);
-                
-                if (settingsFoldouts[index])
-                {
-                    EditorGUI.indentLevel++;
-                    
-                    // 스텝 타입에 따른 설정 표시
-                    DrawStepSettings(settingsProp, (ProcedureStepType)stepTypeProp.enumValueIndex);
-                    
-                    EditorGUI.indentLevel--;
-                }
                 
                 EditorGUI.indentLevel--;
             }
@@ -267,7 +270,6 @@ namespace Nursing.Editor
             if (GUILayout.Button("인터랙션 데이터 찾기", GUILayout.Width(150)))
             {
                 // 인터랙션 데이터 찾기 기능 (선택적 구현)
-                // 예: 프로젝트 내의 모든 InteractionData 자산을 찾아서 선택할 수 있게 함
                 string[] guids = AssetDatabase.FindAssets("t:InteractionData");
                 if (guids.Length > 0)
                 {
@@ -280,11 +282,21 @@ namespace Nursing.Editor
                         
                         if (data != null)
                         {
-                            menu.AddItem(new GUIContent(data.displayName + " (" + data.id + ")"), 
-                                interactionDataIdProp.stringValue == data.id,
+                            // 새 InteractionData 구조를 지원하는 코드 수정
+                            // 메뉴 아이템을 file name으로 표시하여 더 안정적인 방법 사용
+                            string itemName = System.IO.Path.GetFileNameWithoutExtension(path);
+                            if (!string.IsNullOrEmpty(data.displayName))
+                            {
+                                itemName = data.displayName;
+                            }
+                            
+                            menu.AddItem(
+                                new GUIContent(itemName), 
+                                interactionDataIdProp.stringValue == path,
                                 () => {
                                     serializedObject.Update();
-                                    interactionDataIdProp.stringValue = data.id;
+                                    // 경로 또는 고유 식별자로 ID 저장
+                                    interactionDataIdProp.stringValue = path;
                                     serializedObject.ApplyModifiedProperties();
                                 });
                         }

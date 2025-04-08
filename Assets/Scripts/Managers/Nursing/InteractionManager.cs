@@ -198,22 +198,24 @@ namespace Nursing.Managers
             
             if (settings == null || settings.objectToCreate == null || settings.objectToCreate.Length == 0)
             {
-                Debug.LogError("오브젝트 생성 설정이 없거나 생성할 오브젝트 태그가 없습니다.");
+                Debug.LogError("오브젝트 생성 설정이 없거나 생성할 오브젝트가 없습니다.");
                 AdvanceToNextStage();
                 return;
             }
 
-            // 태그 지정된 모든 오브젝트 활성화
+            // 지정된 모든 오브젝트 활성화
             foreach (var obj in settings.objectToCreate)
             {
-
-                Debug.Log(obj.name);
-                obj.SetActive(true);
-
-
+                if (obj != null)
+                {
+                    Debug.Log($"오브젝트 활성화: {obj.name}");
+                    obj.SetActive(true);
+                }
+                else
+                {
+                    Debug.LogWarning("설정된 오브젝트가 null입니다.");
+                }
             }
-
-
             
             // 오브젝트 생성 후 다음 단계로 진행
             AdvanceToNextStage();
