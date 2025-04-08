@@ -249,7 +249,7 @@ namespace Nursing.Managers
         /// </summary>
         public bool HandleItemClick(string itemId)
         {
-            Debug.Log("item감지는 됐습니다. ");
+           
             if (!procedureInProgress || currentStep == null || currentStep.stepType != ProcedureStepType.ItemClick)
                 return false;
             

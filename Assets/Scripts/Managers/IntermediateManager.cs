@@ -209,13 +209,14 @@ public void PickupItem(Item item)
 {
     if (item == null) return;
     
+
     currentHeldItem = item;
 
         // 손 이미지 업데이트
         UpdateHandImageInIntermediateScreen(currentHeldItem);
 
         //아이템별 상호작용 메서드 (작성 필요함)
-
+        
         procedureManager.HandleItemClick(currentHeldItem.itemId);
 
     }

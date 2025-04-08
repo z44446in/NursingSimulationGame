@@ -191,36 +191,30 @@ namespace Nursing.Managers
         /// <summary>
         /// 오브젝트 생성 인터랙션을 설정합니다.
         /// </summary>
+      
         private void SetupObjectCreation()
         {
-           
             var settings = currentStage.settings;
-            
+
             if (settings == null || settings.objectToCreate == null || settings.objectToCreate.Length == 0)
             {
-                Debug.LogError("오브젝트 생성 설정이 없거나 생성할 오브젝트가 없습니다.");
+                Debug.LogError("오브젝트 생성 설정이 없습니다.");
                 AdvanceToNextStage();
                 return;
             }
 
-            // 지정된 모든 오브젝트 활성화
-            foreach (var obj in settings.objectToCreate)
+            foreach (var prefab in settings.objectToCreate)
             {
-                if (obj != null)
+                if (prefab != null)
                 {
-                    Debug.Log($"오브젝트 활성화: {obj.name}");
-                    obj.SetActive(true);
-                }
-                else
-                {
-                    Debug.LogWarning("설정된 오브젝트가 null입니다.");
+                    GameObject instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
+                    Debug.Log($"오브젝트 생성: {instance.name}");
                 }
             }
-            
-            // 오브젝트 생성 후 다음 단계로 진행
+
             AdvanceToNextStage();
         }
-        
+
         /// <summary>
         /// 조건부 클릭 인터랙션을 설정합니다.
         /// </summary>

@@ -68,6 +68,7 @@ namespace Nursing.Interaction
         public bool createObject;
         public GameObject[] objectToCreate;
         
+
         [Header("조건부 클릭")]
         public bool isConditionalClick;
         public List<string> validClickTags;
