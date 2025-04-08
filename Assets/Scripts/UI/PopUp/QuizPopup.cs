@@ -1,182 +1,312 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
+using System;
 
-public class QuizPopup : BasePopup
+namespace Nursing.UI
 {
-    [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI questionText;
-    [SerializeField] private Transform optionsContainer;
-    [SerializeField] private Button optionButtonPrefab;
-    [SerializeField] private Slider timerSlider;
-    [SerializeField] private TextMeshProUGUI timerText;
-
-    [Header("Settings")]
-    [SerializeField] private float timeLimit = 10f;
-    
-    private float currentTime;
-    private bool isRunning = false;
-    private List<Button> optionButtons = new List<Button>();
-    private Action<bool> onQuizCompleted;
-    private int correctOptionIndex;
-
-    /// <summary>
-    /// 기본 시간 제한을 사용하는 간단한 초기화
-    /// </summary>
-    public void Initialize(string question, string[] options, int correctIndex, Action<bool> onCompleted)
+    public class QuizPopup : MonoBehaviour
     {
-        Initialize(question, options, correctIndex, this.timeLimit, onCompleted);
-    }
-
-    /// <summary>
-    /// 전체 매개변수로 초기화
-    /// </summary>
-    public void Initialize(string question, string[] options, int correctIndex, float time, Action<bool> onCompleted)
-    {
-        // 퀴즈 데이터 설정
-        questionText.text = question;
-        timeLimit = time;
-        correctOptionIndex = correctIndex;
-        onQuizCompleted = onCompleted;
-
-        // 옵션 버튼 생성
-        CreateOptionButtons(options);
+        [Header("UI 요소")]
+        [SerializeField] private TextMeshProUGUI questionText;
+        [SerializeField] private Button[] optionButtons;
+        [SerializeField] private TextMeshProUGUI[] optionTexts;
+        [SerializeField] private Image[] optionImages;
+        [SerializeField] private Image timerImage;
+        [SerializeField] private GameObject resultPanel;
+        [SerializeField] private TextMeshProUGUI resultText;
+        [SerializeField] private Button closeButton;
         
-        // 타이머 초기화
-        SetupTimer();
+        [Header("애니메이션 설정")]
+        [SerializeField] private float fadeInDuration = 0.3f;
+        [SerializeField] private float fadeOutDuration = 0.3f;
+        [SerializeField] private Ease fadeEase = Ease.OutQuad;
         
-        // 타이머 시작
-        StartCoroutine(RunTimer());
-    }
-
-    private void CreateOptionButtons(string[] options)
-    {
-        // 기존 버튼 제거
-        foreach (var button in optionButtons)
-        {
-            if (button != null)
-                Destroy(button.gameObject);
-        }
-        optionButtons.Clear();
-
-        // 새 버튼 생성
-        for (int i = 0; i < options.Length; i++)
-        {
-            int index = i; // 클로저를 위한 변수 복사
-            Button optionButton = Instantiate(optionButtonPrefab, optionsContainer);
-            TextMeshProUGUI buttonText = optionButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (buttonText != null)
-                buttonText.text = options[i];
-
-            optionButton.onClick.AddListener(() => OnOptionSelected(index));
-            optionButtons.Add(optionButton);
-        }
-    }
-
-    private void OnOptionSelected(int index)
-    {
-        isRunning = false;
-        bool isCorrect = index == correctOptionIndex;
-
-        // 정답/오답 표시
-        foreach (var button in optionButtons)
-        {
-            button.interactable = false;
-        }
-
-        if (isCorrect)
-        {
-            // 정답 효과
-            optionButtons[index].GetComponent<Image>().color = Color.green;
-        }
-        else
-        {
-            // 오답 효과
-            optionButtons[index].GetComponent<Image>().color = Color.red;
-            optionButtons[correctOptionIndex].GetComponent<Image>().color = Color.green;
-        }
-
-        // 결과 콜백 호출 및 팝업 닫기
-        StartCoroutine(DelayedClose(isCorrect));
-    }
-
-    private IEnumerator DelayedClose(bool isCorrect)
-    {
-        yield return new WaitForSeconds(1.5f);
-        onQuizCompleted?.Invoke(isCorrect);
-        ClosePopup();
-    }
-
-    private void SetupTimer()
-    {
-        currentTime = timeLimit;
-        if (timerSlider != null)
-        {
-            timerSlider.maxValue = timeLimit;
-            timerSlider.value = timeLimit;
-        }
+        private float timeLimit;
+        private float remainingTime;
+        private int correctAnswerIndex;
+        private bool isAnswered;
+        private bool isTimerRunning;
+        private CanvasGroup canvasGroup;
         
-        if (timerText != null)
-            timerText.text = currentTime.ToString("F1");
-    }
-
-    private IEnumerator RunTimer()
-    {
-        isRunning = true;
+        public event Action<bool> OnQuizComplete;
         
-        while (isRunning && currentTime > 0)
+        private void Awake()
         {
-            yield return null;
-            currentTime -= Time.deltaTime;
-            
-            // UI 업데이트
-            if (timerSlider != null)
-                timerSlider.value = currentTime;
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 
-            if (timerText != null)
-                timerText.text = currentTime.ToString("F1");
-            
-            // 시간 종료 확인
-            if (currentTime <= 0)
+            // 닫기 버튼 이벤트 설정
+            if (closeButton != null)
             {
-                OnTimeUp();
+                closeButton.onClick.AddListener(() => {
+                    OnCloseButtonClicked();
+                });
+            }
+            
+            // 결과 패널 초기화
+            if (resultPanel != null)
+                resultPanel.SetActive(false);
+        }
+        
+        private void OnEnable()
+        {
+            FadeIn();
+        }
+        
+        private void Start()
+        {
+            isAnswered = false;
+            isTimerRunning = timeLimit > 0;
+            remainingTime = timeLimit;
+            
+            // 타이머 초기화
+            if (timerImage != null)
+            {
+                timerImage.fillAmount = 1.0f;
+                timerImage.gameObject.SetActive(isTimerRunning);
             }
         }
-    }
-
-    private void OnTimeUp()
-    {
-        isRunning = false;
         
-        // 모든 버튼 비활성화
-        foreach (var button in optionButtons)
+        private void Update()
         {
-            button.interactable = false;
+            if (isTimerRunning && !isAnswered)
+            {
+                remainingTime -= Time.deltaTime;
+                
+                if (timerImage != null)
+                {
+                    timerImage.fillAmount = Mathf.Clamp01(remainingTime / timeLimit);
+                }
+                
+                if (remainingTime <= 0)
+                {
+                    isTimerRunning = false;
+                    OnTimeUp();
+                }
+            }
         }
         
-        // 정답 표시
-        optionButtons[correctOptionIndex].GetComponent<Image>().color = Color.green;
-        
-        // 실패 콜백 호출 및 팝업 닫기
-        StartCoroutine(DelayedClose(false));
-    }
-
-    public override void ClosePopup()
-    {
-        isRunning = false;
-        StopAllCoroutines();
-        base.ClosePopup();
-    }
-
-    private void OnDestroy()
-    {
-        foreach (var button in optionButtons)
+        /// <summary>
+        /// 퀴즈를 설정합니다.
+        /// </summary>
+        public void SetupQuiz(string question, List<string> options, int correctIndex, Sprite[] images = null, float time = 0)
         {
-            if (button != null)
-                button.onClick.RemoveAllListeners();
+            // 질문 설정
+            if (questionText != null)
+                questionText.text = question;
+            
+            correctAnswerIndex = correctIndex;
+            timeLimit = time;
+            remainingTime = timeLimit;
+            
+            // 옵션 버튼 설정
+            int optionCount = Mathf.Min(options.Count, optionButtons.Length);
+            
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                if (i < optionCount)
+                {
+                    optionButtons[i].gameObject.SetActive(true);
+                    
+                    int optionIndex = i; // 클로저에서 사용하기 위해 로컬 변수로 복사
+                    
+                    // 텍스트 설정
+                    if (optionTexts.Length > i && optionTexts[i] != null)
+                    {
+                        optionTexts[i].text = options[i];
+                    }
+                    
+                    // 이미지 설정 (있는 경우)
+                    if (images != null && images.Length > i && optionImages.Length > i && optionImages[i] != null)
+                    {
+                        optionImages[i].sprite = images[i];
+                        optionImages[i].gameObject.SetActive(images[i] != null);
+                    }
+                    else if (optionImages.Length > i && optionImages[i] != null)
+                    {
+                        optionImages[i].gameObject.SetActive(false);
+                    }
+                    
+                    // 버튼 클릭 이벤트 설정
+                    optionButtons[i].onClick.RemoveAllListeners();
+                    optionButtons[i].onClick.AddListener(() => OnOptionClicked(optionIndex));
+                }
+                else
+                {
+                    optionButtons[i].gameObject.SetActive(false);
+                }
+            }
+            
+            // 타이머 설정
+            isTimerRunning = timeLimit > 0;
+            if (timerImage != null)
+            {
+                timerImage.gameObject.SetActive(isTimerRunning);
+                timerImage.fillAmount = 1.0f;
+            }
+            
+            // 결과 패널 초기화
+            if (resultPanel != null)
+                resultPanel.SetActive(false);
+                
+            isAnswered = false;
+        }
+        
+        /// <summary>
+        /// 옵션 버튼 클릭 처리
+        /// </summary>
+        private void OnOptionClicked(int optionIndex)
+        {
+            if (isAnswered)
+                return;
+                
+            isAnswered = true;
+            isTimerRunning = false;
+            
+            bool isCorrect = optionIndex == correctAnswerIndex;
+            
+            // 결과 표시 (선택적)
+            if (resultPanel != null && resultText != null)
+            {
+                resultText.text = isCorrect ? "정답입니다!" : "오답입니다!";
+                resultText.color = isCorrect ? Color.green : Color.red;
+                resultPanel.SetActive(true);
+                
+                // 약간의 지연 후 닫기
+                Invoke("CompleteQuiz", 1.5f);
+            }
+            else
+            {
+                // 바로 완료 처리
+                CompleteQuiz();
+            }
+            
+            // 버튼 상태 시각적으로 표시
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                if (i == correctAnswerIndex)
+                {
+                    // 정답 버튼 강조
+                    ColorBlock colors = optionButtons[i].colors;
+                    colors.normalColor = Color.green;
+                    optionButtons[i].colors = colors;
+                }
+                else if (i == optionIndex && !isCorrect)
+                {
+                    // 선택한 오답 버튼 강조
+                    ColorBlock colors = optionButtons[i].colors;
+                    colors.normalColor = Color.red;
+                    optionButtons[i].colors = colors;
+                }
+                
+                // 버튼 비활성화
+                optionButtons[i].interactable = false;
+            }
+        }
+        
+        /// <summary>
+        /// 시간 초과 처리
+        /// </summary>
+        private void OnTimeUp()
+        {
+            isAnswered = true;
+            
+            // 시간 초과 시 틀린 것으로 처리
+            if (resultPanel != null && resultText != null)
+            {
+                resultText.text = "시간 초과!";
+                resultText.color = Color.red;
+                resultPanel.SetActive(true);
+                
+                // 약간의 지연 후 닫기
+                Invoke("CompleteQuiz", 1.5f);
+            }
+            else
+            {
+                // 바로 완료 처리
+                CompleteQuiz();
+            }
+            
+            // 정답 버튼 표시
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                if (i == correctAnswerIndex)
+                {
+                    // 정답 버튼 강조
+                    ColorBlock colors = optionButtons[i].colors;
+                    colors.normalColor = Color.green;
+                    optionButtons[i].colors = colors;
+                }
+                
+                // 버튼 비활성화
+                optionButtons[i].interactable = false;
+            }
+        }
+        
+        /// <summary>
+        /// 퀴즈 완료 처리
+        /// </summary>
+        private void CompleteQuiz()
+        {
+            bool isCorrect = isAnswered && correctAnswerIndex >= 0;
+            
+            // 페이드 아웃 후 완료 이벤트 발생
+            FadeOut(() => {
+                OnQuizComplete?.Invoke(isCorrect);
+            });
+        }
+        
+        /// <summary>
+        /// 닫기 버튼 클릭 처리
+        /// </summary>
+        private void OnCloseButtonClicked()
+        {
+            // 답변 전에 닫으면 오답으로 처리
+            if (!isAnswered)
+            {
+                isAnswered = true;
+                CompleteQuiz();
+            }
+        }
+        
+        /// <summary>
+        /// 페이드 인 애니메이션
+        /// </summary>
+        private void FadeIn()
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+                canvasGroup.DOFade(1f, fadeInDuration).SetEase(fadeEase);
+            }
+        }
+        
+        /// <summary>
+        /// 페이드 아웃 애니메이션
+        /// </summary>
+        private void FadeOut(Action onComplete = null)
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.DOFade(0f, fadeOutDuration)
+                    .SetEase(fadeEase)
+                    .OnComplete(() => {
+                        onComplete?.Invoke();
+                    });
+            }
+            else
+            {
+                onComplete?.Invoke();
+            }
+        }
+        
+        private void OnDestroy()
+        {
+            DOTween.Kill(canvasGroup);
         }
     }
 }
