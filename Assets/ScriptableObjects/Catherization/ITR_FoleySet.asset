@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7, type: 3}
   m_Name: ITR_FoleySet
   m_EditorClassIdentifier: 
-  id: FoleySet_Open
+  id: foleySetOpen
   displayName: "\uD3F4\uB9AC\uC138\uD2B8 \uC5F4\uAE30 "
   description: "\uAC00\uC7A5 \uBA3C\uC800 \uD574\uC57C\uD574\uC6A9"
   stages:
@@ -46,7 +46,7 @@ MonoBehaviour:
         flashCount: 0
       createObject: 1
       objectToCreate:
-      - {fileID: 0}
+      - {fileID: 7246886069874315384, guid: 39f60e1ad851a9d4999792462f875537, type: 3}
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -120,8 +120,8 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 0, y: 0}
-      arrowDirection: {x: 0.027767068, y: 0.9996144}
+      arrowStartPosition: {x: 683, y: 460}
+      arrowDirection: {x: -0.04281784, y: -0.9990829}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 16.2
@@ -215,8 +215,8 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 0, y: 0}
-      arrowDirection: {x: 0.01388755, y: 0.99990356}
+      arrowStartPosition: {x: 1070, y: 444}
+      arrowDirection: {x: -0.04610477, y: -0.99893665}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 16.2
@@ -302,7 +302,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_3
+  - id: FoleySet_stage_3
     name: "\uD3F4\uB9AC\uC138\uD2B81 \uC5F4\uAE30 "
     StageNum: 3
     guideMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB97C \uB4DC\uB798\uADF8\uB85C \uC5F4\uC5B4\uC8FC\uC138\uC694."
@@ -311,15 +311,15 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 0, y: 0}
-      arrowDirection: {x: -0.015623093, y: -0.9998779}
+      arrowStartPosition: {x: 870, y: 607}
+      arrowDirection: {x: 0.012985918, y: 0.99991566}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 16.2
       targetObjectTag: FoleySet
       deactivateObjectAfterDrag: 1
       followDragMovement: 0
-      dragDistanceLimit: 0
+      dragDistanceLimit: 3000
       boundaryObjectTag: 
       collisionZoneTag: Trash
       OverDrag:
@@ -401,7 +401,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_4
+  - id: FoleySet_stage_4
     name: "\uD3F4\uB9AC\uC138\uD2B82\uC0DD\uC131"
     StageNum: 4
     guideMessage: 
@@ -497,7 +497,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_8
+  - id: FoleySet_stage_5
     name: "\uD3F4\uB9AC\uC138\uD2B8 2 \uC5F4\uAE30"
     StageNum: 5
     guideMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB97C \uB4DC\uB798\uADF8\uB85C \uC5F4\uC5B4\uC8FC\uC138\uC694."
@@ -506,7 +506,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 0, y: 0}
+      arrowStartPosition: {x: 867, y: 650}
       arrowDirection: {x: 0.999898, y: 0.014284257}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -596,7 +596,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_5
+  - id: FoleySet_stage_6
     name: "\uD3F4\uB9AC\uC138\uD2B8 3 \uC0DD\uC131"
     StageNum: 6
     guideMessage: 
@@ -692,7 +692,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_9
+  - id: FoleySet_stage_7
     name: "\uD3F4\uB9AC\uC138\uD2B83 \uC5F4\uAE30 "
     StageNum: 7
     guideMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB97C \uB4DC\uB798\uADF8\uB85C \uC5F4\uC5B4\uC8FC\uC138\uC694."
@@ -701,7 +701,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 0, y: 0}
+      arrowStartPosition: {x: 974, y: 659}
       arrowDirection: {x: -0.998665, y: -0.051655088}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -791,7 +791,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_6
+  - id: FoleySet_stage_8
     name: "\uD3F4\uB9AC\uC138\uD2B8 4 \uC0DD\uC131"
     StageNum: 8
     guideMessage: 
@@ -887,7 +887,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_10
+  - id: FoleySet_stage_9
     name: "\uD3F4\uB9AC\uC138\uD2B84\uC5F4\uAE30"
     StageNum: 9
     guideMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB97C \uB4DC\uB798\uADF8\uB85C \uC5F4\uC5B4\uC8FC\uC138\uC694."
@@ -896,7 +896,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 0, y: 0}
+      arrowStartPosition: {x: 864, y: 677}
       arrowDirection: {x: -0.0692776, y: -0.99759746}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -986,7 +986,7 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: stage_7
+  - id: FoleySet_stage_10
     name: "\uD3F4\uB9AC\uC138\uD2B85 \uC0DD\uC131"
     StageNum: 10
     guideMessage: 

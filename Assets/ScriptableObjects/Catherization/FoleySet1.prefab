@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7005073758460076446}
   m_Layer: 5
   m_Name: Tape1
-  m_TagString: Untagged
+  m_TagString: Tape
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 4002816117929487877}
   m_Layer: 5
   m_Name: Tape2
-  m_TagString: Untagged
+  m_TagString: Tape
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 8581397938958387022}
   m_Layer: 5
   m_Name: FoleySet1
-  m_TagString: Untagged
+  m_TagString: FoleySet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

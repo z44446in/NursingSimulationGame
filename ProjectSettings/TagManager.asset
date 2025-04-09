@@ -8,6 +8,8 @@ TagManager:
   - Hand
   - Intray
   - Trash
+  - Tape
+  - FoleySet
   layers:
   - Default
   - TransparentFX

@@ -13,11 +13,11 @@ GameObject:
   - component: {fileID: 5424616139518419450}
   m_Layer: 5
   m_Name: FoleySet4
-  m_TagString: Untagged
+  m_TagString: FoleySet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &298281677526748686
 RectTransform:
   m_ObjectHideFlags: 0
