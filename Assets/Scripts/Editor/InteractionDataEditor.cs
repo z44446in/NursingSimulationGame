@@ -192,7 +192,7 @@ namespace Nursing.Editor
 
 
                 // 인터랙션 설정
-                EditorGUILayout.PropertyField(incorrectInteractionPenaltyProp, new GUIContent("잘못된 인터랙션 패널티", "인터랙션이 잘못되었을 때 적용할 패널티"));
+                
 
                 if (!settingsFoldouts.ContainsKey(index))
                 {
@@ -210,6 +210,10 @@ namespace Nursing.Editor
 
                     EditorGUI.indentLevel--;
                 }
+
+                EditorGUILayout.PropertyField(incorrectInteractionPenaltyProp, new GUIContent("잘못된 인터랙션 패널티", "인터랙션이 잘못되었을 때 적용할 패널티"));
+
+
                 EditorGUILayout.Space();
 
                 // 순서 요구사항
@@ -412,12 +416,11 @@ namespace Nursing.Editor
             EditorGUILayout.LabelField("이동 설정", subheaderStyle);
             EditorGUILayout.PropertyField(followDragMovementProp, new GUIContent("드래그 따라 이동", "드래그 위치를 따라 오브젝트가 이동하는지 여부"));
             
-            if (followDragMovementProp.boolValue)
-            {
+            
                 EditorGUILayout.PropertyField(dragDistanceLimitProp, new GUIContent("드래그 거리 제한", "최대 드래그 거리 (0 = 제한 없음)"));
                 EditorGUILayout.PropertyField(boundaryObjectTagProp, new GUIContent("경계 오브젝트 태그", "오브젝트가 넘어가면 안 되는 경계의 태그"));
                 EditorGUILayout.PropertyField(collisionZoneTagProp, new GUIContent("충돌 영역 태그", "오브젝트가 충돌하면 안 되는 영역의 태그"));
-            }
+            
             
             EditorGUILayout.Space();
             

@@ -262,7 +262,47 @@ namespace Nursing.Editor
             
             // 기본 설정
             EditorGUILayout.PropertyField(itemIdProp, new GUIContent("아이템 ID", "클릭할 아이템의 ID"));
-            
+
+            // 아이템 찾기 버튼 추가
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("아이템 찾기", GUILayout.Width(150)))
+            {
+                // 아이템 찾기 기능
+                string[] guids = AssetDatabase.FindAssets("t:Item");
+                if (guids.Length > 0)
+                {
+                    GenericMenu menu = new GenericMenu();
+
+                    foreach (string guid in guids)
+                    {
+                        string path = AssetDatabase.GUIDToAssetPath(guid);
+                        Item item = AssetDatabase.LoadAssetAtPath<Item>(path);
+
+                        if (item != null)
+                        {
+                            menu.AddItem(
+                                new GUIContent(item.itemName + " (" + item.itemId + ")"),
+                                itemIdProp.stringValue == item.itemId,
+                                () => {
+                                    serializedObject.Update();
+                                    itemIdProp.stringValue = item.itemId;
+                                    serializedObject.ApplyModifiedProperties();
+                                });
+                        }
+                    }
+
+                    menu.ShowAsContext();
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("아이템 없음", "프로젝트에 아이템이 없습니다.", "확인");
+                }
+            }
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+
+
             // 인터랙션 데이터 설정
             EditorGUILayout.PropertyField(interactionDataIdProp, new GUIContent("인터랙션 데이터 ID", "실행할 인터랙션 데이터의 ID"));
             

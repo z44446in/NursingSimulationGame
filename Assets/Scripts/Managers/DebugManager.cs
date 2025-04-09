@@ -109,7 +109,7 @@ public class DebugManager : MonoBehaviour
                     if (!intermediateManager.requiredPickedItems.Contains(requiredItem.item))
                     {
                         intermediateManager.AddPickedItem(requiredItem.item);
-                        Debug.Log($"[DEBUG] Added required item: {requiredItem.item.itemName}");
+                       
                     }
                 }
             }

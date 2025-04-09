@@ -16,14 +16,14 @@ MonoBehaviour:
   displayName: "\u3147\u3147"
   description: "\u3141\u3134"
   steps:
-  - id: step_0
+  - id: Catheterization_Clinical_0
     name: "\uC2A4\uD15D 0"
     guideMessage: "\uC2A4\uD15D \uC601 \uC2DC\uC791 \u314B\u314B"
     stepType: 0
     settings:
       isItemClick: 1
-      itemId: distilledWater
-      interactionDataId: DilutedWaterInteraction
+      itemId: foleySet
+      interactionDataId: Assets/ScriptableObjects/Catherization/ITR_FoleySet.asset
       isActionButtonClick: 0
       correctButtonIds: []
       requireAllButtons: 0
@@ -39,6 +39,39 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: Catheterization_Clinical_1
+    name: "\uC2A4\uD15D 1"
+    guideMessage: "\uC2A4\uD15D \uC601 \uC2DC\uC791 \u314B\u314B"
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: distilledWater
+      interactionDataId: DilutedWaterInteraction
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 1
+    requiredPreviousStepIds:
+    - Catheterization_Clinical_0
+    incorrectOrderPenalty:
+      penaltyType: 1
+      penaltyScore: 10
+      speaker: 0
+      penaltyMessage: "\uC74C.. \uB0C5\uB2E4 \uBA78\uADE0\uC99D\uB958\uC218 \uB4E4\uC5B4\uC11C
+        \uBB50\uD558\uAC8C? \uC77C\uB2E8 \uD3F4\uB9AC \uC138\uD2B8\uBD80\uD130 \uC5F4\uAE4C?"
+      databaseMessage: 
+      flashRedScreen: 1
+      flashCount: 1
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0

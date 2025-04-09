@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: DilutedWaterInteraction
   displayName: "\uBA78\uADE0\uC99D\uB958\uC218 \uC0C1\uD638\uC791\uC6A9"
-  description: "\u3147\u3147"
+  description: "\uBA78\uADE0\uC99D\uB958\uC218 \uC0DD\uC131 "
   stages:
   - id: DilutedWater_stage_0
     name: "\uB69C\uAED1\uC0DD\uC131"
@@ -309,7 +309,7 @@ MonoBehaviour:
     interactionType: 0
     settings:
       isDragInteraction: 1
-      showDirectionArrows: 0
+      showDirectionArrows: 1
       haveDirection: 1
       arrowStartPosition: {x: 1193.0006, y: 441.03333}
       arrowDirection: {x: 0.04540766, y: 0.99896854}
@@ -517,7 +517,7 @@ MonoBehaviour:
       flashRedScreen: 0
       flashCount: 0
   - id: DilutedWater_stage_5_2
-    name: "\uC2A4\uD14C\uC774\uC9C0 5_2"
+    name: "\uD3D0\uAE30\uBB3C\uD1B5\uC5D0 \uBB3C \uC0DD\uC131"
     StageNum: 5
     guideMessage: "\uD3D0\uAE30\uBB3C\uD1B5\uC5D0 \uBB3C \uC0DD\uC131"
     interactionType: 1

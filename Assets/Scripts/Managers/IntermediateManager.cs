@@ -226,14 +226,18 @@ private void UpdateHandImageInIntermediateScreen(Item item)
 {
     if (handImage != null)
     {
-        // 아이템에 핸드 스프라이트가 설정되어 있으면 사용
-        if (item.handSprite != null)
-        {
-            handImage.sprite = item.handSprite[0];
-            handImage.gameObject.SetActive(true);
+            // 아이템에 핸드 스프라이트가 설정되어 있고, 배열이 비어있지 않은지 확인
+            if (item.handSprite != null && item.handSprite.Length > 0)
+            {
+                handImage.sprite = item.handSprite[0];
+                handImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                // 손 이미지를 숨김
+                handImage.gameObject.SetActive(false);
+            }
         }
-           
-    }
 }
 
     
