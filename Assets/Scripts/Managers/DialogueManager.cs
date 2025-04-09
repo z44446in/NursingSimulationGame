@@ -84,6 +84,7 @@ namespace Nursing.Managers
             {
                 currentSmallDialogue = Instantiate(smallDialoguePrefab, dialogueParent);
 
+
                 speakerNameText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
                 speakerImage = currentSmallDialogue.GetComponentInChildren<Image>(true);
                 dialogueText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
@@ -123,7 +124,10 @@ namespace Nursing.Managers
                 canvasGroup = currentSmallDialogue.AddComponent<CanvasGroup>();
             }
 
-            
+            // 여기에 추가 - 이전 Tween 중지 후 새 애니메이션 시작
+            DOTween.Kill(canvasGroup);
+            canvasGroup.alpha = 0f;
+            canvasGroup.DOFade(1f, fadeInDuration).SetEase(fadeInEase);
             currentSmallDialogue.SetActive(true);
 
             // 초기 알파값을 0으로 설정하고 페이드인
@@ -131,6 +135,7 @@ namespace Nursing.Managers
             canvasGroup.DOFade(1f, fadeInDuration).SetEase(fadeInEase);
 
             dialogueButton.onClick.RemoveAllListeners();
+            // DialogueManager.cs의 ShowSmallDialogue 메서드 내 버튼 클릭 핸들러 수정
             dialogueButton.onClick.AddListener(() => {
                 // 페이드아웃 애니메이션 후 대화창 비활성화 및 콜백 실행
                 canvasGroup.DOFade(0f, fadeOutDuration)
@@ -138,19 +143,13 @@ namespace Nursing.Managers
                     .OnComplete(() => {
                         currentSmallDialogue.SetActive(false);
                         onDialogueClosed?.Invoke();
-                    });
+            // 여기서 파괴하지 말고, 애니메이션 완료 후 파괴
+        });
             });
 
-            // 버튼 클릭 이벤트 등록
-            if (dialogueButton != null)
-            {
-                dialogueButton.onClick.RemoveAllListeners();
-                dialogueButton.onClick.AddListener(() =>
-                {
-                    onDialogueClosed?.Invoke();
-                    CloseSmallDialogue();
-                });
-            }
+
+
+
 
             BringToFront(currentSmallDialogue);
         }

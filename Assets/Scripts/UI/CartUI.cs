@@ -96,7 +96,7 @@ public class CartUI : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("GameManager instance is null during OnDisable. Event unsubscription skipped.");
+           // Debug.LogWarning("GameManager instance is null during OnDisable. Event unsubscription skipped.");
         }
     }
 
