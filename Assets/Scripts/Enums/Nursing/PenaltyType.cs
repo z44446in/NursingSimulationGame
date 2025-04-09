@@ -28,7 +28,7 @@ namespace Nursing.Penalty
         [Header("패널티 메시지")]
         [Space(5)]
         [Tooltip("패널티 메시지를 말하는 화자")]
-        public string speaker;
+        public Nursing.Managers.DialogueManager.Speaker speaker = Nursing.Managers.DialogueManager.Speaker.Character;
 
         [Space(5)]
         [Tooltip("사용자에게 표시할 패널티 메시지")]

@@ -18,14 +18,24 @@ namespace Nursing.Managers
             Guardian,    // 보호자
             Player,      // 플레이어
             HeadNurse,   // 수간호사
-            Guide        // 가이드 메시지
+           
         }
 
         [System.Serializable]
         public class SpeakerData
         {
-            public string displayName;      // 화면에 표시될 이름
-            public Sprite speakerSprite;    // 화자 이미지
+            public string displayName = "";      // 화면에 표시될 이름
+            public Sprite speakerSprite;         // 화자 이미지
+            
+            // 기본 생성자
+            public SpeakerData() { }
+            
+            // 매개변수가 있는 생성자
+            public SpeakerData(string name, Sprite sprite)
+            {
+                displayName = name;
+                speakerSprite = sprite;
+            }
         }
 
         [Header("대화창 프리팹")]
@@ -40,7 +50,7 @@ namespace Nursing.Managers
         [SerializeField] private Transform dialogueParent; // 대화창 부모 오브젝트
 
         [Header("화자 데이터")]
-        [SerializeField] private SpeakerData[] speakerData; // 화자 데이터 배열
+        [SerializeField] private SpeakerData[] speakerData = new SpeakerData[System.Enum.GetValues(typeof(Speaker)).Length]; // 화자 데이터 배열
 
         [Header("Animation Settings")]
         [SerializeField] private float fadeInDuration = 0.3f;
@@ -83,35 +93,53 @@ namespace Nursing.Managers
             if (currentSmallDialogue == null)
             {
                 currentSmallDialogue = Instantiate(smallDialoguePrefab, dialogueParent);
-
-
-                speakerNameText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
-                speakerImage = currentSmallDialogue.GetComponentInChildren<Image>(true);
-                dialogueText = currentSmallDialogue.GetComponentInChildren<TextMeshProUGUI>(true);
-
+                
+                // 대화창의 버튼 컴포넌트 참조
                 dialogueButton = currentSmallDialogue.GetComponent<Button>();
                 if (dialogueButton == null)
                 {
                     dialogueButton = currentSmallDialogue.AddComponent<Button>();
                 }
+                
+                // 작은 대화창 프리팹에서 UI 요소 찾기 - 프리팹 구조에 맞게 요소 찾기
+                Transform nameTr = currentSmallDialogue.transform.Find("SmallDBg /name");
+                Transform contextTr = currentSmallDialogue.transform.Find("SmallDBg /context");
+                Transform speakerImageTr = currentSmallDialogue.transform.Find("SmallDBg /speakerImage");
+                
+                if (nameTr != null)
+                    speakerNameText = nameTr.GetComponent<TextMeshProUGUI>();
+                
+                if (contextTr != null)
+                    dialogueText = contextTr.GetComponent<TextMeshProUGUI>();
+                
+                if (speakerImageTr != null)
+                    speakerImage = speakerImageTr.GetComponent<Image>();
             }
             else
             {
                 dialogueButton = currentSmallDialogue.GetComponent<Button>();
             }
 
+            // speaker 열거형에 해당하는 speakerData 가져오기
             SpeakerData currentSpeaker = speakerData[(int)speaker];
 
-            if (speakerNameText != null)
+            // 화자 이름과 이미지 설정
+            if (speakerNameText != null && !string.IsNullOrEmpty(currentSpeaker.displayName))
             {
                 speakerNameText.text = currentSpeaker.displayName;
             }
+            else if (speakerNameText != null)
+            {
+                // 이름이 설정되지 않은 경우 기본값 사용
+                speakerNameText.text = speaker.ToString();
+            }
 
-            if (speakerImage != null)
+            if (speakerImage != null && currentSpeaker.speakerSprite != null)
             {
                 speakerImage.sprite = currentSpeaker.speakerSprite;
             }
 
+            // 대화 내용 설정
             if (dialogueText != null)
             {
                 dialogueText.text = message;
@@ -154,7 +182,8 @@ namespace Nursing.Managers
             BringToFront(currentSmallDialogue);
         }
 
-        // 패널티 시스템과 호환되는 오버로드된 메서드 추가
+        // 패널티 시스템과 호환되는 오버로드된 메서드 추가 - 더 이상 사용하지 않음
+        [System.Obsolete("이 메서드는 더 이상 사용되지 않습니다. 대신 Speaker enum을 사용하는 오버로드를 사용하세요.")]
         public void ShowSmallDialogue(
             string message,
             string speakerName

@@ -48,9 +48,7 @@ namespace Nursing.Managers
             // 패널티 메시지 표시
             if (!string.IsNullOrEmpty(penaltyData.penaltyMessage) && dialogueManager != null)
             {
-                dialogueManager.ShowSmallDialogue(penaltyData.penaltyMessage, penaltyData.speaker);
-
-                
+                dialogueManager.ShowSmallDialogue(penaltyData.penaltyMessage, false, null, penaltyData.speaker);
             }
             
             // 패널티 데이터베이스에 기록

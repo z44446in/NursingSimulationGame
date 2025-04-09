@@ -34,7 +34,7 @@ MonoBehaviour:
     incorrectOrderPenalty:
       penaltyType: 0
       penaltyScore: 0
-      speaker: 
+      speaker: 0
       penaltyMessage: 
       databaseMessage: 
       flashRedScreen: 0
@@ -42,38 +42,7 @@ MonoBehaviour:
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0
-      speaker: 
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-  - id: step_1
-    name: "\uC2A4\uD15D 1"
-    guideMessage: "\uC2A4\uD15D 2 \uC2DC\uC791 "
-    stepType: 0
-    settings:
-      isItemClick: 1
-      itemId: distilledWater
-      interactionDataId: DilutedWaterInteraction
-      isActionButtonClick: 0
-      correctButtonIds: []
-      requireAllButtons: 0
-      isPlayerInteraction: 0
-      validInteractionTags: []
-    requireSpecificOrder: 0
-    requiredPreviousStepIds: []
-    incorrectOrderPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-    incorrectActionPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 
+      speaker: 0
       penaltyMessage: 
       databaseMessage: 
       flashRedScreen: 0
