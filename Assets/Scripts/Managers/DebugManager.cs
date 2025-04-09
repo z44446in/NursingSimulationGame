@@ -10,10 +10,20 @@ public class DebugManager : MonoBehaviour
     [SerializeField] private Button startGameButton;
     [SerializeField] private MonoBehaviour targetScript; // 리셋할 스크립트
 
+    [Header("중간화면 디버깅버튼 ")]
+    [SerializeField] private IntermediateManager intermediateManager;
+    [SerializeField] private Button debugAddAllRequiredItemsButton;
+
     private void Start()
     {
         if (startGameButton != null)
             startGameButton.onClick.AddListener(StartGame);
+
+        // 버튼 이벤트 등록
+        if (debugAddAllRequiredItemsButton != null)
+        {
+            debugAddAllRequiredItemsButton.onClick.AddListener(DebugAddAllRequiredItems);
+        }
     }
 
     public void StartGame()
@@ -39,6 +49,12 @@ public class DebugManager : MonoBehaviour
     {
         if (startGameButton != null)
             startGameButton.onClick.RemoveAllListeners();
+
+        // 버튼 이벤트 제거
+        if (debugAddAllRequiredItemsButton != null)
+        {
+            debugAddAllRequiredItemsButton.onClick.RemoveListener(DebugAddAllRequiredItems);
+        }
     }
 
     private void ResetScript()
@@ -68,6 +84,44 @@ public class DebugManager : MonoBehaviour
         {
             startMethod.Invoke(targetScript, null);
            
+        }
+    }
+
+    /// <summary>
+    /// 디버깅용 - 인터미디어트 화면에서 모든 필수 아이템을 한 번에 추가
+    /// </summary>
+    public void DebugAddAllRequiredItems()
+    {
+        if (intermediateManager == null)
+        {
+            Debug.LogError("IntermediateManager reference is missing!");
+            return;
+        }
+
+        // 모든 필수 아이템 가져오기
+        if (intermediateManager.requiredItems != null)
+        {
+            foreach (var requiredItem in intermediateManager.requiredItems.requiredItems)
+            {
+                if (!requiredItem.isOptional)  // 필수 아이템만 추가
+                {
+                    // 이미 추가되지 않은 경우에만 추가
+                    if (!intermediateManager.requiredPickedItems.Contains(requiredItem.item))
+                    {
+                        intermediateManager.AddPickedItem(requiredItem.item);
+                        Debug.Log($"[DEBUG] Added required item: {requiredItem.item.itemName}");
+                    }
+                }
+            }
+
+            // 카트 UI 갱신 요청
+            intermediateManager.RefreshCartItems();
+
+            Debug.Log("[DEBUG] All required items have been added");
+        }
+        else
+        {
+            Debug.LogError("Required items list is null!");
         }
     }
 
