@@ -91,30 +91,30 @@ namespace Nursing.Editor
                 subheaderStyle.margin = new RectOffset(0, 0, 5, 3);
             }
         }
-        
+        // 스테이지 추가 메서드도 수정
         private void AddStage()
         {
             // 새 스테이지 추가
             stagesProperty.arraySize++;
             int newIndex = stagesProperty.arraySize - 1;
-            
+
             // 기본값 설정
             SerializedProperty newStage = stagesProperty.GetArrayElementAtIndex(newIndex);
-            
+
             SerializedProperty idProp = newStage.FindPropertyRelative("id");
             idProp.stringValue = "stage_" + newIndex;
-            
+
             SerializedProperty nameProp = newStage.FindPropertyRelative("name");
             nameProp.stringValue = "스테이지 " + newIndex;
-            
+
             SerializedProperty stageNumProp = newStage.FindPropertyRelative("StageNum");
             stageNumProp.intValue = newIndex;
-            
+
             // 새 스테이지의 폴드아웃 상태를 열림으로 설정
             stageFoldouts[newIndex] = true;
             settingsFoldouts[newIndex] = true;
         }
-        
+
         private void DrawStage(int index)
         {
             SerializedProperty stageProperty = stagesProperty.GetArrayElementAtIndex(index);
@@ -286,7 +286,10 @@ namespace Nursing.Editor
             SerializedProperty boundaryObjectTagProp = settingsProp.FindPropertyRelative("boundaryObjectTag");
             SerializedProperty collisionZoneTagProp = settingsProp.FindPropertyRelative("collisionZoneTag");
             SerializedProperty OverDragProp = settingsProp.FindPropertyRelative("OverDrag");
-            
+            SerializedProperty deactivateObjectAfterDragProp = settingsProp.FindPropertyRelative("deactivateObjectAfterDrag");
+            SerializedProperty haveDirectionProp = settingsProp.FindPropertyRelative("haveDirection");
+
+
             // 이 인터랙션 타입을 활성화하기 위한 플래그
             isDragInteractionProp.boolValue = true;
             
@@ -297,17 +300,18 @@ namespace Nursing.Editor
             
             EditorGUILayout.Space();
             
-            // 방향 화살표 설정
-            EditorGUILayout.LabelField("방향 화살표 설정", subheaderStyle);
-            EditorGUILayout.PropertyField(showDirectionArrowsProp, new GUIContent("방향 화살표 표시", "드래그 방향을 안내하는 화살표 표시 여부"));
+            // 방향 설정
+            EditorGUILayout.LabelField("방향 설정", subheaderStyle);
+            EditorGUILayout.PropertyField(haveDirectionProp, new GUIContent("방향 존재 유무", "방향 표시 여부"));
+
             
-            if (showDirectionArrowsProp.boolValue)
+                if (haveDirectionProp.boolValue)
             {
-                EditorGUILayout.PropertyField(arrowStartPositionProp, new GUIContent("화살표 시작 위치", "화살표가 표시될 시작 위치"));
+                EditorGUILayout.PropertyField(arrowStartPositionProp, new GUIContent("드래그 시작 위치", "드래그가 표시될 시작 위치"));
                 
-                // 화살표 방향 시각적 컨트롤
+                // 드래그 방향 시각적 컨트롤
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel(new GUIContent("화살표 방향", "화살표가 가리킬 방향"));
+                EditorGUILayout.PrefixLabel(new GUIContent("드래그 방향", "드래그가 가리킬 방향"));
                 
                 // 현재 방향 값 가져오기
                 Vector2 currentDirection = arrowDirectionProp.vector2Value;
@@ -375,6 +379,9 @@ namespace Nursing.Editor
                         Handles.DrawLine(center, center + leftBoundary);
                         Handles.DrawLine(center, center + rightBoundary);
                     }
+
+                    EditorGUILayout.PropertyField(showDirectionArrowsProp, new GUIContent("화살표 존재 유무", "화살표가 있는지 없는지"));
+                    
                 }
                 
                 EditorGUILayout.EndHorizontal();
@@ -394,11 +401,9 @@ namespace Nursing.Editor
 
             }
 
+            // 드래그 후 오브젝트 비활성화 옵션 표시
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(
-                settingsProp.FindPropertyRelative("deactivateObjectAfterDrag"),
-                new GUIContent("드래그 후 오브젝트 비활성화", "드래그 완료 후 해당 오브젝트를 비활성화할지 여부")
-            );
+            EditorGUILayout.PropertyField(deactivateObjectAfterDragProp, new GUIContent("드래그 후 오브젝트 비활성화", "드래그 완료 후 해당 오브젝트를 비활성화할지 여부"));
 
             EditorGUILayout.Space();
             
@@ -597,58 +602,65 @@ namespace Nursing.Editor
             // 기본 설정
             EditorGUILayout.PropertyField(miniGamePrefabProp, new GUIContent("미니게임 프리팹", "실행할 미니게임 프리팹"));
         }
-        
+
         #endregion
-        
+        // InteractionDataEditor.cs의 DeleteStage 메서드 수정
         private void DeleteStage(int index)
         {
             stagesProperty.DeleteArrayElementAtIndex(index);
-            
+
             // 폴드아웃 상태 업데이트
             var newFoldouts = new Dictionary<int, bool>();
             var newSettingsFoldouts = new Dictionary<int, bool>();
-            
+
             for (int i = 0; i < stagesProperty.arraySize; i++)
             {
                 if (i < index)
                 {
-                    newFoldouts[i] = stageFoldouts[i];
-                    newSettingsFoldouts[i] = settingsFoldouts[i];
+                    if (stageFoldouts.ContainsKey(i))
+                        newFoldouts[i] = stageFoldouts[i];
+                    if (settingsFoldouts.ContainsKey(i))
+                        newSettingsFoldouts[i] = settingsFoldouts[i];
                 }
                 else
                 {
-                    newFoldouts[i] = stageFoldouts[i + 1];
-                    newSettingsFoldouts[i] = settingsFoldouts[i + 1];
+                    if (stageFoldouts.ContainsKey(i + 1))
+                        newFoldouts[i] = stageFoldouts[i + 1];
+                    if (settingsFoldouts.ContainsKey(i + 1))
+                        newSettingsFoldouts[i] = settingsFoldouts[i + 1];
                 }
+
+                // 스테이지 번호 재조정
+                SerializedProperty stageProp = stagesProperty.GetArrayElementAtIndex(i);
+                SerializedProperty stageNumProp = stageProp.FindPropertyRelative("StageNum");
+                stageNumProp.intValue = i;
             }
-            
+
             stageFoldouts = newFoldouts;
             settingsFoldouts = newSettingsFoldouts;
         }
-        
+
+        // MoveStage 메서드도 수정
         private void MoveStage(int fromIndex, int toIndex)
         {
             stagesProperty.MoveArrayElement(fromIndex, toIndex);
-            
-            // 스테이지 번호 업데이트
-            SerializedProperty fromStage = stagesProperty.GetArrayElementAtIndex(toIndex);
-            SerializedProperty toStage = stagesProperty.GetArrayElementAtIndex(fromIndex);
-            
-            SerializedProperty fromStageNum = fromStage.FindPropertyRelative("StageNum");
-            SerializedProperty toStageNum = toStage.FindPropertyRelative("StageNum");
-            
-            int temp = fromStageNum.intValue;
-            fromStageNum.intValue = toStageNum.intValue;
-            toStageNum.intValue = temp;
-            
+
             // 폴드아웃 상태 교환
-            bool tempFoldout = stageFoldouts[fromIndex];
-            stageFoldouts[fromIndex] = stageFoldouts[toIndex];
+            bool tempFoldout = stageFoldouts.ContainsKey(fromIndex) ? stageFoldouts[fromIndex] : false;
+            stageFoldouts[fromIndex] = stageFoldouts.ContainsKey(toIndex) ? stageFoldouts[toIndex] : false;
             stageFoldouts[toIndex] = tempFoldout;
-            
-            tempFoldout = settingsFoldouts[fromIndex];
-            settingsFoldouts[fromIndex] = settingsFoldouts[toIndex];
+
+            tempFoldout = settingsFoldouts.ContainsKey(fromIndex) ? settingsFoldouts[fromIndex] : false;
+            settingsFoldouts[fromIndex] = settingsFoldouts.ContainsKey(toIndex) ? settingsFoldouts[toIndex] : false;
             settingsFoldouts[toIndex] = tempFoldout;
+
+            // 모든 스테이지 번호 재조정
+            for (int i = 0; i < stagesProperty.arraySize; i++)
+            {
+                SerializedProperty stageProp = stagesProperty.GetArrayElementAtIndex(i);
+                SerializedProperty stageNumProp = stageProp.FindPropertyRelative("StageNum");
+                stageNumProp.intValue = i;
+            }
         }
     }
 }

@@ -181,16 +181,18 @@ namespace Nursing.Managers
                 AdvanceToNextStage();
                 return;
             }
-            
+
             // 항상 방향 화살표 표시 (사용자 가이드)
-            if (settings.requiredDragDirection) // 드래그 방향이 요구되는 경우에만 화살표 표시
+            if (settings.haveDirection)
             {
-                // 화살표 시작 위치 설정 (기존 설정 또는 드래그 대상 오브젝트 위치)
-                Vector2 arrowPos = settings.arrowStartPosition;
+                // 항상 방향 화살표 표시 (사용자 가이드)
+                if (settings.requiredDragDirection && settings.showDirectionArrows)
+                {
+                    // 화살표 시작 위치 설정
+                    Vector2 arrowPos = settings.arrowStartPosition;
 
-
-                // 대상 오브젝트가 있으면 그 위치를 기준으로 화살표 표시
-                if (!string.IsNullOrEmpty(settings.targetObjectTag))
+                    // 대상 오브젝트가 있으면 그 위치를 기준으로 화살표 표시
+                    if (!string.IsNullOrEmpty(settings.targetObjectTag))
                     {
                         GameObject targetObj = GameObject.FindWithTag(settings.targetObjectTag);
                         if (targetObj != null)
@@ -200,13 +202,10 @@ namespace Nursing.Managers
                         }
                     }
 
-
-                
-                
-                // 화살표 생성
-                CreateDirectionArrows(arrowPos, settings.arrowDirection);
+                    // 화살표 생성
+                    CreateDirectionArrows(arrowPos, settings.arrowDirection);
+                }
             }
-            
             // 드래그 이벤트 리스너 설정은 Update 메서드에서 처리합니다.
             interactionInProgress = true; // 인터랙션 활성화
         }
@@ -910,10 +909,10 @@ namespace Nursing.Managers
                         
                     }
 
-                    // 성공적인 드래그 완료 후 추가 조건 체크
+                    // 드래그 후 오브젝트 비활성화 (설정된 경우)
                     if (draggedObject != null && settings.deactivateObjectAfterDrag)
                     {
-                        draggedObject.SetActive(false); // 옵션이 활성화된 경우만 오브젝트 비활성화
+                        draggedObject.SetActive(false);
                     }
 
                     // 드래그 완료, 다음 단계로 진행

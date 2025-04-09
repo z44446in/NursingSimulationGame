@@ -53,6 +53,7 @@ namespace Nursing.Interaction
         [Header("드래그 설정")]
         public bool isDragInteraction;
         public bool showDirectionArrows;
+        public bool haveDirection;
         public Vector2 arrowStartPosition;
         public Vector2 arrowDirection;
         public bool requireTwoFingerDrag;

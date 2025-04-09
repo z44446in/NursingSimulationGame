@@ -24,12 +24,14 @@ MonoBehaviour:
     settings:
       isDragInteraction: 1
       showDirectionArrows: 0
+      haveDirection: 0
       arrowStartPosition: {x: 0, y: 0}
       arrowDirection: {x: 0, y: 0}
       requireTwoFingerDrag: 0
       requiredDragDirection: 0
       dragDirectionTolerance: 45
       targetObjectTag: 
+      deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -118,12 +120,14 @@ MonoBehaviour:
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
+      haveDirection: 1
       arrowStartPosition: {x: 1194, y: 431}
       arrowDirection: {x: -0.9994449, y: 0.033314828}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -211,12 +215,14 @@ MonoBehaviour:
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
+      haveDirection: 0
       arrowStartPosition: {x: 1194, y: 431}
       arrowDirection: {x: -0.9994449, y: 0.033314828}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 0
       followDragMovement: 1
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -303,13 +309,15 @@ MonoBehaviour:
     interactionType: 0
     settings:
       isDragInteraction: 1
-      showDirectionArrows: 1
+      showDirectionArrows: 0
+      haveDirection: 1
       arrowStartPosition: {x: 1193.0006, y: 441.03333}
       arrowDirection: {x: 0.04540766, y: 0.99896854}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 1
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -388,114 +396,23 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: DilutedWater_stage_4
-    name: "\uB69C\uAED1 \uC5F4\uB824\uC11C \uC0AC\uB77C\uC9D0"
-    StageNum: 4
-    guideMessage: "\uB69C\uAED1\uC774 \uC0AC\uB77C\uC84B\uC5B4\uC6A9"
-    interactionType: 4
-    settings:
-      isDragInteraction: 1
-      showDirectionArrows: 1
-      arrowStartPosition: {x: 1194, y: 431}
-      arrowDirection: {x: -0.020403914, y: -0.9997918}
-      requireTwoFingerDrag: 0
-      requiredDragDirection: 1
-      dragDirectionTolerance: 19.3
-      targetObjectTag: Bottle
-      followDragMovement: 0
-      dragDistanceLimit: 0
-      boundaryObjectTag: 
-      collisionZoneTag: 
-      OverDrag:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      createObject: 1
-      objectToCreate: []
-      isConditionalClick: 0
-      validClickTags: []
-      invalidClickTags: []
-      conditionalClickPenalties: []
-      isSustainedClick: 0
-      sustainedClickDuration: 0
-      earlyReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      lateReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      sustainedClickTargetTag: 
-      deleteObject: 1
-      objectToDeleteTag:
-      - Bottle
-      moveObject: 1
-      objectToMoveTag: Bottle
-      moveDirection: {x: 0, y: 10}
-      moveSpeed: 2
-      movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      startMiniGame: 0
-      miniGamePrefab: {fileID: 0}
-    requireSpecificOrder: 0
-    requiredPreviousStageIds: []
-    incorrectOrderPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-    incorrectInteractionPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
   - id: DilutedWater_stage_5
     name: "\uBA78\uADE0\uC99D\uB958\uC218 \uD3D0\uAE30\uBB3C \uD1B5\uC5D0 \uBD93\uAE30 "
-    StageNum: 5
+    StageNum: 4
     guideMessage: "\uBA78\uADE0\uC99D\uB958\uC218\uB97C \uBD80\uC6B8 \uACF3\uC744
       \uD130\uCE58\uD558\uC138\uC694"
     interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
+      haveDirection: 0
       arrowStartPosition: {x: 1194, y: 431}
       arrowDirection: {x: -0.020403914, y: -0.9997918}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -601,18 +518,20 @@ MonoBehaviour:
       flashCount: 0
   - id: DilutedWater_stage_5_2
     name: "\uC2A4\uD14C\uC774\uC9C0 5_2"
-    StageNum: 6
+    StageNum: 5
     guideMessage: "\uD3D0\uAE30\uBB3C\uD1B5\uC5D0 \uBB3C \uC0DD\uC131"
     interactionType: 1
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
+      haveDirection: 0
       arrowStartPosition: {x: 1194, y: 431}
       arrowDirection: {x: -0.020403914, y: -0.9997918}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -705,19 +624,21 @@ MonoBehaviour:
       flashCount: 0
   - id: DilutedWater_stage_6
     name: "\uBA78\uADE0\uC99D\uB958\uC218 \uD2B8\uB808\uC774 \uC548\uC5D0 \uBD93\uAE30"
-    StageNum: 7
+    StageNum: 6
     guideMessage: "\uB2E4\uC74C\uC73C\uB85C \uBA78\uADE0\uC99D\uB958\uC218\uB97C
       \uBD80\uC6B8 \uACF3\uC744 \uD130\uCE58\uD558\uC138\uC694."
     interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
+      haveDirection: 0
       arrowStartPosition: {x: 1194, y: 431}
       arrowDirection: {x: -0.020403914, y: -0.9997918}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -817,18 +738,20 @@ MonoBehaviour:
       flashCount: 0
   - id: DilutedWater_stage_7
     name: "\uBB3C \uC0DD\uC131"
-    StageNum: 8
+    StageNum: 7
     guideMessage: "\uBB3C \uC0DD\uC131"
     interactionType: 1
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
+      haveDirection: 0
       arrowStartPosition: {x: 1194, y: 431}
       arrowDirection: {x: -0.020403914, y: -0.9997918}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
@@ -921,18 +844,20 @@ MonoBehaviour:
       flashCount: 0
   - id: DilutedWater_stage_8
     name: "\uC190 \uC0AD\uC81C "
-    StageNum: 9
+    StageNum: 8
     guideMessage: "\uB05D\uB0AC\uB2E4 ~~\uCEAC\uCEAC\uCEAC\uCEAC"
     interactionType: 4
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
+      haveDirection: 0
       arrowStartPosition: {x: 1194, y: 431}
       arrowDirection: {x: -0.020403914, y: -0.9997918}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 19.3
       targetObjectTag: Bottle
+      deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 

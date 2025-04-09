@@ -12,7 +12,581 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7, type: 3}
   m_Name: ITR_FoleySet
   m_EditorClassIdentifier: 
-  id: 
-  displayName: 
-  description: 
-  stages: []
+  id: FoleySet_Open
+  displayName: "\uD3F4\uB9AC\uC138\uD2B8 \uC5F4\uAE30 "
+  description: "\uAC00\uC7A5 \uBA3C\uC800 \uD574\uC57C\uD574\uC6A9"
+  stages:
+  - id: FoleySet_stage_0
+    name: "\uD3F4\uB9AC\uC138\uD2B81 \uC0DD\uC131"
+    StageNum: 0
+    guideMessage: 
+    interactionType: 1
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 0
+      dragDirectionTolerance: 0
+      targetObjectTag: 
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 0}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: FoleySet_stage_1
+    name: "\uD14C\uC774\uD504 \uB72F\uAE30 "
+    StageNum: 1
+    guideMessage: "\uD14C\uC774\uD504\uB97C \uB4DC\uB798\uADF8\uB85C \uB72F\uC5B4\uC8FC\uC138\uC694."
+    interactionType: 0
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0.027767068, y: 0.9996144}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 16.2
+      targetObjectTag: Tape
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 0}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: FoleySet_stage_2
+    name: "\uD14C\uC774\uD504 \uB72F\uACA8\uC9D0"
+    StageNum: 2
+    guideMessage: 
+    interactionType: 0
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: -0.018515345, y: -0.9998286}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 16.2
+      targetObjectTag: Tape1
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 0}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Tape
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: FoleySet_stage_3
+    name: "\uD14C\uC774\uD504 \uB098\uBA38\uC9C0 \uB72F\uAE30"
+    StageNum: 3
+    guideMessage: "\uD14C\uC774\uD504\uB97C \uB4DC\uB798\uADF8\uB85C \uB72F\uC5B4\uC8FC\uC138\uC694. "
+    interactionType: 0
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0.01388755, y: 0.99990356}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 16.2
+      targetObjectTag: Tape
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 0}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Tape
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: FoleySet_stage_3
+    name: "\uD14C\uC774\uD504 \uB098\uBA38\uC9C0 \uB72F\uACA8\uC9D0"
+    StageNum: 4
+    guideMessage: 
+    interactionType: 4
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0.01388755, y: 0.99990356}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 16.2
+      targetObjectTag: Tape
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 0}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Tape
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: stage_5
+    name: "\uC2A4\uD14C\uC774\uC9C0 5"
+    StageNum: 5
+    guideMessage: 
+    interactionType: 4
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0.01388755, y: 0.99990356}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 16.2
+      targetObjectTag: Tape
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 0}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Tape
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
