@@ -57,6 +57,7 @@ namespace Nursing.Interaction
         public Vector2 arrowDirection;
         public bool requireTwoFingerDrag;
         public bool requiredDragDirection;
+        [Range(0, 90)] public float dragDirectionTolerance = 45f; // 드래그 방향 허용 오차 (각도)
         public string targetObjectTag;
         public bool followDragMovement;
         public float dragDistanceLimit;

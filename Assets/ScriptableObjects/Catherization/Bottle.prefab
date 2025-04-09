@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1391240822826838672}
   - component: {fileID: 2590142062917081501}
   m_Layer: 5
-  m_Name: Fuck
-  m_TagString: Player
+  m_Name: Bottle
+  m_TagString: Bottle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

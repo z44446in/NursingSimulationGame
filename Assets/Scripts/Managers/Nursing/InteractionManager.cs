@@ -14,6 +14,7 @@ namespace Nursing.Managers
         [SerializeField] private PenaltyManager penaltyManager;
         [SerializeField] private DialogueManager dialogueManager;
         [SerializeField] private GameObject quizPopupPrefab;
+        [SerializeField] private Canvas mainCanvas; // UI 생성을 위한 캔버스 참조
         
         [Header("화살표 가이드")]
         [SerializeField] private GameObject arrowPrefab;
@@ -39,6 +40,9 @@ namespace Nursing.Managers
                 
             if (dialogueManager == null)
                 dialogueManager = FindObjectOfType<DialogueManager>();
+                
+            if (mainCanvas == null)
+                mainCanvas = FindObjectOfType<Canvas>();
         }
         
         /// <summary>
@@ -178,10 +182,29 @@ namespace Nursing.Managers
                 return;
             }
             
-            // 방향 화살표 표시 (설정된 경우)
-            if (settings.showDirectionArrows)
+            // 항상 방향 화살표 표시 (사용자 가이드)
+            if (settings.requiredDragDirection) // 드래그 방향이 요구되는 경우에만 화살표 표시
             {
-                CreateDirectionArrows(settings.arrowStartPosition, settings.arrowDirection);
+                // 화살표 시작 위치 설정 (기존 설정 또는 드래그 대상 오브젝트 위치)
+                Vector2 arrowPos = settings.arrowStartPosition;
+
+
+                // 대상 오브젝트가 있으면 그 위치를 기준으로 화살표 표시
+                if (!string.IsNullOrEmpty(settings.targetObjectTag))
+                    {
+                        GameObject targetObj = GameObject.FindWithTag(settings.targetObjectTag);
+                        if (targetObj != null)
+                        {
+                            arrowPos = targetObj.transform.position;
+                            settings.arrowStartPosition = arrowPos; // 위치 업데이트
+                        }
+                    }
+
+
+                
+                
+                // 화살표 생성
+                CreateDirectionArrows(arrowPos, settings.arrowDirection);
             }
             
             // 드래그 이벤트 리스너 설정은 Update 메서드에서 처리합니다.
@@ -191,7 +214,6 @@ namespace Nursing.Managers
         /// <summary>
         /// 오브젝트 생성 인터랙션을 설정합니다.
         /// </summary>
-      
         private void SetupObjectCreation()
         {
             var settings = currentStage.settings;
@@ -203,18 +225,56 @@ namespace Nursing.Managers
                 return;
             }
 
+            // 캔버스가 설정되지 않았다면 현재 씬의 캔버스 찾기
+            if (mainCanvas == null)
+            {
+                mainCanvas = FindObjectOfType<Canvas>();
+                if (mainCanvas == null)
+                {
+                    Debug.LogError("캔버스를 찾을 수 없습니다. 오브젝트 생성이 원하는 위치에 되지 않을 수 있습니다.");
+                }
+            }
+
             foreach (var prefab in settings.objectToCreate)
             {
                 if (prefab != null)
                 {
-                    GameObject instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
-                    Debug.Log($"오브젝트 생성: {instance.name}");
+                    // 캔버스가 있는 경우 캔버스의 자식으로 생성
+                    GameObject instance;
+                    if (mainCanvas != null)
+                    {
+                        // UI 요소인지 확인
+                        if (prefab.GetComponent<RectTransform>() != null)
+                        {
+                            // UI 요소라면 캔버스 아래에 생성
+                            instance = Instantiate(prefab, mainCanvas.transform);
+                            // 원래 프리팹의 RectTransform 설정 유지
+                            RectTransform rectTransform = instance.GetComponent<RectTransform>();
+                            if (rectTransform != null)
+                            {
+                                // UI 요소의 위치를 캔버스 기준으로 조정
+                                rectTransform.anchoredPosition = prefab.GetComponent<RectTransform>().anchoredPosition;
+                            }
+                        }
+                        else
+                        {
+                            // UI 요소가 아니라면 월드 공간에 생성
+                            instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
+                        }
+                    }
+                    else
+                    {
+                        // 캔버스가 없으면 원래 위치에 생성
+                        instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
+                    }
+                    
+                    Debug.Log($"오브젝트 생성: {instance.name}, 부모: {(instance.transform.parent ? instance.transform.parent.name : "없음")}");
                 }
             }
 
             AdvanceToNextStage();
         }
-
+        
         /// <summary>
         /// 조건부 클릭 인터랙션을 설정합니다.
         /// </summary>
@@ -427,7 +487,7 @@ namespace Nursing.Managers
             ClearArrows();
             
             // 새 화살표 생성
-            var arrow = Instantiate(arrowPrefab, transform);
+            var arrow = Instantiate(arrowPrefab, mainCanvas.transform);
             arrow.transform.position = startPosition;
             
             // 화살표 방향 설정
@@ -465,12 +525,8 @@ namespace Nursing.Managers
                 
                 yield return new WaitForSeconds(arrowBlinkInterval);
                 
-                // 사용자가 화면을 터치했는지 확인
-                if (Input.touchCount > 0 || Input.GetMouseButton(0))
-                {
-                    ClearArrows();
-                    yield break;
-                }
+                // 화살표는 사용자가 올바른 오브젝트를 터치할 때까지 계속 깜빡입니다.
+                // HandleSingleFingerDrag와 HandleTwoFingerDrag에서 올바른 오브젝트 터치 시 ClearArrows()를 호출합니다.
             }
         }
         
@@ -746,10 +802,30 @@ namespace Nursing.Managers
                     // 드래그 방향 요구사항이 있는 경우 확인
                     if (settings.requiredDragDirection)
                     {
-                        float dot = Vector2.Dot(dragDirection, settings.arrowDirection.normalized);
+                        Vector2 requiredDirection = settings.arrowDirection.normalized;
+                        float dot = Vector2.Dot(dragDirection, requiredDirection);
+                        float angleTolerance = settings.dragDirectionTolerance; // 설정에서 오차 범위 가져오기
+                        float minDotValue = Mathf.Cos(angleTolerance * Mathf.Deg2Rad);
                         
-                        if (dot < 0.7f) // 약 45도 내의 방향 오차 허용
+                        // 디버그 정보 출력
+                        Debug.Log($"드래그 방향: {dragDirection}, 요구 방향: {requiredDirection}, 각도 코사인: {dot}, 허용 오차: {angleTolerance}도");
+                        
+                        if (dot < minDotValue)
                         {
+                            // 시각적 피드백 - 잘못된 방향 표시
+                            if (dialogueManager != null)
+                            {
+                                // 방향 힌트 계산
+                                float angle = Vector2.SignedAngle(dragDirection, requiredDirection);
+                                string directionHint = "";
+                                
+                                if (angle > 15f) directionHint = "더 왼쪽으로";
+                                else if (angle < -15f) directionHint = "더 오른쪽으로";
+                                else if (dot < 0) directionHint = "반대 방향으로";
+                                
+                                dialogueManager.ShowGuideMessage($"올바른 방향으로 드래그해주세요. (허용 오차: {angleTolerance}°) {directionHint}");
+                            }
+                            
                             // 잘못된 방향으로 드래그
                             if (settings.OverDrag != null)
                             {
@@ -759,6 +835,13 @@ namespace Nursing.Managers
                             // 드래그 상태 리셋
                             isDragging = false;
                             draggedObject = null;
+                            
+                            // 화살표 방향을 다시 표시 (힌트)
+                            if (settings.showDirectionArrows && arrowPrefab != null)
+                            {
+                                CreateDirectionArrows(settings.arrowStartPosition, settings.arrowDirection);
+                            }
+                            
                             return;
                         }
                     }
@@ -886,18 +969,49 @@ namespace Nursing.Managers
                 // 두 터치가 모두 시작될 때 드래그 시작
                 if (!isDragging && touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
                 {
-                    // 드래그 대상 오브젝트 찾기
-                    RaycastHit2D hit1 = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(touch1.position), Vector2.zero);
-                    RaycastHit2D hit2 = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(touch2.position), Vector2.zero);
+                    // 드래그 대상 오브젝트 찾기 (UI 요소 포함)
+                    // 첫 번째 터치 검사
+                    PointerEventData eventData1 = new PointerEventData(EventSystem.current);
+                    eventData1.position = touch1.position;
+                    List<RaycastResult> results1 = new List<RaycastResult>();
+                    EventSystem.current.RaycastAll(eventData1, results1);
                     
-                    bool validTarget1 = hit1.collider != null && hit1.collider.CompareTag(settings.targetObjectTag);
-                    bool validTarget2 = hit2.collider != null && hit2.collider.CompareTag(settings.targetObjectTag);
+                    // 두 번째 터치 검사
+                    PointerEventData eventData2 = new PointerEventData(EventSystem.current);
+                    eventData2.position = touch2.position;
+                    List<RaycastResult> results2 = new List<RaycastResult>();
+                    EventSystem.current.RaycastAll(eventData2, results2);
+                    
+                    // 유효한 터치 대상 검사
+                    GameObject target1 = null;
+                    GameObject target2 = null;
+                    
+                    foreach (RaycastResult result in results1)
+                    {
+                        if (result.gameObject.CompareTag(settings.targetObjectTag))
+                        {
+                            target1 = result.gameObject;
+                            break;
+                        }
+                    }
+                    
+                    foreach (RaycastResult result in results2)
+                    {
+                        if (result.gameObject.CompareTag(settings.targetObjectTag))
+                        {
+                            target2 = result.gameObject;
+                            break;
+                        }
+                    }
+                    
+                    bool validTarget1 = target1 != null;
+                    bool validTarget2 = target2 != null;
                     
                     if (validTarget1 && validTarget2)
                     {
                         isDragging = true;
                         dragStartPosition = (touch1.position + touch2.position) / 2; // 두 터치의 중앙점
-                        draggedObject = hit1.collider.gameObject; // 첫 번째 터치 대상으로 설정
+                        draggedObject = target1; // 첫 번째 터치 대상으로 설정
                         
                         // 화살표 숨김
                         ClearArrows();
@@ -913,10 +1027,26 @@ namespace Nursing.Managers
                     // 드래그 방향 요구사항이 있는 경우 확인
                     if (settings.requiredDragDirection)
                     {
-                        float dot = Vector2.Dot(dragDirection, settings.arrowDirection.normalized);
+                        Vector2 requiredDirection = settings.arrowDirection.normalized;
+                        float dot = Vector2.Dot(dragDirection, requiredDirection);
+                        float angleTolerance = settings.dragDirectionTolerance; // 설정에서 오차 범위 가져오기
+                        float minDotValue = Mathf.Cos(angleTolerance * Mathf.Deg2Rad);
                         
-                        if (dot < 0.7f) // 약 45도 내의 방향 오차 허용
+                        if (dot < minDotValue)
                         {
+                            // 방향 힌트 표시
+                            if (dialogueManager != null)
+                            {
+                                float angle = Vector2.SignedAngle(dragDirection, requiredDirection);
+                                string directionHint = "";
+                                
+                                if (angle > 15f) directionHint = "더 왼쪽으로";
+                                else if (angle < -15f) directionHint = "더 오른쪽으로";
+                                else if (dot < 0) directionHint = "반대 방향으로";
+                                
+                                dialogueManager.ShowGuideMessage($"올바른 방향으로 드래그해주세요. (허용 오차: {angleTolerance}°) {directionHint}");
+                            }
+                            
                             // 잘못된 방향으로 드래그
                             if (settings.OverDrag != null)
                             {
@@ -926,6 +1056,13 @@ namespace Nursing.Managers
                             // 드래그 상태 리셋
                             isDragging = false;
                             draggedObject = null;
+                            
+                            // 화살표 다시 표시
+                            if (settings.showDirectionArrows)
+                            {
+                                CreateDirectionArrows(settings.arrowStartPosition, settings.arrowDirection);
+                            }
+                            
                             return;
                         }
                     }

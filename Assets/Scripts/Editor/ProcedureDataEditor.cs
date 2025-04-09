@@ -185,17 +185,7 @@ namespace Nursing.Editor
                 
                 EditorGUILayout.Space();
                 
-                // 순서 요구사항
-                EditorGUILayout.PropertyField(requireSpecificOrderProp, new GUIContent("특정 순서 요구", "이 스텝이 특정 순서로 실행되어야 하는지 여부"));
                 
-                if (requireSpecificOrderProp.boolValue)
-                {
-                    EditorGUILayout.PropertyField(requiredPreviousStepIdsProp, new GUIContent("필요한 이전 스텝 ID", "이 스텝 전에 완료되어야 하는 스텝 ID 목록"));
-                    
-                    EditorGUILayout.PropertyField(incorrectOrderPenaltyProp, new GUIContent("잘못된 순서 패널티", "순서가 잘못되었을 때 적용할 패널티"));
-                }
-                
-                EditorGUILayout.Space();
 
 
                 // 인터랙션 설정
@@ -215,6 +205,18 @@ namespace Nursing.Editor
 
                     EditorGUI.indentLevel--;
                 }
+                EditorGUILayout.Space();
+
+                // 순서 요구사항
+                EditorGUILayout.PropertyField(requireSpecificOrderProp, new GUIContent("특정 순서 요구", "이 스텝이 특정 순서로 실행되어야 하는지 여부"));
+
+                if (requireSpecificOrderProp.boolValue)
+                {
+                    EditorGUILayout.PropertyField(requiredPreviousStepIdsProp, new GUIContent("필요한 이전 스텝 ID", "이 스텝 전에 완료되어야 하는 스텝 ID 목록"));
+
+                    EditorGUILayout.PropertyField(incorrectOrderPenaltyProp, new GUIContent("잘못된 순서 패널티", "순서가 잘못되었을 때 적용할 패널티"));
+                }
+
                 EditorGUILayout.Space();
 
                 // 패널티 설정

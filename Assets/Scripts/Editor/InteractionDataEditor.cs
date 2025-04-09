@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using Nursing.Interaction;
 using System.Collections.Generic;
+using UnityEditor.IMGUI.Controls;
 
 namespace Nursing.Editor
 {
@@ -188,7 +189,29 @@ namespace Nursing.Editor
                 EditorGUILayout.PropertyField(interactionTypeProp, new GUIContent("인터랙션 타입", "이 스테이지의 인터랙션 유형"));
                 
                 EditorGUILayout.Space();
-                
+
+
+                // 인터랙션 설정
+                EditorGUILayout.PropertyField(incorrectInteractionPenaltyProp, new GUIContent("잘못된 인터랙션 패널티", "인터랙션이 잘못되었을 때 적용할 패널티"));
+
+                if (!settingsFoldouts.ContainsKey(index))
+                {
+                    settingsFoldouts[index] = false;
+                }
+
+                settingsFoldouts[index] = EditorGUILayout.Foldout(settingsFoldouts[index], "인터랙션 설정", true);
+
+                if (settingsFoldouts[index])
+                {
+                    EditorGUI.indentLevel++;
+
+                    // 인터랙션 타입에 따른 설정 표시
+                    DrawInteractionSettings(settingsProp, (InteractionType)interactionTypeProp.enumValueIndex);
+
+                    EditorGUI.indentLevel--;
+                }
+                EditorGUILayout.Space();
+
                 // 순서 요구사항
                 EditorGUILayout.PropertyField(requireSpecificOrderProp, new GUIContent("특정 순서 요구", "이 스테이지가 특정 순서로 실행되어야 하는지 여부"));
                 
@@ -201,25 +224,6 @@ namespace Nursing.Editor
                 
                 EditorGUILayout.Space();
                 
-                // 인터랙션 설정
-                EditorGUILayout.PropertyField(incorrectInteractionPenaltyProp, new GUIContent("잘못된 인터랙션 패널티", "인터랙션이 잘못되었을 때 적용할 패널티"));
-                
-                if (!settingsFoldouts.ContainsKey(index))
-                {
-                    settingsFoldouts[index] = false;
-                }
-                
-                settingsFoldouts[index] = EditorGUILayout.Foldout(settingsFoldouts[index], "인터랙션 설정", true);
-                
-                if (settingsFoldouts[index])
-                {
-                    EditorGUI.indentLevel++;
-                    
-                    // 인터랙션 타입에 따른 설정 표시
-                    DrawInteractionSettings(settingsProp, (InteractionType)interactionTypeProp.enumValueIndex);
-                    
-                    EditorGUI.indentLevel--;
-                }
                 
                 EditorGUI.indentLevel--;
             }
@@ -275,6 +279,7 @@ namespace Nursing.Editor
             SerializedProperty arrowDirectionProp = settingsProp.FindPropertyRelative("arrowDirection");
             SerializedProperty requireTwoFingerDragProp = settingsProp.FindPropertyRelative("requireTwoFingerDrag");
             SerializedProperty requiredDragDirectionProp = settingsProp.FindPropertyRelative("requiredDragDirection");
+            SerializedProperty dragDirectionToleranceProp = settingsProp.FindPropertyRelative("dragDirectionTolerance");
             SerializedProperty targetObjectTagProp = settingsProp.FindPropertyRelative("targetObjectTag");
             SerializedProperty followDragMovementProp = settingsProp.FindPropertyRelative("followDragMovement");
             SerializedProperty dragDistanceLimitProp = settingsProp.FindPropertyRelative("dragDistanceLimit");
@@ -299,8 +304,92 @@ namespace Nursing.Editor
             if (showDirectionArrowsProp.boolValue)
             {
                 EditorGUILayout.PropertyField(arrowStartPositionProp, new GUIContent("화살표 시작 위치", "화살표가 표시될 시작 위치"));
-                EditorGUILayout.PropertyField(arrowDirectionProp, new GUIContent("화살표 방향", "화살표가 가리킬 방향"));
+                
+                // 화살표 방향 시각적 컨트롤
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(new GUIContent("화살표 방향", "화살표가 가리킬 방향"));
+                
+                // 현재 방향 값 가져오기
+                Vector2 currentDirection = arrowDirectionProp.vector2Value;
+                
+                // 시각적인 방향 컨트롤 (360도 다이얼)
+                Rect directionRect = EditorGUILayout.GetControlRect(false, 100f);
+                
+                // 다이얼 그리기
+                Rect circleRect = new Rect(directionRect.x + directionRect.width / 2 - 40, directionRect.y, 80, 80);
+                EditorGUI.DrawRect(new Rect(circleRect.x - 1, circleRect.y - 1, circleRect.width + 2, circleRect.height + 2), new Color(0.3f, 0.3f, 0.3f));
+                EditorGUI.DrawRect(circleRect, new Color(0.2f, 0.2f, 0.2f));
+                
+                // 중심점
+                Vector2 center = new Vector2(circleRect.x + circleRect.width / 2, circleRect.y + circleRect.height / 2);
+                
+                // 현재 방향 라인
+                float length = 35f;
+                Vector2 normalizedDir = currentDirection.normalized;
+                Vector2 lineEnd = center + normalizedDir * length;
+                Handles.color = Color.white;
+                Handles.DrawLine(center, lineEnd);
+                
+                // 화살표 끝
+                Vector2 arrowSize = new Vector2(8, 8);
+                float angle = Mathf.Atan2(normalizedDir.y, normalizedDir.x) * Mathf.Rad2Deg;
+                
+                // 방향 컨트롤 이벤트 처리
+                Event evt = Event.current;
+                if (evt.type == EventType.MouseDown || evt.type == EventType.MouseDrag)
+                {
+                    if (circleRect.Contains(evt.mousePosition))
+                    {
+                        // 마우스 위치로부터 방향 계산
+                        Vector2 newDirection = evt.mousePosition - center;
+                        arrowDirectionProp.vector2Value = newDirection.normalized;
+                        GUI.changed = true;
+                        evt.Use();
+                    }
+                }
+                
+                // N, E, S, W 보조선
+                Handles.color = new Color(0.6f, 0.6f, 0.6f, 0.3f);
+                Handles.DrawLine(center - new Vector2(length, 0), center + new Vector2(length, 0)); // 수평선
+                Handles.DrawLine(center - new Vector2(0, length), center + new Vector2(0, length)); // 수직선
+                
+                // 허용 각도 범위 표시 (requiredDragDirection이 true인 경우에만)
+                if (requiredDragDirectionProp.boolValue)
+                {
+                    float toleranceAngle = dragDirectionToleranceProp.floatValue;
+                    if (toleranceAngle > 0)
+                    {
+                        // 허용 각도 범위 영역 그리기
+                        Handles.color = new Color(0.0f, 0.8f, 0.0f, 0.15f);
+                        float startAngle = angle - toleranceAngle;
+                        float endAngle = angle + toleranceAngle;
+                        Handles.DrawSolidArc(center, Vector3.forward, new Vector3(Mathf.Cos(startAngle * Mathf.Deg2Rad), Mathf.Sin(startAngle * Mathf.Deg2Rad), 0), 
+                                            toleranceAngle * 2 * Mathf.Deg2Rad, length);
+                        
+                        // 허용 각도 경계선 그리기
+                        Handles.color = new Color(0.0f, 0.7f, 0.0f, 0.5f);
+                        Vector2 leftBoundary = new Vector2(Mathf.Cos((angle - toleranceAngle) * Mathf.Deg2Rad), 
+                                                          Mathf.Sin((angle - toleranceAngle) * Mathf.Deg2Rad)) * length;
+                        Vector2 rightBoundary = new Vector2(Mathf.Cos((angle + toleranceAngle) * Mathf.Deg2Rad), 
+                                                           Mathf.Sin((angle + toleranceAngle) * Mathf.Deg2Rad)) * length;
+                        Handles.DrawLine(center, center + leftBoundary);
+                        Handles.DrawLine(center, center + rightBoundary);
+                    }
+                }
+                
+                EditorGUILayout.EndHorizontal();
+                
+                // 수동 입력 필드 (좌표 직접 설정)
+                EditorGUILayout.PropertyField(arrowDirectionProp, new GUIContent("방향 좌표 직접 설정", "화살표 방향 좌표 직접 설정"));
+                
+                // 필수 드래그 방향 설정
                 EditorGUILayout.PropertyField(requiredDragDirectionProp, new GUIContent("필수 드래그 방향", "특정 방향으로 드래그해야 하는지 여부"));
+                
+                if (requiredDragDirectionProp.boolValue)
+                {
+                    // 드래그 방향 오차 허용 범위 설정
+                    EditorGUILayout.Slider(dragDirectionToleranceProp, 0f, 90f, new GUIContent("방향 오차 허용 범위", "드래그 방향의 허용 오차 범위 (각도)"));
+                }
             }
             
             EditorGUILayout.Space();
