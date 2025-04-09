@@ -390,10 +390,19 @@ namespace Nursing.Editor
                     // 드래그 방향 오차 허용 범위 설정
                     EditorGUILayout.Slider(dragDirectionToleranceProp, 0f, 90f, new GUIContent("방향 오차 허용 범위", "드래그 방향의 허용 오차 범위 (각도)"));
                 }
+
+
             }
-            
+
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(
+                settingsProp.FindPropertyRelative("deactivateObjectAfterDrag"),
+                new GUIContent("드래그 후 오브젝트 비활성화", "드래그 완료 후 해당 오브젝트를 비활성화할지 여부")
+            );
+
             EditorGUILayout.Space();
             
+
             // 이동 설정
             EditorGUILayout.LabelField("이동 설정", subheaderStyle);
             EditorGUILayout.PropertyField(followDragMovementProp, new GUIContent("드래그 따라 이동", "드래그 위치를 따라 오브젝트가 이동하는지 여부"));

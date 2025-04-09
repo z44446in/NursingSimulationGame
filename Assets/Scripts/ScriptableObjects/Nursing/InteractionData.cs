@@ -59,11 +59,13 @@ namespace Nursing.Interaction
         public bool requiredDragDirection;
         [Range(0, 90)] public float dragDirectionTolerance = 45f; // 드래그 방향 허용 오차 (각도)
         public string targetObjectTag;
+        public bool deactivateObjectAfterDrag = false;
         public bool followDragMovement;
         public float dragDistanceLimit;
         public string boundaryObjectTag;
         public string collisionZoneTag;
         public PenaltyData OverDrag; // dragDIstanceLimit를 넘거나, boundaryObjectTag를 벗어날 때 발생 
+        
 
         [Header("오브젝트 생성")]
         public bool createObject;

@@ -906,8 +906,16 @@ namespace Nursing.Managers
                             float moveDistance = 1.0f; // 기본 이동 거리, 필요에 따라 조정
                             draggedObject.transform.position += moveDirection * moveDistance;
                         }
+
+                        
                     }
-                    
+
+                    // 성공적인 드래그 완료 후 추가 조건 체크
+                    if (draggedObject != null && settings.deactivateObjectAfterDrag)
+                    {
+                        draggedObject.SetActive(false); // 옵션이 활성화된 경우만 오브젝트 비활성화
+                    }
+
                     // 드래그 완료, 다음 단계로 진행
                     isDragging = false;
                     draggedObject = null;
@@ -954,7 +962,9 @@ namespace Nursing.Managers
                 }
             }
         }
-        
+
+      
+
         /// <summary>
         /// 두 손가락 드래그를 처리합니다.
         /// </summary>
