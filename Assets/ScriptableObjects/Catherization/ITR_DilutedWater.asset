@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uBA78\uADE0\uC99D\uB958\uC218 \uC0DD\uC131 "
   stages:
   - id: DilutedWater_stage_0
-    name: "\uB69C\uAED1\uC0DD\uC131"
+    name: "\uB69C\uAED1\uC774\uB791 \uC190 \uC0DD\uC131"
     StageNum: 0
     guideMessage: 
     interactionType: 1
@@ -46,7 +46,7 @@ MonoBehaviour:
         flashCount: 0
       createObject: 1
       objectToCreate:
-      - {fileID: 1291302089044735830, guid: 604a493084ab00841a9672708a438848, type: 3}
+      - {fileID: 8368500792721724306, guid: 86bdb50c968b5824ebbe5392a050f643, type: 3}
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
