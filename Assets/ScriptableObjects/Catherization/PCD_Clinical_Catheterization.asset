@@ -62,7 +62,8 @@ MonoBehaviour:
       isPlayerInteraction: 0
       validInteractionTags: []
     requireSpecificOrder: 1
-    requiredPreviousStepIds: []
+    requiredPreviousStepIds:
+    - Catheterization_Clinical_0
     incorrectOrderPenalty:
       penaltyType: 1
       penaltyScore: 10

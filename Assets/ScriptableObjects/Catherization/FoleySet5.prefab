@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 4058829509784410047}
   m_Layer: 5
   m_Name: Tray
-  m_TagString: Untagged
+  m_TagString: Tray
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

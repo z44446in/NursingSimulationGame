@@ -44,6 +44,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 8368500792721724306, guid: 86bdb50c968b5824ebbe5392a050f643, type: 3}
@@ -140,6 +148,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 0
@@ -235,6 +251,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 0
@@ -330,6 +354,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 0
@@ -425,6 +457,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 1
@@ -433,6 +473,7 @@ MonoBehaviour:
       invalidClickTags:
       - Intray
       - Untagged
+      - Tray
       conditionalClickPenalties:
       - penaltyType: 1
         penaltyScore: 10
@@ -447,6 +488,14 @@ MonoBehaviour:
           \uD569\uB2C8\uB2E4"
         flashRedScreen: 1
         flashCount: 2
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uC7A5\uB09C\uCE58\uC9C0\uB9C8\uB77C \u3161\u3161 \uB2E4
+          \uBCF4\uACE0 \uC788\uC5B4"
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
       - penaltyType: 0
         penaltyScore: 5
         speaker: 4
@@ -544,6 +593,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 9195287308788494162, guid: e17ec11fbe5e755499fd0f0b32aec811, type: 3}
@@ -651,6 +708,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 1
@@ -659,6 +724,7 @@ MonoBehaviour:
       invalidClickTags:
       - Untagged
       - Trash
+      - Tray
       conditionalClickPenalties:
       - penaltyType: 0
         penaltyScore: 5
@@ -672,6 +738,13 @@ MonoBehaviour:
         speaker: 0
         penaltyMessage: "\uD55C \uBC88\uB9CC \uBD80\uC73C\uBA74 \uB410\uC5B4!"
         databaseMessage: \
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uD55C\uBC88 \uB354 \uC7A5\uB09C\uCE58\uBA74..."
+        databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
       isSustainedClick: 0
@@ -764,6 +837,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 6858606827676977020, guid: d337e4c62465dd64393af27c23652b0c, type: 3}
@@ -870,6 +951,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 1

@@ -44,6 +44,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 7246886069874315384, guid: 39f60e1ad851a9d4999792462f875537, type: 3}
@@ -139,6 +147,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 0}
@@ -234,6 +250,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 0}
@@ -319,10 +343,18 @@ MonoBehaviour:
       targetObjectTag: FoleySet
       deactivateObjectAfterDrag: 1
       followDragMovement: 0
-      dragDistanceLimit: 3000
+      dragDistanceLimit: 0
       boundaryObjectTag: 
       collisionZoneTag: Trash
       OverDrag:
+        penaltyType: 2
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
         penaltyType: 2
         penaltyScore: 30
         speaker: 0
@@ -429,6 +461,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 2186942617385095293, guid: 73a208edc25613c4997a06bb1f40ab46, type: 3}
@@ -518,6 +558,14 @@ MonoBehaviour:
       boundaryObjectTag: 
       collisionZoneTag: Trash
       OverDrag:
+        penaltyType: 2
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
         penaltyType: 2
         penaltyScore: 100
         speaker: 0
@@ -624,6 +672,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 4087813158059038327, guid: 0ef1e246ebe431545aeaf4e8644324b1, type: 3}
@@ -713,6 +769,14 @@ MonoBehaviour:
       boundaryObjectTag: 
       collisionZoneTag: Trash
       OverDrag:
+        penaltyType: 2
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
         penaltyType: 2
         penaltyScore: 100
         speaker: 0
@@ -819,6 +883,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 6878524456723974197, guid: 8121d029d5478fa4a8c025581d91ba6d, type: 3}
@@ -909,6 +981,14 @@ MonoBehaviour:
       collisionZoneTag: Trash
       OverDrag:
         penaltyType: 2
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
         penaltyScore: 100
         speaker: 0
         penaltyMessage: "\uBA78\uADE0\uC744 \uC5B4\uACBC\uC5B4............\uBAB8\uC5D0
@@ -1014,6 +1094,14 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}

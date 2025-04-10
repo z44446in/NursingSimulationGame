@@ -23,13 +23,15 @@ namespace Nursing.Managers
 
         private ProcedureType currentProcedureType;
         private ProcedureData currentProcedure;
-        private int currentStepIndex = -1;
-        private ProcedureStep currentStep;
+       
+       
         private List<string> completedStepIds = new List<string>();
+        private List<ProcedureStep> availableSteps = new List<ProcedureStep>();
         private bool procedureInProgress = false;
 
         [SerializeField] private List<InteractionData> availableInteractions; //클로드가 scriptableobject 폴더에서 찾고싶으면 추가하라고 한 코드 
 
+      
         private void Awake()
         {
             if (interactionManager == null)
@@ -101,98 +103,196 @@ namespace Nursing.Managers
                 Debug.LogError("프로시저 데이터가 없습니다.");
                 return;
             }
-            
-            currentStepIndex = -1;
+
             completedStepIds.Clear();
             procedureInProgress = true;
-            
+
+            // 초기 가용 스텝 설정
+            UpdateAvailableSteps();
+
             // 가이드 메시지 표시
-            
-            
-            // 첫 스텝으로 진행
-            AdvanceToNextStep();
+
+
         }
-        
-        /// <summary>
-        /// 다음 프로시저 스텝으로 진행합니다.
-        /// </summary>
-        public void AdvanceToNextStep()
+
+        // 가용 스텝 업데이트
+        private void UpdateAvailableSteps()
         {
-            if (currentProcedure == null || !procedureInProgress)
-                return;
-            
-            currentStepIndex++;
-            
-            // 모든 스텝을 완료했는지 확인
-            if (currentStepIndex >= currentProcedure.steps.Count)
+            availableSteps.Clear();
+
+            foreach (var step in currentProcedure.steps)
             {
-                CompleteProcedure();
-                return;
-            }
-            
-            currentStep = currentProcedure.steps[currentStepIndex];
-            
-            // 가이드 메시지 업데이트
-            if (!string.IsNullOrEmpty(currentStep.guideMessage) && dialogueManager != null)
-            {
-                dialogueManager.ShowGuideMessage(currentStep.guideMessage);
-            }
-            
-            // 순서 확인 - 이전 스텝이 완료되어야 하는 경우
-            if (currentStep.requireSpecificOrder && currentStep.requiredPreviousStepIds.Count > 0)
-            {
-                bool validOrder = true;
-                
-                foreach (string requiredStepId in currentStep.requiredPreviousStepIds)
+                // 이미 완료된 스텝은 제외
+                if (completedStepIds.Contains(step.id))
+                    continue;
+
+                // 순서 제약이 있는 스텝의 경우 선행 스텝 확인
+                if (step.requireSpecificOrder)
                 {
-                    if (!completedStepIds.Contains(requiredStepId))
+                    bool validOrder = true;
+
+                    foreach (string requiredStepId in step.requiredPreviousStepIds)
                     {
-                        validOrder = false;
-                        break;
+                        if (!completedStepIds.Contains(requiredStepId))
+                        {
+                            validOrder = false;
+                            break;
+                        }
                     }
+
+                    if (!validOrder)
+                        continue;
                 }
-                
-                if (!validOrder && currentStep.incorrectOrderPenalty != null)
+
+                // 모든 조건을 만족하면 가용 스텝에 추가
+                availableSteps.Add(step);
+            }
+        }
+
+        // 스텝 처리 (외부에서 호출)
+        public bool HandleStepInteraction(string interactionType, string targetId)
+        {
+            if (!procedureInProgress || availableSteps.Count == 0)
+                return false;
+
+            // 현재 가용 스텝 중에서 일치하는 스텝 찾기
+            foreach (var step in availableSteps)
+            {
+                bool isMatch = false;
+
+                // 인터랙션 타입에 따라 처리
+                switch (step.stepType)
                 {
-                    ApplyPenalty(currentStep.incorrectOrderPenalty);
-                    return; // 순서가 잘못된 경우 진행하지 않음
+                    case ProcedureStepType.ItemClick:
+                        isMatch = (interactionType == "ItemClick" && step.settings.itemId == targetId);
+                        break;
+
+                    case ProcedureStepType.ActionButtonClick:
+                        isMatch = (interactionType == "ActionButtonClick" && step.settings.correctButtonIds.Contains(targetId));
+                        break;
+
+                    case ProcedureStepType.PlayerInteraction:
+                        isMatch = (interactionType == "PlayerInteraction" && step.settings.validInteractionTags.Contains(targetId));
+                        break;
+                }
+
+                if (isMatch)
+                {
+                    // 스텝 처리 및 완료
+                    ProcessStep(step);
+                    return true;
                 }
             }
-            
-            // 스텝 타입에 따른 처리
-            SetupStepBasedOnType();
+
+            return false;
         }
-        
-        /// <summary>
-        /// 현재 스텝 타입에 따라 프로시저를 설정합니다.
-        /// </summary>
-        private void SetupStepBasedOnType()
+
+        // 스텝 처리 및 완료
+        // 스텝 처리 및 완료
+        private void ProcessStep(ProcedureStep step)
         {
-            switch (currentStep.stepType)
+            // 가이드 메시지 표시
+            if (!string.IsNullOrEmpty(step.guideMessage) && dialogueManager != null)
+            {
+                dialogueManager.ShowGuideMessage(step.guideMessage);
+            }
+
+            // 스텝 설정 - SetupStepBasedOnType 호출
+            SetupStepBasedOnType(step);
+        }
+
+        // 현재 스텝 타입에 따라 프로시저를 설정합니다.
+        private void SetupStepBasedOnType(ProcedureStep step)
+        {
+            switch (step.stepType)
             {
                 case ProcedureStepType.ItemClick:
-                    // 아이템 클릭 스텝은 외부에서 HandleItemClick 메서드를 호출하여 처리합니다.
+                    // 아이템 클릭 스텝의 인터랙션 데이터 처리
+                    if (!string.IsNullOrEmpty(step.settings.interactionDataId) && interactionManager != null)
+                    {
+                        InteractionData interactionData = FindInteractionDataById(step.settings.interactionDataId);
+                        if (interactionData != null)
+                        {
+                            // 완료 처리를 위한 로컬 함수 정의
+                            void OnComplete(bool success)
+                            {
+                                // 이벤트 구독 해제
+                                interactionManager.OnInteractionComplete -= OnComplete;
+
+                                if (success)
+                                {
+                                    CompleteStep(step);
+                                }
+                            }
+
+                            // 인터랙션 완료 이벤트 구독
+                            interactionManager.OnInteractionComplete += OnComplete;
+
+                            // 인터랙션 시작
+                            interactionManager.StartInteraction(interactionData);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("인터랙션 데이터를 찾을 수 없습니다: " + step.settings.interactionDataId);
+                            CompleteStep(step);
+                        }
+                    }
+                    else
+                    {
+                        // 인터랙션 데이터 없이 바로 완료
+                        CompleteStep(step);
+                    }
                     break;
-                    
+
                 case ProcedureStepType.ActionButtonClick:
-                    SetupActionButtonClick();
+                    SetupActionButtonClick(step);
                     break;
-                    
+
                 case ProcedureStepType.PlayerInteraction:
-                    // 플레이어 직접 상호작용 스텝은 외부에서 HandlePlayerInteraction 메서드를 호출하여 처리합니다.
+                    // 플레이어 상호작용은 HandlePlayerInteraction에서 처리
+                    // 특별한 설정이 필요하면 여기에 추가
                     break;
-                    
+
                 default:
-                    Debug.LogWarning("지원하지 않는 스텝 타입입니다: " + currentStep.stepType);
-                    AdvanceToNextStep(); // 지원하지 않는 타입은 건너뜁니다.
+                    Debug.LogWarning("지원하지 않는 스텝 타입입니다: " + step.stepType);
+                    // 지원하지 않는 타입은 건너뛰고 완료 처리
+                    CompleteStep(step);
                     break;
             }
         }
+
+        // 스텝 완료
+        // CompleteStep() -> 파라미터로 step을 받음
+        private void CompleteStep(ProcedureStep step)
+        {
+            if (step != null && !string.IsNullOrEmpty(step.id))
+            {
+                completedStepIds.Add(step.id);
+            }
+
+            // 가용 스텝 업데이트
+            UpdateAvailableSteps();
+
+            // 모든 스텝 완료 체크
+            CheckProcedureCompletion();
+        }
+
+        // 프로시저 완료 체크
+        private void CheckProcedureCompletion()
+        {
+            if (completedStepIds.Count >= currentProcedure.steps.Count)
+            {
+                CompleteProcedure();
+            }
+        }
+
+       
+        
         
         /// <summary>
         /// 액션 버튼 클릭 스텝을 설정합니다.
         /// </summary>
-        private void SetupActionButtonClick()
+        private void SetupActionButtonClick(ProcedureStep step)
         {
             if (actionPopupPrefab == null)
             {
@@ -212,7 +312,7 @@ namespace Nursing.Managers
             }
             
             // 액션 버튼 설정
-            var settings = currentStep.settings;
+            var settings = step.settings;
             
             if (settings == null || settings.correctButtonIds == null || settings.correctButtonIds.Count == 0)
             {
@@ -232,69 +332,66 @@ namespace Nursing.Managers
                 if (success)
                 {
                     // 성공적인 액션 버튼 클릭
-                    CompleteStep();
+                    CompleteStep(step);
                 }
-                else if (currentStep.incorrectActionPenalty != null)
+                else if (step.incorrectActionPenalty != null)
                 {
                     // 잘못된 액션 버튼 클릭
-                    ApplyPenalty(currentStep.incorrectActionPenalty);
+                    ApplyPenalty(step.incorrectActionPenalty);
                 }
                 
                 Destroy(actionPopup);
             };
         }
-        
+
         /// <summary>
         /// 아이템 클릭을 처리합니다.
         /// </summary>
+        // HandleItemClick() -> 가용 스텝 목록에서 찾아 처리
         public bool HandleItemClick(string itemId)
         {
-           
-            if (!procedureInProgress || currentStep == null || currentStep.stepType != ProcedureStepType.ItemClick)
+            if (!procedureInProgress || availableSteps.Count == 0)
                 return false;
-            
-            var settings = currentStep.settings;
-            
-            if (settings == null || !settings.isItemClick || string.IsNullOrEmpty(settings.itemId))
-                return false;
-            
-            // 클릭한 아이템이 현재 스텝의 아이템과 일치하는지 확인
-            if (settings.itemId == itemId)
+
+            // 가용 스텝 중에서 itemId와 일치하는 스텝 찾기
+            foreach (var step in availableSteps)
             {
-                // 인터랙션 데이터가 있으면 인터랙션 시작
-                if (!string.IsNullOrEmpty(settings.interactionDataId) && interactionManager != null)
+                if (step.stepType == ProcedureStepType.ItemClick)
                 {
-                    // ScriptableObjects 폴더에서 ID로 InteractionData 찾기
-                    InteractionData interactionData = FindInteractionDataById(settings.interactionDataId);
+                    var settings = step.settings;
 
-                    if (interactionData != null)
+                    if (settings != null && settings.isItemClick && settings.itemId == itemId)
                     {
-                        interactionManager.StartInteraction(interactionData);
+                        // 인터랙션 데이터가 있으면 인터랙션 시작
+                        if (!string.IsNullOrEmpty(settings.interactionDataId) && interactionManager != null)
+                        {
+                            InteractionData interactionData = FindInteractionDataById(settings.interactionDataId);
 
-                        // 인터랙션이 완료되면 스텝 완료 처리 (인터랙션 매니저에서 이벤트를 통해 알림)
-                        // TODO: InteractionManager에 OnInteractionComplete 이벤트 추가
-                    }
-                    else
-                    {
-                        Debug.LogWarning("인터랙션 데이터를 찾을 수 없습니다: " + settings.interactionDataId);
-                        CompleteStep(); // 인터랙션 데이터가 없어도 스텝 완료 처리
+                            if (interactionData != null)
+                            {
+                                interactionManager.StartInteraction(interactionData);
+                                // 인터랙션 완료 이벤트를 연결해야 함
+                            }
+                            else
+                            {
+                                Debug.LogWarning("인터랙션 데이터를 찾을 수 없습니다: " + settings.interactionDataId);
+                                CompleteStep(step);
+                            }
+                        }
+                        else
+                        {
+                            CompleteStep(step);
+                        }
+
+                        return true;
                     }
                 }
-                else
-                {
-                    CompleteStep(); // 인터랙션 없이 스텝 완료 처리
-                }
-                
-                return true;
             }
-            
-            // 잘못된 아이템 클릭
-            if (currentStep.incorrectActionPenalty != null)
-            {
-                ApplyPenalty(currentStep.incorrectActionPenalty);
-            }
-            
+
+
             return false;
+
+           
         }
 
         private InteractionData FindInteractionDataById(string id)
@@ -309,45 +406,42 @@ namespace Nursing.Managers
         /// <summary>
         /// 플레이어 상호작용을 처리합니다.
         /// </summary>
+        // HandlePlayerInteraction() -> 가용 스텝 목록에서 찾아 처리
         public bool HandlePlayerInteraction(string interactionTag)
         {
-            if (!procedureInProgress || currentStep == null || currentStep.stepType != ProcedureStepType.PlayerInteraction)
+            if (!procedureInProgress || availableSteps.Count == 0)
                 return false;
-            
-            var settings = currentStep.settings;
-            
-            if (settings == null || !settings.isPlayerInteraction || settings.validInteractionTags == null)
-                return false;
-            
-            // 상호작용 태그가 유효한지 확인
-            if (settings.validInteractionTags.Contains(interactionTag))
+
+            foreach (var step in availableSteps)
             {
-                CompleteStep();
-                return true;
+                if (step.stepType == ProcedureStepType.PlayerInteraction)
+                {
+                    var settings = step.settings;
+
+                    if (settings != null && settings.isPlayerInteraction &&
+                        settings.validInteractionTags != null &&
+                        settings.validInteractionTags.Contains(interactionTag))
+                    {
+                        CompleteStep(step);
+                        return true;
+                    }
+                }
             }
+
+            // 잘못된 상호작용에 대한 패널티(필요하면 추가 구현)
             
-            // 잘못된 상호작용
-            if (currentStep.incorrectActionPenalty != null)
-            {
-                ApplyPenalty(currentStep.incorrectActionPenalty);
-            }
-            
+
             return false;
+
+          
         }
-        
+
         /// <summary>
         /// 현재 스텝을 완료합니다.
         /// </summary>
-        private void CompleteStep()
-        {
-            if (currentStep != null && !string.IsNullOrEmpty(currentStep.id))
-            {
-                completedStepIds.Add(currentStep.id);
-            }
-            
-            AdvanceToNextStep();
-        }
-        
+        // CompleteStep() -> 파라미터로 step을 받음
+       
+
         /// <summary>
         /// 프로시저를 완료합니다.
         /// </summary>
@@ -361,7 +455,10 @@ namespace Nursing.Managers
             // 프로시저 완료 이벤트를 발생시킬 수 있음
             // OnProcedureComplete?.Invoke(currentProcedureType);
         }
-        
+
+        /// <summary>
+        /// 현재 프로시저를 정리합니다.
+        /// </summary>
         /// <summary>
         /// 현재 프로시저를 정리합니다.
         /// </summary>
@@ -369,12 +466,13 @@ namespace Nursing.Managers
         {
             currentProcedureType = null;
             currentProcedure = null;
-            currentStep = null;
-            currentStepIndex = -1;
+            // currentStep 변수 제거
+            // currentStepIndex 변수 제거
             completedStepIds.Clear();
+            availableSteps.Clear(); // 가용 스텝 목록 초기화
             procedureInProgress = false;
         }
-        
+
         /// <summary>
         /// 패널티를 적용합니다.
         /// </summary>

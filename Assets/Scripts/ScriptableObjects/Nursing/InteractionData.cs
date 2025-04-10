@@ -66,6 +66,7 @@ namespace Nursing.Interaction
         public string boundaryObjectTag;
         public string collisionZoneTag;
         public PenaltyData OverDrag; // dragDIstanceLimit를 넘거나, boundaryObjectTag를 벗어날 때 발생 
+        public PenaltyData CollideDrag;
         
 
         [Header("오브젝트 생성")]

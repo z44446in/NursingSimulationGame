@@ -290,6 +290,8 @@ namespace Nursing.Editor
             SerializedProperty boundaryObjectTagProp = settingsProp.FindPropertyRelative("boundaryObjectTag");
             SerializedProperty collisionZoneTagProp = settingsProp.FindPropertyRelative("collisionZoneTag");
             SerializedProperty OverDragProp = settingsProp.FindPropertyRelative("OverDrag");
+            
+            SerializedProperty CollideDragProp = settingsProp.FindPropertyRelative("CollideDrag");
             SerializedProperty deactivateObjectAfterDragProp = settingsProp.FindPropertyRelative("deactivateObjectAfterDrag");
             SerializedProperty haveDirectionProp = settingsProp.FindPropertyRelative("haveDirection");
 
@@ -427,8 +429,11 @@ namespace Nursing.Editor
             // 패널티 설정
             EditorGUILayout.LabelField("패널티 설정", subheaderStyle);
             EditorGUILayout.PropertyField(OverDragProp, new GUIContent("과도한 드래그 패널티", "드래그 제한을 초과하거나 경계를 벗어날 때 적용할 패널티"));
+            EditorGUILayout.PropertyField(CollideDragProp, new GUIContent("충돌 드래그 패널티", "드래그 충돌 시 패널티"));
+           
+            //CollideDrag
         }
-        
+
         private void DrawObjectCreationSettings(SerializedProperty settingsProp)
         {
             SerializedProperty createObjectProp = settingsProp.FindPropertyRelative("createObject");

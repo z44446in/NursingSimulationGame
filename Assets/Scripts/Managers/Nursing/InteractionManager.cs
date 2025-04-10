@@ -32,7 +32,10 @@ namespace Nursing.Managers
         private GameObject draggedObject;
         private Coroutine arrowBlinkCoroutine;
         private List<Coroutine> activeCoroutines = new List<Coroutine>();
-        
+
+        // 인터랙션 완료 이벤트
+        public event System.Action<bool> OnInteractionComplete;
+
         private void Awake()
         {
             if (penaltyManager == null)
@@ -671,9 +674,9 @@ namespace Nursing.Managers
             
             // 인터랙션 정리
             CleanupCurrentInteraction();
-            
-            // 인터랙션 완료 이벤트를 발생시킬 수 있음
-            // OnInteractionComplete?.Invoke(currentInteraction.id);
+
+            // 인터랙션 완료 이벤트 발생
+            OnInteractionComplete?.Invoke(true);
         }
         
         /// <summary>
@@ -947,7 +950,7 @@ namespace Nursing.Managers
                                     
                                     if (isColliding && settings.OverDrag != null)
                                     {
-                                        ApplyPenalty(settings.OverDrag);
+                                        ApplyPenalty(settings.CollideDrag);
                                         
                                         // 드래그 상태 리셋
                                         isDragging = false;
