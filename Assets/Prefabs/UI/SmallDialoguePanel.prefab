@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 7803207969481011267}
   m_Layer: 5
   m_Name: speakerImage
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -168,8 +168,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -783.5847, y: -165.21341}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -652, y: -154}
+  m_SizeDelta: {x: 489, y: 205}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2469066692080095280
 CanvasRenderer:
@@ -199,9 +199,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -1145200584, guid: 553baef90f4d1224aae04f6c7903f579, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -243,8 +243,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -592.64307, y: -175.22379}
-  m_SizeDelta: {x: -1734.4521, y: -1016.9234}
+  m_AnchoredPosition: {x: -569.56616, y: -162.32779}
+  m_SizeDelta: {x: -1688.2982, y: -1004.7062}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8819161881373235210
 CanvasRenderer:
@@ -309,7 +309,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

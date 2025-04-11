@@ -17,7 +17,9 @@ namespace Nursing.Managers
         
         private DialogueManager dialogueManager;
         private PenaltyDatabase penaltyDatabase;
+
         
+
         private void Awake()
         {
             dialogueManager = FindObjectOfType<DialogueManager>();
@@ -56,7 +58,13 @@ namespace Nursing.Managers
             {
                 penaltyDatabase.RecordPenalty(penaltyData);
             }
-            
+
+            // 동작 취소 실행 (추가된 부분)
+            if (penaltyData.undoAction != null)
+            {
+                penaltyData.undoAction.Invoke();
+            }
+
             return true;
         }
         

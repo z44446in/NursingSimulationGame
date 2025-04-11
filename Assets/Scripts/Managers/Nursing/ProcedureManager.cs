@@ -31,7 +31,8 @@ namespace Nursing.Managers
 
         [SerializeField] private List<InteractionData> availableInteractions; //클로드가 scriptableobject 폴더에서 찾고싶으면 추가하라고 한 코드 
 
-      
+        [SerializeField] private CartUI cartUI; // CartUI 참조 추가
+
         private void Awake()
         {
             if (interactionManager == null)
@@ -382,14 +383,26 @@ namespace Nursing.Managers
 
                         if (!validOrder)
                         {
-                            // 여기서 패널티 적용
+                            // 중요: 동작 실행 전에 undoAction 설정
                             if (step.incorrectOrderPenalty != null)
                             {
-                                string missingStepsText = string.Join(", ", missingStepIds);
-                                Debug.Log($"잘못된 순서 패널티 적용: {step.id}에 대한 선행 스텝 누락 - {missingStepsText}");
+                                // 현재 아이템 상태 미리 저장
+                                Item itemReference = FindItemById(itemId);
+
+                                step.incorrectOrderPenalty.undoAction = () => {
+                                    Debug.Log("순서 오류 동작 취소: " + itemId);
+                                    // 아이템 상태 복원 로직
+                                    if (itemReference != null && cartUI != null)
+                                    {
+                                        // 이미 사라진 경우 다시 추가
+                                        cartUI.AddItemToCart(itemReference);
+                                    }
+                                };
+
+                                // 패널티 적용
                                 ApplyPenalty(step.incorrectOrderPenalty);
                             }
-                            return true; // 패널티는 적용했지만 스텝은 완료하지 않음
+                            return true;
                         }
                     }
 
@@ -448,6 +461,27 @@ namespace Nursing.Managers
             // 매칭되는 스텝을 찾지 못한 경우
             Debug.Log($"일치하는 아이템 스텝 없음: {itemId}");
             return false;
+        }
+
+        // 아이템 ID로 Item 찾는 유틸리티 메서드 추가
+        // 런타임에서 Item ScriptableObject들을 찾는 유틸리티 메서드
+        private Item FindItemById(string itemId)
+        {
+            // Resources 폴더 내 모든 Item 가져오기
+            Item[] allItems = Resources.LoadAll<Item>("");
+
+            foreach (Item item in allItems)
+            {
+                if (item.itemId == itemId)
+                    return item;
+            }
+
+            // 못 찾은 경우 특정 경로 직접 확인
+            Item specificItem = Resources.Load<Item>("PrepareRoomItems" + itemId);
+            if (specificItem != null)
+                return specificItem;
+
+            return null;
         }
 
         private InteractionData FindInteractionDataById(string id)

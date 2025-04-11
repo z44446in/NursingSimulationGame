@@ -61,7 +61,7 @@ MonoBehaviour:
       requireAllButtons: 0
       isPlayerInteraction: 0
       validInteractionTags: []
-    requireSpecificOrder: 1
+    requireSpecificOrder: 0
     requiredPreviousStepIds:
     - Catheterization_Clinical_0
     incorrectOrderPenalty:

@@ -1086,54 +1086,70 @@ namespace Nursing.Managers
                 }
             }
         }
-        
+
         /// <summary>
         /// 조건부 클릭 인터랙션을 처리합니다.
         /// </summary>
         private void HandleConditionalClick()
         {
             var settings = currentStage.settings;
-            
+
             if (settings == null)
                 return;
-            
+
             // 클릭 또는 터치 확인
             bool isClicking = Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
-            
+
             if (isClicking)
             {
                 Vector2 clickPos = Input.touchCount > 0 ? Input.GetTouch(0).position : (Vector2)Input.mousePosition;
-                
+
                 // UI 요소 체크를 위한 레이캐스트
                 PointerEventData eventData = new PointerEventData(EventSystem.current);
                 eventData.position = clickPos;
                 List<RaycastResult> results = new List<RaycastResult>();
                 EventSystem.current.RaycastAll(eventData, results);
-                
+
+                // Default 레이어 인덱스 가져오기
+               
                 string clickedTag = null;
+                
                 
                 foreach (RaycastResult result in results)
                 {
-                    clickedTag = result.gameObject.tag;
+                    GameObject hitObject = result.gameObject;
+
+                    if(hitObject.layer == LayerMask.NameToLayer("UI"))
+                    {
+                        
+                        break;
+                    }
+
                     
+                        clickedTag = hitObject.tag;
+
+                    
+
                     // 유효한 클릭 태그인지 확인
                     if (settings.validClickTags.Contains(clickedTag))
-                    {
-                        // 유효한 클릭, 다음 단계로 진행
-                        AdvanceToNextStage();
-                        return;
-                    }
+                        {
+                            // 유효한 클릭, 다음 단계로 진행
+                            AdvanceToNextStage();
+                            return;
+                        }
+
+                        // 잘못된 클릭 태그인지 확인
+                        int invalidIndex = settings.invalidClickTags.IndexOf(clickedTag);
+                        if (invalidIndex >= 0 && invalidIndex < settings.conditionalClickPenalties.Count)
+                        {
+                            // 잘못된 클릭, 해당 태그에 맞는 패널티 적용
+                            ApplyPenalty(settings.conditionalClickPenalties[invalidIndex]);
+                       
+                            return;
+                        }
                     
-                    // 잘못된 클릭 태그인지 확인
-                    int invalidIndex = settings.invalidClickTags.IndexOf(clickedTag);
-                    if (invalidIndex >= 0 && invalidIndex < settings.conditionalClickPenalties.Count)
-                    {
-                        // 잘못된 클릭, 해당 태그에 맞는 패널티 적용
-                        ApplyPenalty(settings.conditionalClickPenalties[invalidIndex]);
-                        return;
-                    }
                 }
-            }
+                }
         }
         
         /// <summary>

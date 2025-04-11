@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 298281677526748686}
   - component: {fileID: 220751630958525191}
   - component: {fileID: 5424616139518419450}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: FoleySet4
   m_TagString: FoleySet
   m_Icon: {fileID: 0}

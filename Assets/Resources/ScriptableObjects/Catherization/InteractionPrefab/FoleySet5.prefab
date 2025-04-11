@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 415126575276591178}
   - component: {fileID: 3397707676867468019}
   - component: {fileID: 5262248745808887784}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Forcep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 1607225394671134421}
   - component: {fileID: 3035161684968702645}
   - component: {fileID: 5967294904831375640}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: FoleySet5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 6397010254686665942}
   - component: {fileID: 4601190983798826599}
   - component: {fileID: 4058829509784410047}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Tray
   m_TagString: Tray
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 6786592787609131323}
   - component: {fileID: 439476057554395254}
   - component: {fileID: 8162412314055449490}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Intray
   m_TagString: Intray
   m_Icon: {fileID: 0}

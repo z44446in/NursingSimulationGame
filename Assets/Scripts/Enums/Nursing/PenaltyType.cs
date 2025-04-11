@@ -1,8 +1,11 @@
 using System;
 using UnityEngine;
 
+
 namespace Nursing.Penalty
 {
+    public delegate void UndoActionDelegate();
+
     [Serializable]
     public enum PenaltyType
     {
@@ -13,6 +16,7 @@ namespace Nursing.Penalty
         [Tooltip("치명적 오류 - 큰 감점")]
         Critical
     }
+
 
     [Serializable]
     public class PenaltyData
@@ -46,5 +50,8 @@ namespace Nursing.Penalty
         [Space(5)]
         [Tooltip("화면을 깜빡일 횟수")]
         public int flashCount = 2;
+
+        [NonSerialized]
+        public UndoActionDelegate undoAction;
     }
 }

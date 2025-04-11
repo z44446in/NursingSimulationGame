@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using DG.Tweening;
 using System;
+using System.Collections;
 
 namespace Nursing.UI
 {
@@ -14,11 +15,24 @@ namespace Nursing.UI
         [SerializeField] private Button[] optionButtons;
         [SerializeField] private TextMeshProUGUI[] optionTexts;
         [SerializeField] private Image[] optionImages;
-        [SerializeField] private Image timerImage;
-        [SerializeField] private GameObject resultPanel;
-        [SerializeField] private TextMeshProUGUI resultText;
+        [SerializeField] private TextMeshProUGUI timertext;
+        [SerializeField] private Image timerGauge;  // 남은 시간 게이지
+
+        // 추가 필요한 UI 요소들 선언
+        [Header("결과 UI")]
+        [SerializeField] private GameObject rightAnswerImage;  // 정답 이미지
+        [SerializeField] private GameObject wrongAnswerImage;  // 오답 이미지
+
+
         [SerializeField] private Button closeButton;
-        
+
+
+        // 버튼 하이라이트용 컬러
+        private Color correctHighlightColor = new Color(0.2f, 0.6f, 1.0f);  // 파란색
+        private Color wrongHighlightColor = new Color(1.0f, 0.2f, 0.2f);    // 빨간색
+        private Color originalButtonColor;
+        private bool quizCompleted = false;
+
         [Header("애니메이션 설정")]
         [SerializeField] private float fadeInDuration = 0.3f;
         [SerializeField] private float fadeOutDuration = 0.3f;
@@ -35,21 +49,36 @@ namespace Nursing.UI
         
         private void Awake()
         {
-            canvasGroup = GetComponent<CanvasGroup>();
-            if (canvasGroup == null)
-                canvasGroup = gameObject.AddComponent<CanvasGroup>();
-                
+            // 결과 이미지 초기화
+            if (rightAnswerImage != null) rightAnswerImage.SetActive(false);
+            if (wrongAnswerImage != null) wrongAnswerImage.SetActive(false);
+
+            // 원래 버튼 색상 저장
+            if (optionButtons.Length > 0 && optionButtons[0] != null)
+            {
+                originalButtonColor = optionButtons[0].colors.normalColor;
+            }
+
+            remainingTime = timeLimit;
+            isAnswered = false;
+            quizCompleted = false;
+
+            // 닫기 버튼 비활성화 처리
+            if (closeButton != null)
+            {
+                closeButton.interactable = false;
+            }
+
             // 닫기 버튼 이벤트 설정
             if (closeButton != null)
             {
-                closeButton.onClick.AddListener(() => {
-                    OnCloseButtonClicked();
-                });
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(OnCloseButtonClicked);
             }
-            
-            // 결과 패널 초기화
-            if (resultPanel != null)
-                resultPanel.SetActive(false);
+
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
         
         private void OnEnable()
@@ -63,31 +92,38 @@ namespace Nursing.UI
             isTimerRunning = timeLimit > 0;
             remainingTime = timeLimit;
             
-            // 타이머 초기화
-            if (timerImage != null)
-            {
-                timerImage.fillAmount = 1.0f;
-                timerImage.gameObject.SetActive(isTimerRunning);
-            }
+            
         }
         
         private void Update()
         {
-            if (isTimerRunning && !isAnswered)
+            if (quizCompleted) return;
+
+            if (timeLimit > 0 && !isAnswered)
             {
                 remainingTime -= Time.deltaTime;
-                
-                if (timerImage != null)
+
+                // Update 메서드 내에서 시간 표시 부분
+                if (timertext != null)
                 {
-                    timerImage.fillAmount = Mathf.Clamp01(remainingTime / timeLimit);
+                    
+                    timertext.text = Mathf.Ceil(remainingTime).ToString(); // 예: "11"
+                                                                          
+                    
                 }
-                
+
+                // 타이머 게이지 업데이트
+                if (timerGauge != null)
+                {
+                    timerGauge.fillAmount = Mathf.Clamp01(remainingTime / timeLimit);
+                }
+
                 if (remainingTime <= 0)
                 {
-                    isTimerRunning = false;
                     OnTimeUp();
                 }
             }
+        
         }
         
         /// <summary>
@@ -141,17 +177,9 @@ namespace Nursing.UI
                 }
             }
             
-            // 타이머 설정
-            isTimerRunning = timeLimit > 0;
-            if (timerImage != null)
-            {
-                timerImage.gameObject.SetActive(isTimerRunning);
-                timerImage.fillAmount = 1.0f;
-            }
+           
             
-            // 결과 패널 초기화
-            if (resultPanel != null)
-                resultPanel.SetActive(false);
+           
                 
             isAnswered = false;
         }
@@ -161,51 +189,19 @@ namespace Nursing.UI
         /// </summary>
         private void OnOptionClicked(int optionIndex)
         {
-            if (isAnswered)
-                return;
-                
+            if (isAnswered || quizCompleted) return;
+
             isAnswered = true;
-            isTimerRunning = false;
-            
             bool isCorrect = optionIndex == correctAnswerIndex;
-            
-            // 결과 표시 (선택적)
-            if (resultPanel != null && resultText != null)
+
+            // 모든 버튼 비활성화
+            foreach (Button button in optionButtons)
             {
-                resultText.text = isCorrect ? "정답입니다!" : "오답입니다!";
-                resultText.color = isCorrect ? Color.green : Color.red;
-                resultPanel.SetActive(true);
-                
-                // 약간의 지연 후 닫기
-                Invoke("CompleteQuiz", 1.5f);
+                button.interactable = false;
             }
-            else
-            {
-                // 바로 완료 처리
-                CompleteQuiz();
-            }
-            
-            // 버튼 상태 시각적으로 표시
-            for (int i = 0; i < optionButtons.Length; i++)
-            {
-                if (i == correctAnswerIndex)
-                {
-                    // 정답 버튼 강조
-                    ColorBlock colors = optionButtons[i].colors;
-                    colors.normalColor = Color.green;
-                    optionButtons[i].colors = colors;
-                }
-                else if (i == optionIndex && !isCorrect)
-                {
-                    // 선택한 오답 버튼 강조
-                    ColorBlock colors = optionButtons[i].colors;
-                    colors.normalColor = Color.red;
-                    optionButtons[i].colors = colors;
-                }
-                
-                // 버튼 비활성화
-                optionButtons[i].interactable = false;
-            }
+
+            // 결과 표시
+            ShowQuizResult(isCorrect, optionIndex);
         }
         
         /// <summary>
@@ -213,38 +209,18 @@ namespace Nursing.UI
         /// </summary>
         private void OnTimeUp()
         {
+            if (isAnswered || quizCompleted) return;
+
             isAnswered = true;
-            
-            // 시간 초과 시 틀린 것으로 처리
-            if (resultPanel != null && resultText != null)
+
+            // 모든 버튼 비활성화
+            foreach (Button button in optionButtons)
             {
-                resultText.text = "시간 초과!";
-                resultText.color = Color.red;
-                resultPanel.SetActive(true);
-                
-                // 약간의 지연 후 닫기
-                Invoke("CompleteQuiz", 1.5f);
+                button.interactable = false;
             }
-            else
-            {
-                // 바로 완료 처리
-                CompleteQuiz();
-            }
-            
-            // 정답 버튼 표시
-            for (int i = 0; i < optionButtons.Length; i++)
-            {
-                if (i == correctAnswerIndex)
-                {
-                    // 정답 버튼 강조
-                    ColorBlock colors = optionButtons[i].colors;
-                    colors.normalColor = Color.green;
-                    optionButtons[i].colors = colors;
-                }
-                
-                // 버튼 비활성화
-                optionButtons[i].interactable = false;
-            }
+
+            // 오답으로 처리
+            ShowQuizResult(false, -1);
         }
         
         /// <summary>
@@ -259,20 +235,95 @@ namespace Nursing.UI
                 OnQuizComplete?.Invoke(isCorrect);
             });
         }
-        
-        /// <summary>
-        /// 닫기 버튼 클릭 처리
-        /// </summary>
-        private void OnCloseButtonClicked()
+
+        private void ShowQuizResult(bool isCorrect, int selectedIndex)
         {
-            // 답변 전에 닫으면 오답으로 처리
-            if (!isAnswered)
+            quizCompleted = true;
+
+            // 정답 버튼 하이라이트
+            HighlightCorrectAnswer();
+
+            // 오답 선택 시 해당 버튼 빨간색 하이라이트
+            if (!isCorrect && selectedIndex >= 0 && selectedIndex < optionButtons.Length)
             {
-                isAnswered = true;
-                CompleteQuiz();
+                ColorBlock colorBlock = optionButtons[selectedIndex].colors;
+                colorBlock.normalColor = wrongHighlightColor;
+                optionButtons[selectedIndex].colors = colorBlock;
+            }
+
+            // 결과 이미지 표시
+            if (isCorrect && rightAnswerImage != null)
+            {
+                rightAnswerImage.SetActive(true);
+            }
+            else if (!isCorrect && wrongAnswerImage != null)
+            {
+                wrongAnswerImage.SetActive(true);
+            }
+
+            // 3초 후 자동으로 결과 이미지 숨기고 완료 처리
+            StartCoroutine(AutoCompleteQuiz(isCorrect));
+        }
+
+        // 정답 버튼 하이라이트
+        private void HighlightCorrectAnswer()
+        {
+            if (correctAnswerIndex >= 0 && correctAnswerIndex < optionButtons.Length)
+            {
+                ColorBlock colorBlock = optionButtons[correctAnswerIndex].colors;
+                colorBlock.normalColor = correctHighlightColor;
+                optionButtons[correctAnswerIndex].colors = colorBlock;
             }
         }
-        
+
+        // 자동 완료 코루틴
+        private IEnumerator AutoCompleteQuiz(bool isCorrect)
+        {
+            // 3초 대기
+            yield return new WaitForSeconds(3.0f);
+
+            // 결과 이미지 숨기기
+            if (rightAnswerImage != null) rightAnswerImage.SetActive(false);
+            if (wrongAnswerImage != null) wrongAnswerImage.SetActive(false);
+
+            // 닫기 버튼 활성화
+            if (closeButton != null)
+            {
+                closeButton.interactable = true;
+            }
+
+            // 오답인 경우 페널티 시스템 작동
+            if (!isCorrect)
+            {
+                OnQuizComplete?.Invoke(false);
+            }
+            else
+            {
+                // 정답인 경우에는 닫기 버튼 클릭 시 호출되도록 함
+                // 이벤트는 호출하지 않음
+            }
+        }
+
+        // 닫기 버튼 클릭 처리 수정
+        private void OnCloseButtonClicked()
+        {
+            // 퀴즈 완료 후에만 닫기 버튼 동작
+            if (quizCompleted)
+            {
+                bool isCorrect = isAnswered && correctAnswerIndex >= 0;
+
+                // 정답이었던 경우에만 여기서 이벤트 호출 (오답인 경우는 이미 호출됨)
+                if (isCorrect)
+                {
+                    OnQuizComplete?.Invoke(true);
+                }
+
+                FadeOut(() => {
+                    Destroy(gameObject);
+                });
+            }
+        }
+
         /// <summary>
         /// 페이드 인 애니메이션
         /// </summary>
