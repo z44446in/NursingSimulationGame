@@ -53,7 +53,11 @@ namespace cakeslice
 			OutlineEffect.Instance?.AddOutline(this);
 		}
 
-		void OnDisable()
+		public void goHigh()
+        {
+			OutlineEffect.Instance?.AddOutline(this);
+		}
+		 void OnDisable()
 		{
 			OutlineEffect.Instance?.RemoveOutline(this);
 		}

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Nursing.Interaction;
 using Nursing.Penalty;
+using Nursing.UI;
 
 namespace Nursing.Managers
 {
@@ -370,25 +371,25 @@ namespace Nursing.Managers
             // 이동이 시작되면 다음 단계로 진행하지 않고 이동이 완료될 때까지 기다립니다.
             // 이동 코루틴이 완료되면 AdvanceToNextStage를 호출합니다.
         }
-        
+
         /// <summary>
         /// 퀴즈 팝업 인터랙션을 설정합니다.
         /// </summary>
         private void SetupQuizPopup()
         {
             var settings = currentStage.settings;
-            
+
             if (settings == null || quizPopupPrefab == null)
             {
                 Debug.LogError("퀴즈 팝업 설정이 없거나 퀴즈 팝업 프리팹이 없습니다.");
                 AdvanceToNextStage();
                 return;
             }
-            
+
             // 퀴즈 팝업 생성
-            var quizPopup = Instantiate(quizPopupPrefab, transform);
-            var quizController = quizPopup.GetComponent<QuizPopup>();
-            
+            var quizPopup = Instantiate(quizPopupPrefab, mainCanvas.transform);
+            var quizController = quizPopup.GetComponent<Nursing.UI.QuizPopup>();
+
             if (quizController == null)
             {
                 Debug.LogError("퀴즈 팝업 프리팹에 QuizPopup 컴포넌트가 없습니다.");
@@ -396,7 +397,7 @@ namespace Nursing.Managers
                 AdvanceToNextStage();
                 return;
             }
-            
+
             // 퀴즈 설정
             quizController.SetupQuiz(
                 settings.questionText,
@@ -405,7 +406,7 @@ namespace Nursing.Managers
                 settings.optionImages,
                 settings.timeLimit
             );
-            
+
             // 퀴즈 결과 이벤트 구독
             quizController.OnQuizComplete += (bool isCorrect) => {
                 if (!isCorrect && settings.WrongAnswer != null)
@@ -417,14 +418,12 @@ namespace Nursing.Managers
                     // 퀴즈 완료 후 다음 단계로 진행
                     AdvanceToNextStage();
                 }
-                
-                Destroy(quizPopup);
             };
-            
+
             // 퀴즈가 표시되면 인터랙션 완료를 기다립니다.
             interactionInProgress = true;
         }
-        
+
         /// <summary>
         /// 미니게임 인터랙션을 설정합니다.
         /// </summary>
@@ -1231,112 +1230,7 @@ namespace Nursing.Managers
         #endregion
     }
     
-    /// <summary>
-    /// 퀴즈 팝업 컨트롤러 클래스
-    /// </summary>
-    public class QuizPopup : MonoBehaviour
-    {
-        [SerializeField] private Text questionText;
-        [SerializeField] private Button[] optionButtons;
-        [SerializeField] private Text[] optionTexts;
-        [SerializeField] private Image[] optionImages;
-        [SerializeField] private Image timerImage;
-        
-        private float timeLimit;
-        private int correctAnswerIndex;
-        private float remainingTime;
-        
-        public event System.Action<bool> OnQuizComplete;
-        
-        private void Start()
-        {
-            remainingTime = timeLimit;
-        }
-        
-        private void Update()
-        {
-            if (timeLimit > 0)
-            {
-                remainingTime -= Time.deltaTime;
-                
-                if (timerImage != null)
-                {
-                    timerImage.fillAmount = Mathf.Clamp01(remainingTime / timeLimit);
-                }
-                
-                if (remainingTime <= 0)
-                {
-                    // 시간 초과, 틀린 답으로 처리
-                    OnQuizComplete?.Invoke(false);
-                }
-            }
-        }
-        
-        /// <summary>
-        /// 퀴즈를 설정합니다.
-        /// </summary>
-        public void SetupQuiz(string question, List<string> options, int correctIndex, Sprite[] images = null, float time = 0)
-        {
-            if (questionText != null)
-                questionText.text = question;
-            
-            correctAnswerIndex = correctIndex;
-            timeLimit = time;
-            remainingTime = timeLimit;
-            
-            // 옵션 버튼 설정
-            int optionCount = Mathf.Min(options.Count, optionButtons.Length);
-            
-            for (int i = 0; i < optionButtons.Length; i++)
-            {
-                if (i < optionCount)
-                {
-                    optionButtons[i].gameObject.SetActive(true);
-                    
-                    int optionIndex = i; // 클로저에서 사용하기 위해 로컬 변수로 복사
-                    
-                    // 텍스트 설정
-                    if (optionTexts.Length > i && optionTexts[i] != null)
-                    {
-                        optionTexts[i].text = options[i];
-                    }
-                    
-                    // 이미지 설정 (있는 경우)
-                    if (images != null && images.Length > i && optionImages.Length > i && optionImages[i] != null)
-                    {
-                        optionImages[i].sprite = images[i];
-                        optionImages[i].gameObject.SetActive(images[i] != null);
-                    }
-                    
-                    // 버튼 클릭 이벤트 설정
-                    optionButtons[i].onClick.RemoveAllListeners();
-                    optionButtons[i].onClick.AddListener(() => OnOptionClicked(optionIndex));
-                }
-                else
-                {
-                    optionButtons[i].gameObject.SetActive(false);
-                }
-            }
-            
-            // 타이머 설정
-            if (timerImage != null)
-            {
-                timerImage.gameObject.SetActive(timeLimit > 0);
-                timerImage.fillAmount = 1.0f;
-            }
-        }
-        
-        /// <summary>
-        /// 옵션 버튼 클릭 처리
-        /// </summary>
-        private void OnOptionClicked(int optionIndex)
-        {
-            bool isCorrect = optionIndex == correctAnswerIndex;
-            
-            // 퀴즈 완료 이벤트 발생
-            OnQuizComplete?.Invoke(isCorrect);
-        }
-    }
+    
     
     /// <summary>
     /// 미니게임 컨트롤러 인터페이스

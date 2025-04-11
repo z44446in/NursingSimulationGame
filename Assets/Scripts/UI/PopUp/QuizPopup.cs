@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using System;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 namespace Nursing.UI
 {
@@ -27,10 +28,8 @@ namespace Nursing.UI
         [SerializeField] private Button closeButton;
 
 
-        // 버튼 하이라이트용 컬러
-        private Color correctHighlightColor = new Color(0.2f, 0.6f, 1.0f);  // 파란색
-        private Color wrongHighlightColor = new Color(1.0f, 0.2f, 0.2f);    // 빨간색
-        private Color originalButtonColor;
+        
+        
         private bool quizCompleted = false;
 
         [Header("애니메이션 설정")]
@@ -42,7 +41,7 @@ namespace Nursing.UI
         private float remainingTime;
         private int correctAnswerIndex;
         private bool isAnswered;
-        private bool isTimerRunning;
+      
         private CanvasGroup canvasGroup;
         
         public event Action<bool> OnQuizComplete;
@@ -53,11 +52,7 @@ namespace Nursing.UI
             if (rightAnswerImage != null) rightAnswerImage.SetActive(false);
             if (wrongAnswerImage != null) wrongAnswerImage.SetActive(false);
 
-            // 원래 버튼 색상 저장
-            if (optionButtons.Length > 0 && optionButtons[0] != null)
-            {
-                originalButtonColor = optionButtons[0].colors.normalColor;
-            }
+           
 
             remainingTime = timeLimit;
             isAnswered = false;
@@ -79,8 +74,22 @@ namespace Nursing.UI
             canvasGroup = GetComponent<CanvasGroup>();
             if (canvasGroup == null)
                 canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+
+            if (FindObjectOfType<cakeslice.OutlineEffect>() == null)
+            {
+                Camera mainCamera = Camera.main;
+                if (mainCamera != null && mainCamera.gameObject.GetComponent<cakeslice.OutlineEffect>() == null)
+                {
+                    mainCamera.gameObject.AddComponent<cakeslice.OutlineEffect>();
+                }
+            }
+
+
         }
-        
+
+       
+
         private void OnEnable()
         {
             FadeIn();
@@ -89,7 +98,7 @@ namespace Nursing.UI
         private void Start()
         {
             isAnswered = false;
-            isTimerRunning = timeLimit > 0;
+        
             remainingTime = timeLimit;
             
             
@@ -169,7 +178,16 @@ namespace Nursing.UI
                     
                     // 버튼 클릭 이벤트 설정
                     optionButtons[i].onClick.RemoveAllListeners();
-                    optionButtons[i].onClick.AddListener(() => OnOptionClicked(optionIndex));
+                    
+
+                    // 새 리스너 추가하고 디버그 로그로 확인
+                    optionButtons[i].onClick.AddListener(() => {
+                        
+                        OnOptionClicked(optionIndex);
+                        
+                    });
+
+                    
                 }
                 else
                 {
@@ -183,7 +201,7 @@ namespace Nursing.UI
                 
             isAnswered = false;
         }
-        
+
         /// <summary>
         /// 옵션 버튼 클릭 처리
         /// </summary>
@@ -194,16 +212,14 @@ namespace Nursing.UI
             isAnswered = true;
             bool isCorrect = optionIndex == correctAnswerIndex;
 
-            // 모든 버튼 비활성화
-            foreach (Button button in optionButtons)
-            {
-                button.interactable = false;
-            }
+            // 모든 버튼에 대해 아웃라인 하이라이트 적용
+            HighlightOptions();
 
             // 결과 표시
-            ShowQuizResult(isCorrect, optionIndex);
+            ShowQuizResult(isCorrect);
         }
-        
+
+
         /// <summary>
         /// 시간 초과 처리
         /// </summary>
@@ -211,45 +227,18 @@ namespace Nursing.UI
         {
             if (isAnswered || quizCompleted) return;
 
-            isAnswered = true;
-
-            // 모든 버튼 비활성화
-            foreach (Button button in optionButtons)
-            {
-                button.interactable = false;
-            }
-
-            // 오답으로 처리
-            ShowQuizResult(false, -1);
-        }
-        
-        /// <summary>
-        /// 퀴즈 완료 처리
-        /// </summary>
-        private void CompleteQuiz()
-        {
-            bool isCorrect = isAnswered && correctAnswerIndex >= 0;
-            
-            // 페이드 아웃 후 완료 이벤트 발생
-            FadeOut(() => {
-                OnQuizComplete?.Invoke(isCorrect);
-            });
+            HighlightOptions();
+            ShowQuizResult(false);
         }
 
-        private void ShowQuizResult(bool isCorrect, int selectedIndex)
+
+        private void ShowQuizResult(bool isCorrect)
         {
             quizCompleted = true;
+            Destroy(timertext);
+            Destroy(timerGauge);
 
-            // 정답 버튼 하이라이트
-            HighlightCorrectAnswer();
-
-            // 오답 선택 시 해당 버튼 빨간색 하이라이트
-            if (!isCorrect && selectedIndex >= 0 && selectedIndex < optionButtons.Length)
-            {
-                ColorBlock colorBlock = optionButtons[selectedIndex].colors;
-                colorBlock.normalColor = wrongHighlightColor;
-                optionButtons[selectedIndex].colors = colorBlock;
-            }
+            
 
             // 결과 이미지 표시
             if (isCorrect && rightAnswerImage != null)
@@ -263,35 +252,65 @@ namespace Nursing.UI
 
             // 3초 후 자동으로 결과 이미지 숨기고 완료 처리
             StartCoroutine(AutoCompleteQuiz(isCorrect));
+           
+        }
+        // 아웃라인 하이라이트 적용 메서드 추가
+        private void HighlightOptions()
+        {
+            
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                if (i == correctAnswerIndex)
+                {
+                    // 정답 버튼에 파란색 아웃라인 적용
+                    ApplyOutline(optionButtons[i].gameObject, Color.blue, 2f);
+                }
+                else 
+                {
+                    // 오답 버튼에 붉은색 아웃라인 적용
+                    ApplyOutline(optionButtons[i].gameObject, Color.red, 2f);
+                }
+            }
         }
 
-        // 정답 버튼 하이라이트
-        private void HighlightCorrectAnswer()
+        // 아웃라인 적용 유틸리티 메서드
+        private void ApplyOutline(GameObject targetObject, Color outlineColor, float outlineWidth)
         {
-            if (correctAnswerIndex >= 0 && correctAnswerIndex < optionButtons.Length)
+            
+            // 기존 아웃라인 컴포넌트 확인
+            cakeslice.Outline outline = targetObject.GetComponent<cakeslice.Outline>();
+
+            // 없으면 추가
+            if (outline == null)
             {
-                ColorBlock colorBlock = optionButtons[correctAnswerIndex].colors;
-                colorBlock.normalColor = correctHighlightColor;
-                optionButtons[correctAnswerIndex].colors = colorBlock;
+                outline = targetObject.AddComponent<cakeslice.Outline>();
+              
             }
+
+            // 아웃라인 색상 설정 (cakeslice.Outline은 색상을 0, 1, 2 인덱스로 관리)
+            if (outlineColor == Color.blue)
+                outline.color = 2; // 파란색
+            else if (outlineColor == Color.red)
+                outline.color = 0; // 빨간색
+            else
+                outline.color = 1; // 그 외의 경우 (녹색)
+
+            // 아웃라인 활성화
+            outline.enabled = true;
+            
         }
 
         // 자동 완료 코루틴
         private IEnumerator AutoCompleteQuiz(bool isCorrect)
         {
             // 3초 대기
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(1.5f);
 
             // 결과 이미지 숨기기
             if (rightAnswerImage != null) rightAnswerImage.SetActive(false);
             if (wrongAnswerImage != null) wrongAnswerImage.SetActive(false);
 
-            // 닫기 버튼 활성화
-            if (closeButton != null)
-            {
-                closeButton.interactable = true;
-            }
-
+            
             // 오답인 경우 페널티 시스템 작동
             if (!isCorrect)
             {
@@ -302,6 +321,13 @@ namespace Nursing.UI
                 // 정답인 경우에는 닫기 버튼 클릭 시 호출되도록 함
                 // 이벤트는 호출하지 않음
             }
+
+            // 닫기 버튼 활성화
+            if (closeButton != null)
+            {
+                closeButton.interactable = true;
+            }
+
         }
 
         // 닫기 버튼 클릭 처리 수정
