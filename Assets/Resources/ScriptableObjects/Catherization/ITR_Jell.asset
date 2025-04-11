@@ -1,0 +1,979 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7, type: 3}
+  m_Name: ITR_Jell
+  m_EditorClassIdentifier: 
+  id: PutJell
+  displayName: "\uC724\uD65C\uC81C\uC9DC\uAE30"
+  description: 
+  stages:
+  - id: PutJell_stage_0
+    name: "\uC190\uBAA8\uC591 \uC0DD\uC131"
+    StageNum: 0
+    guideMessage: 
+    interactionType: 1
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 0
+      dragDirectionTolerance: 0
+      targetObjectTag: 
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 6948918642296159764, guid: ce03efa0d94b43e4bb891c72ba6f9349, type: 3}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutJell_stage_1
+    name: "\uB69C\uAED1 \uC5F4\uAE30"
+    StageNum: 1
+    guideMessage: "\uB4DC\uB798\uADF8 \uD558\uC5EC \uB69C\uAED1\uC744 \uC5F4\uC5B4\uC8FC\uC138\uC694."
+    interactionType: 0
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 1282, y: 189}
+      arrowDirection: {x: -0.9501575, y: -0.31177044}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 15.2
+      targetObjectTag: JellyHand
+      deactivateObjectAfterDrag: 1
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 6948918642296159764, guid: ce03efa0d94b43e4bb891c72ba6f9349, type: 3}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutJell_stage_2
+    name: "\uB450\uBC88\uC9F8 \uC190 \uC0DD\uC131"
+    StageNum: 2
+    guideMessage: 
+    interactionType: 1
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 147, y: -337}
+      arrowDirection: {x: -0.94734055, y: 0.3202278}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 15.2
+      targetObjectTag: JellyHand
+      deactivateObjectAfterDrag: 1
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutJell_stage_2
+    name: "\uC724\uD65C\uC81C \uC4F0\uB808\uAE30\uD1B5\uC5D0 \uC9DC\uAE30 "
+    StageNum: 3
+    guideMessage: "\uC724\uD65C\uC81C\uB97C \uC9E4 \uACF3\uC744 \uD130\uCE58\uD574\uC8FC\uC138\uC694."
+    interactionType: 2
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 147, y: -337}
+      arrowDirection: {x: -0.94734055, y: 0.3202278}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 15.2
+      targetObjectTag: JellyHand
+      deactivateObjectAfterDrag: 1
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
+      isConditionalClick: 1
+      validClickTags:
+      - Trash
+      invalidClickTags:
+      - Untagged
+      - Intray
+      - Tray
+      conditionalClickPenalties:
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uC7A5\uB09C\uCE58\uC9C0\uB9C8.. \uB2E4 \uBCF4\uACE0 \uC788\uC5B4"
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uC5E5? \uAC70\uAE30 \uC704\uC5D0\uB2E4\uAC00 \uC9DC\uBA74
+          \uC5B4\uB5A1\uD574! \uC5D0\uC6C5.. "
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      - penaltyType: 2
+        penaltyScore: 20
+        speaker: 0
+        penaltyMessage: "\uBA78\uADE0\uC744 \uC720\uC9C0\uD558\uAE30 \uC704\uD574\uC11C\uB294,
+          \uAF2D \uC758\uB8CC\uD3D0\uAE30\uBB3C\uD1B5\uC5D0 \uC870\uAE08 \uC9E0 \uB4A4\uC5D0
+          \uD2B8\uB808\uC774 \uC548\uC5D0\uB2E4\uAC00 \uC9DC\uC57C \uD574. \uC717\uBD80\uBD84\uC740
+          \uC624\uC5FC\uB418\uC5B4\uC788\uC744 \uC218 \uC788\uAC70\uB4E0! "
+        databaseMessage: "\uC724\uD65C\uC81C\uB97C \uD2B8\uB808\uC774 \uC548\uC5D0
+          \uC9DC\uAE30 \uC804\uC5D0, \uC758\uB8CC\uD3D0\uAE30\uBB3C\uD1B5\uC5D0 \uBA3C\uC800
+          \uC9DC\uC57C\uD569\uB2C8\uB2E4. "
+        flashRedScreen: 1
+        flashCount: 3
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutJell_stage_3_5
+    name: "\uC4F0\uB808\uAE30\uD1B5\uC5D0 \uC824 \uC0DD\uC131"
+    StageNum: 4
+    guideMessage: 
+    interactionType: 1
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 147, y: -337}
+      arrowDirection: {x: -0.94734055, y: 0.3202278}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 15.2
+      targetObjectTag: JellyHand
+      deactivateObjectAfterDrag: 1
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 1423824034302344488, guid: dd9152e75cace6548ac68f3c6ec98894, type: 3}
+      isConditionalClick: 1
+      validClickTags:
+      - Tray
+      invalidClickTags:
+      - Untagged
+      - Intray
+      - Trash
+      conditionalClickPenalties:
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uD55C\uBC88\uB9CC \uB354 \uC7A5\uB09C\uCE58\uBA74 \uADF8\uB54C\uB294...."
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uC5E5? \uAC70\uAE30 \uC704\uC5D0\uB2E4\uAC00 \uC9DC\uBA74
+          \uC5B4\uB5A1\uD574! \uC5D0\uC6C5.. "
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uD55C\uBC88 \uC9F0\uC73C\uBA74 \uB410\uC5B4! "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutJell_stage_3
+    name: "\uC724\uD65C\uC81C \uD2B8\uB808\uC774 \uC548\uC5D0 \uC9DC\uAE30"
+    StageNum: 5
+    guideMessage: "\uB2E4\uC74C\uC73C\uB85C \uC724\uD65C\uC81C\uB97C \uC9E4 \uACF3\uC744
+      \uD130\uCE58\uD574\uC8FC\uC138\uC694."
+    interactionType: 2
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 147, y: -337}
+      arrowDirection: {x: -0.94734055, y: 0.3202278}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 15.2
+      targetObjectTag: JellyHand
+      deactivateObjectAfterDrag: 1
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
+      isConditionalClick: 1
+      validClickTags:
+      - Tray
+      invalidClickTags:
+      - Untagged
+      - Intray
+      - Trash
+      conditionalClickPenalties:
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uD55C\uBC88\uB9CC \uB354 \uC7A5\uB09C\uCE58\uBA74 \uADF8\uB54C\uB294...."
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uC5E5? \uAC70\uAE30 \uC704\uC5D0\uB2E4\uAC00 \uC9DC\uBA74
+          \uC5B4\uB5A1\uD574! \uC5D0\uC6C5.. "
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uD55C\uBC88 \uC9F0\uC73C\uBA74 \uB410\uC5B4! "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutJell_stage_4
+    name: "\uC824 \uC0DD\uC131"
+    StageNum: 6
+    guideMessage: 
+    interactionType: 1
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 147, y: -337}
+      arrowDirection: {x: -0.94734055, y: 0.3202278}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 15.2
+      targetObjectTag: JellyHand
+      deactivateObjectAfterDrag: 1
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 5794344015829654679, guid: 21e0a5b35fd96a245aea21bb95ec9541, type: 3}
+      isConditionalClick: 1
+      validClickTags:
+      - Tray
+      invalidClickTags:
+      - Untagged
+      - Intray
+      - Trash
+      conditionalClickPenalties:
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uD55C\uBC88\uB9CC \uB354 \uC7A5\uB09C\uCE58\uBA74 \uADF8\uB54C\uB294...."
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uC5E5? \uAC70\uAE30 \uC704\uC5D0\uB2E4\uAC00 \uC9DC\uBA74
+          \uC5B4\uB5A1\uD574! \uC5D0\uC6C5.. "
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uD55C\uBC88 \uC9F0\uC73C\uBA74 \uB410\uC5B4! "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutJell_stage_7
+    name: "\uC190 \uC5C6\uC5B4\uC9D0"
+    StageNum: 7
+    guideMessage: 
+    interactionType: 4
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 147, y: -337}
+      arrowDirection: {x: -0.94734055, y: 0.3202278}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 15.2
+      targetObjectTag: JellyHand
+      deactivateObjectAfterDrag: 1
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 5794344015829654679, guid: 21e0a5b35fd96a245aea21bb95ec9541, type: 3}
+      isConditionalClick: 1
+      validClickTags:
+      - Tray
+      invalidClickTags:
+      - Untagged
+      - Intray
+      - Trash
+      conditionalClickPenalties:
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uD55C\uBC88\uB9CC \uB354 \uC7A5\uB09C\uCE58\uBA74 \uADF8\uB54C\uB294...."
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uC5E5? \uAC70\uAE30 \uC704\uC5D0\uB2E4\uAC00 \uC9DC\uBA74
+          \uC5B4\uB5A1\uD574! \uC5D0\uC6C5.. "
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uD55C\uBC88 \uC9F0\uC73C\uBA74 \uB410\uC5B4! "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - JellyHand
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0

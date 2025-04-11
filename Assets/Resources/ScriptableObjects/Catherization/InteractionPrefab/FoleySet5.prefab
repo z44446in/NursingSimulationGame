@@ -238,7 +238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6786592787609131323}
   - component: {fileID: 439476057554395254}
-  - component: {fileID: 8162412314055449490}
+  - component: {fileID: 6002231417099668603}
   m_Layer: 0
   m_Name: Intray
   m_TagString: Intray
@@ -273,7 +273,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6058707753546080866}
   m_CullTransparentMesh: 1
---- !u!114 &8162412314055449490
+--- !u!114 &6002231417099668603
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -282,7 +282,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6058707753546080866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: f36ae5934248f4c3088737c65f7b54b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -295,7 +295,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 516973062, guid: 44fc1529e9c1d4ea192519449f2b962a, type: 3}
   m_Type: 0
-  m_PreserveAspect: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

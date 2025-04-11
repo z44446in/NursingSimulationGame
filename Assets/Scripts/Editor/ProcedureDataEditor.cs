@@ -324,21 +324,15 @@ namespace Nursing.Editor
                         
                         if (data != null)
                         {
-                            // 새 InteractionData 구조를 지원하는 코드 수정
-                            // 메뉴 아이템을 file name으로 표시하여 더 안정적인 방법 사용
-                            string itemName = System.IO.Path.GetFileNameWithoutExtension(path);
-                            if (!string.IsNullOrEmpty(data.displayName))
-                            {
-                                itemName = data.displayName;
-                            }
+                         
                             
                             menu.AddItem(
-                                new GUIContent(itemName), 
-                                interactionDataIdProp.stringValue == path,
+                                new GUIContent(data.displayName + " (" + data.id + ")"), 
+                                interactionDataIdProp.stringValue == data.id,
                                 () => {
                                     serializedObject.Update();
                                     // 경로 또는 고유 식별자로 ID 저장
-                                    interactionDataIdProp.stringValue = path;
+                                    interactionDataIdProp.stringValue = data.id;
                                     serializedObject.ApplyModifiedProperties();
                                 });
                         }

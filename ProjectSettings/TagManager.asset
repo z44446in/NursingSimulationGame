@@ -11,6 +11,7 @@ TagManager:
   - Tape
   - FoleySet
   - Tray
+  - JellyHand
   layers:
   - Default
   - TransparentFX

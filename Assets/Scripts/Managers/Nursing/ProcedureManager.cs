@@ -29,7 +29,7 @@ namespace Nursing.Managers
         private List<ProcedureStep> availableSteps = new List<ProcedureStep>();
         private bool procedureInProgress = false;
 
-        [SerializeField] private List<InteractionData> availableInteractions; //클로드가 scriptableobject 폴더에서 찾고싶으면 추가하라고 한 코드 
+        
 
         [SerializeField] private CartUI cartUI; // CartUI 참조 추가
 
@@ -405,7 +405,7 @@ namespace Nursing.Managers
                             return true;
                         }
                     }
-
+                    
                     // 가용 스텝 목록에 있는지 확인
                     if (availableSteps.Contains(step))
                     {
@@ -462,6 +462,7 @@ namespace Nursing.Managers
             Debug.Log($"일치하는 아이템 스텝 없음: {itemId}");
             return false;
         }
+        
 
         // 아이템 ID로 Item 찾는 유틸리티 메서드 추가
         // 런타임에서 Item ScriptableObject들을 찾는 유틸리티 메서드
@@ -486,11 +487,20 @@ namespace Nursing.Managers
 
         private InteractionData FindInteractionDataById(string id)
         {
-            foreach (var interaction in availableInteractions)
+            // Resources 폴더 내 모든 interactionData 가져오기
+            InteractionData[] alldata = Resources.LoadAll<InteractionData>("");
+
+            foreach (InteractionData data in alldata)
             {
-                if (interaction != null && interaction.id == id)
-                    return interaction;
+                if (data.id == id)
+                    return data;
             }
+
+            // 못 찾은 경우 특정 경로 직접 확인
+            InteractionData specificInteraction = Resources.Load<InteractionData>("ScriptableObjects" + id);
+            if (specificInteraction != null)
+                return specificInteraction;
+
             return null;
         }
         /// <summary>
