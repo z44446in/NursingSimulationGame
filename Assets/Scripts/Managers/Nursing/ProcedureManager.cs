@@ -115,7 +115,7 @@ namespace Nursing.Managers
 
         }
 
-        // 가용 스텝 업데이트
+        // 가용 스텝 업데이트 - 패널티 적용 없이 단순 업데이트만 수행
         private void UpdateAvailableSteps()
         {
             availableSteps.Clear();
@@ -141,7 +141,7 @@ namespace Nursing.Managers
                     }
 
                     if (!validOrder)
-                        continue;
+                        continue; // 순서가 맞지 않으면 가용 스텝에 추가하지 않음 (패널티 적용 없음)
                 }
 
                 // 모든 조건을 만족하면 가용 스텝에 추가
@@ -347,34 +347,84 @@ namespace Nursing.Managers
         /// <summary>
         /// 아이템 클릭을 처리합니다.
         /// </summary>
-        // HandleItemClick() -> 가용 스텝 목록에서 찾아 처리
+        // 아이템 클릭 처리 메서드 - 여기서 순서 검사 후 패널티 적용
         public bool HandleItemClick(string itemId)
         {
-            if (!procedureInProgress || availableSteps.Count == 0)
+            if (!procedureInProgress)
                 return false;
 
-            // 가용 스텝 중에서 itemId와 일치하는 스텝 찾기
-            foreach (var step in availableSteps)
+            // 모든 스텝을 확인 (가용 스텝에 없는 스텝도 확인)
+            foreach (var step in currentProcedure.steps)
             {
-                if (step.stepType == ProcedureStepType.ItemClick)
+                if (step.stepType == ProcedureStepType.ItemClick &&
+                    step.settings != null &&
+                    step.settings.isItemClick &&
+                    step.settings.itemId == itemId)
                 {
-                    var settings = step.settings;
+                    // 이미 완료된 스텝인지 확인
+                    if (completedStepIds.Contains(step.id))
+                        return false; // 이미 완료된 스텝에 대한 상호작용은 무시
 
-                    if (settings != null && settings.isItemClick && settings.itemId == itemId)
+                    // 순서 제약 확인 및 패널티 적용
+                    if (step.requireSpecificOrder)
                     {
-                        // 인터랙션 데이터가 있으면 인터랙션 시작
-                        if (!string.IsNullOrEmpty(settings.interactionDataId) && interactionManager != null)
+                        List<string> missingStepIds = new List<string>();
+                        bool validOrder = true;
+
+                        foreach (string requiredStepId in step.requiredPreviousStepIds)
                         {
-                            InteractionData interactionData = FindInteractionDataById(settings.interactionDataId);
+                            if (!completedStepIds.Contains(requiredStepId))
+                            {
+                                validOrder = false;
+                                missingStepIds.Add(requiredStepId);
+                            }
+                        }
+
+                        if (!validOrder)
+                        {
+                            // 여기서 패널티 적용
+                            if (step.incorrectOrderPenalty != null)
+                            {
+                                string missingStepsText = string.Join(", ", missingStepIds);
+                                Debug.Log($"잘못된 순서 패널티 적용: {step.id}에 대한 선행 스텝 누락 - {missingStepsText}");
+                                ApplyPenalty(step.incorrectOrderPenalty);
+                            }
+                            return true; // 패널티는 적용했지만 스텝은 완료하지 않음
+                        }
+                    }
+
+                    // 가용 스텝 목록에 있는지 확인
+                    if (availableSteps.Contains(step))
+                    {
+                        // 인터랙션 데이터 처리
+                        if (!string.IsNullOrEmpty(step.settings.interactionDataId) && interactionManager != null)
+                        {
+                            InteractionData interactionData = FindInteractionDataById(step.settings.interactionDataId);
 
                             if (interactionData != null)
                             {
+                                // 인터랙션 완료 이벤트 구독
+                                void OnComplete(bool success)
+                                {
+                                    // 이벤트 구독 해제
+                                    interactionManager.OnInteractionComplete -= OnComplete;
+
+                                    if (success)
+                                    {
+                                        CompleteStep(step);
+                                    }
+                                    else if (step.incorrectActionPenalty != null)
+                                    {
+                                        ApplyPenalty(step.incorrectActionPenalty);
+                                    }
+                                }
+
+                                interactionManager.OnInteractionComplete += OnComplete;
                                 interactionManager.StartInteraction(interactionData);
-                                // 인터랙션 완료 이벤트를 연결해야 함
                             }
                             else
                             {
-                                Debug.LogWarning("인터랙션 데이터를 찾을 수 없습니다: " + settings.interactionDataId);
+                                Debug.LogWarning("인터랙션 데이터를 찾을 수 없습니다: " + step.settings.interactionDataId);
                                 CompleteStep(step);
                             }
                         }
@@ -382,16 +432,22 @@ namespace Nursing.Managers
                         {
                             CompleteStep(step);
                         }
-
                         return true;
                     }
+
+                    // 스텝을 찾았지만 가용 스텝 목록에 없는 경우 (다른 이유로 비활성화된 경우)
+                    if (step.incorrectActionPenalty != null)
+                    {
+                        Debug.Log($"스텝을 찾았지만 현재 실행할 수 없음: {step.id}");
+                        ApplyPenalty(step.incorrectActionPenalty);
+                    }
+                    return true;
                 }
             }
 
-
+            // 매칭되는 스텝을 찾지 못한 경우
+            Debug.Log($"일치하는 아이템 스텝 없음: {itemId}");
             return false;
-
-           
         }
 
         private InteractionData FindInteractionDataById(string id)
@@ -406,41 +462,79 @@ namespace Nursing.Managers
         /// <summary>
         /// 플레이어 상호작용을 처리합니다.
         /// </summary>
-        // HandlePlayerInteraction() -> 가용 스텝 목록에서 찾아 처리
         public bool HandlePlayerInteraction(string interactionTag)
         {
-            if (!procedureInProgress || availableSteps.Count == 0)
+            if (!procedureInProgress)
                 return false;
 
-            foreach (var step in availableSteps)
+            // 모든 스텝을 확인 (가용 스텝에 없는 스텝도 확인)
+            foreach (var step in currentProcedure.steps)
             {
-                if (step.stepType == ProcedureStepType.PlayerInteraction)
+                if (step.stepType == ProcedureStepType.PlayerInteraction &&
+                    step.settings != null &&
+                    step.settings.isPlayerInteraction &&
+                    step.settings.validInteractionTags != null &&
+                    step.settings.validInteractionTags.Contains(interactionTag))
                 {
-                    var settings = step.settings;
+                    // 이미 완료된 스텝인지 확인
+                    if (completedStepIds.Contains(step.id))
+                        return false; // 이미 완료된 스텝에 대한 상호작용은 무시
 
-                    if (settings != null && settings.isPlayerInteraction &&
-                        settings.validInteractionTags != null &&
-                        settings.validInteractionTags.Contains(interactionTag))
+                    // 순서 제약 확인 및 패널티 적용
+                    if (step.requireSpecificOrder)
+                    {
+                        List<string> missingStepIds = new List<string>();
+                        bool validOrder = true;
+
+                        foreach (string requiredStepId in step.requiredPreviousStepIds)
+                        {
+                            if (!completedStepIds.Contains(requiredStepId))
+                            {
+                                validOrder = false;
+                                missingStepIds.Add(requiredStepId);
+                            }
+                        }
+
+                        if (!validOrder)
+                        {
+                            // 여기서 패널티 적용
+                            if (step.incorrectOrderPenalty != null)
+                            {
+                                string missingStepsText = string.Join(", ", missingStepIds);
+                                Debug.Log($"잘못된 순서 패널티 적용: {step.id}에 대한 선행 스텝 누락 - {missingStepsText}");
+                                ApplyPenalty(step.incorrectOrderPenalty);
+                            }
+                            return true; // 패널티는 적용했지만 스텝은 완료하지 않음
+                        }
+                    }
+
+                    // 가용 스텝 목록에 있는지 확인
+                    if (availableSteps.Contains(step))
                     {
                         CompleteStep(step);
                         return true;
                     }
+
+                    // 스텝을 찾았지만 가용 스텝 목록에 없는 경우
+                    if (step.incorrectActionPenalty != null)
+                    {
+                        Debug.Log($"스텝을 찾았지만 현재 실행할 수 없음: {step.id}");
+                        ApplyPenalty(step.incorrectActionPenalty);
+                    }
+                    return true;
                 }
             }
 
-            // 잘못된 상호작용에 대한 패널티(필요하면 추가 구현)
-            
-
+            // 유효하지 않은 상호작용에 대한 패널티 처리
+            Debug.Log($"일치하는 플레이어 상호작용 스텝 없음: {interactionTag}");
             return false;
-
-          
         }
 
         /// <summary>
         /// 현재 스텝을 완료합니다.
         /// </summary>
         // CompleteStep() -> 파라미터로 step을 받음
-       
+
 
         /// <summary>
         /// 프로시저를 완료합니다.
