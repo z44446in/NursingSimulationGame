@@ -34,9 +34,7 @@ namespace Nursing.Managers
         private Coroutine arrowBlinkCoroutine;
         private List<Coroutine> activeCoroutines = new List<Coroutine>();
 
-        // InteractionManager 클래스에 필드 추가
-        private Vector2 secondTouchStartPosition;
-        private GameObject secondDraggedObject;
+       
 
         // 인터랙션 완료 이벤트
         public event System.Action<bool> OnInteractionComplete;
@@ -52,14 +50,19 @@ namespace Nursing.Managers
             public GameObject draggedObject;
         }
 
-        // InteractionManager 클래스 내부에 추가:
-        private float finger0StartTime = -1f;
-        private float finger1StartTime = -1f;
-        private float finger0EndTime = -1f;
-        private float finger1EndTime = -1f;
+       
 
-        // 동시에 눌렀는지 확인할 허용 오차 (초)
-        private const float SYNC_THRESHOLD = 0.2f;
+        private Dictionary<int, TouchInfo> activeTouches = new();
+
+        private class TouchInfo
+        {
+            public Vector2 startPosition;
+            public GameObject draggedObject;
+            public bool isDragging = false;
+            public bool isCompleted = false;
+            public float startTime;
+        }
+
 
 
         private void Awake()
@@ -865,204 +868,135 @@ namespace Nursing.Managers
         private void HandleSingleDragInteraction()
         {
             var settings = currentStage.settings;
+            HandleSingleFingerDrag(settings);
 
             if (settings == null)
                 return;
 
-            // 두 손가락 드래그 요구 시
-            if (settings.requireTwoFingerDrag)
-            {
-                HandleTwoFingerDrag(settings);
-            }
-            else
-            {
-                HandleSingleFingerDrag(settings);
-            }
+            
         }
 
         // 다중 드래그 처리 (각 손가락 독립적으로)
         private void HandleMultiDragInteraction()
         {
             var settings = currentStage.settings;
-
             if (settings == null || settings.fingerSettings.Count == 0)
                 return;
 
-            // 터치 입력 처리
-            for (int i = 0; i < Input.touchCount && i < settings.fingerSettings.Count; i++)
-            {
-                Touch touch = Input.GetTouch(i);
-                HandleFingerDrag(touch, i, settings.fingerSettings[i]);
-            }
+            // 필요한 손가락 수만큼 동시 입력이 들어왔는지 확인
+            if (Input.touchCount < settings.fingerSettings.Count)
+                return;
 
-            // 모든 손가락 드래그가 완료되었는지 확인
-            if (AreAllFingersComplete())
-            {
-                // 다음 단계로 진행
-                AdvanceToNextStage();
-            }
+            bool allDragging = true;
 
-
-        }
-
-
-
-        // 개별 손가락 드래그 처리
-        private void HandleFingerDrag(Touch touch, int fingerIndex, InteractionSettings.FingerDragSettings settings)
-        {
-            if (!fingerDragStatus.ContainsKey(fingerIndex))
-            {
-                fingerDragStatus[fingerIndex] = new FingerDragStatus();
-            }
-
-            var status = fingerDragStatus[fingerIndex];
-
-            // 드래그 시작
-            if (!status.isDragging && !status.isComplete && touch.phase == TouchPhase.Began)
-            {
-                // 레이캐스트로 오브젝트 찾기
-                PointerEventData eventData = new PointerEventData(EventSystem.current);
-                eventData.position = touch.position;
-                List<RaycastResult> results = new List<RaycastResult>();
-                EventSystem.current.RaycastAll(eventData, results);
-
-                foreach (var result in results)
-                {
-                    if (result.gameObject.CompareTag(settings.targetObjectTag))
-                    {
-                        status.isDragging = true;
-                        status.startPosition = touch.position;
-                        status.draggedObject = result.gameObject;
-
-                        // 화살표 제거 (해당 손가락용)
-                        ClearFingerArrows(fingerIndex);
-
-                        Debug.Log($"손가락 {fingerIndex} 드래그 시작: {result.gameObject.name}");
-                        break;
-                    }
-                }
-            }
-            // 드래그 이동
-            else if (status.isDragging && !status.isComplete && touch.phase == TouchPhase.Moved)
-            {
-                if (status.draggedObject != null && settings.followDragMovement)
-                {
-                    // 오브젝트 이동
-                    Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
-                    status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
-
-                    // 경계 확인 (선택적)
-                    if (!string.IsNullOrEmpty(settings.boundaryObjectTag))
-                    {
-                        // 경계 확인 로직
-                    }
-                }
-            }
-            // 드래그 종료
-            else if (status.isDragging && !status.isComplete &&
-                    (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled))
-            {
-                // 드래그 방향 및 거리 확인
-                Vector2 dragEndPosition = touch.position;
-                Vector2 dragDirection = (dragEndPosition - status.startPosition).normalized;
-                float dragDistance = Vector2.Distance(dragEndPosition, status.startPosition);
-
-                bool isValid = true;
-
-                // 방향 확인
-                if (settings.requiredDragDirection)
-                {
-                    Vector2 requiredDirection = settings.arrowDirection.normalized;
-                    float dot = Vector2.Dot(dragDirection, requiredDirection);
-                    float minDotValue = Mathf.Cos(settings.dragDirectionTolerance * Mathf.Deg2Rad);
-
-                    if (dot < minDotValue)
-                    {
-                        isValid = false;
-
-                        // 패널티 적용
-                        if (settings.OverDrag != null)
-                        {
-                            ApplyPenalty(settings.OverDrag);
-                        }
-
-                        // 화살표 다시 표시 (힌트)
-                        if (settings.showDirectionArrows)
-                        {
-                            CreateDirectionArrows(settings.arrowStartPosition, settings.arrowDirection, fingerIndex);
-                        }
-                    }
-                }
-
-                // 거리 제한 확인
-                if (isValid && settings.dragDistanceLimit > 0 && dragDistance > settings.dragDistanceLimit)
-                {
-                    isValid = false;
-
-                    // 패널티 적용
-                    if (settings.OverDrag != null)
-                    {
-                        ApplyPenalty(settings.OverDrag);
-                    }
-                }
-
-                // 결과 처리
-                if (isValid)
-                {
-                    status.isComplete = true;
-
-                    // 오브젝트 비활성화 (설정된 경우)
-                    if (status.draggedObject != null && settings.deactivateObjectAfterDrag)
-                    {
-                        status.draggedObject.SetActive(false);
-                    }
-
-                    Debug.Log($"손가락 {fingerIndex} 드래그 완료");
-                }
-                else
-                {
-                    // 실패 - 상태 리셋
-                    status.isDragging = false;
-                    Debug.Log($"손가락 {fingerIndex} 드래그 실패");
-                }
-
-                status.draggedObject = null;
-            }
-        }
-
-        // 특정 손가락의 화살표만 제거
-        private void ClearFingerArrows(int fingerIndex)
-        {
-            if (fingerArrows.ContainsKey(fingerIndex))
-            {
-                foreach (var arrow in fingerArrows[fingerIndex])
-                {
-                    if (arrow != null)
-                        Destroy(arrow);
-                }
-                fingerArrows[fingerIndex].Clear();
-            }
-        }
-
-        // 모든 손가락 드래그가 완료되었는지 확인
-        private bool AreAllFingersComplete()
-        {
-            var settings = currentStage.settings;
-
-            if (settings == null || settings.fingerSettings.Count == 0)
-                return false;
-
-            // 모든 손가락 설정에 대해 확인
             for (int i = 0; i < settings.fingerSettings.Count; i++)
             {
-                if (!fingerDragStatus.ContainsKey(i) || !fingerDragStatus[i].isComplete)
+                Touch touch = Input.GetTouch(i);
+
+                // 손가락 상태 가져오기 (없으면 새로 생성)
+                if (!fingerDragStatus.ContainsKey(i))
+                    fingerDragStatus[i] = new FingerDragStatus();
+
+                var status = fingerDragStatus[i];
+                var fingerSetting = settings.fingerSettings[i];
+
+                switch (touch.phase)
                 {
-                    return false;
+                    case TouchPhase.Began:
+                        status.startPosition = touch.position;
+                        status.isDragging = false;
+                        status.isComplete = false;
+                        status.draggedObject = null;
+
+                        var rayEvent = new PointerEventData(EventSystem.current)
+                        {
+                            position = touch.position
+                        };
+                        var results = new List<RaycastResult>();
+                        EventSystem.current.RaycastAll(rayEvent, results);
+
+                        foreach (var result in results)
+                        {
+                            if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
+                            {
+                                status.draggedObject = result.gameObject;
+                                status.isDragging = true;
+                                break;
+                            }
+                        }
+                        break;
+
+                    case TouchPhase.Moved:
+                        if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
+                        {
+                            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
+                            status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
+                        }
+                        break;
+
+                    case TouchPhase.Ended:
+                    case TouchPhase.Canceled:
+                        if (status.isDragging && status.draggedObject != null)
+                        {
+                            Vector2 endPos = touch.position;
+                            Vector2 dragDir = (endPos - status.startPosition).normalized;
+                            float dragDist = Vector2.Distance(endPos, status.startPosition);
+
+                            bool valid = true;
+                            if (fingerSetting.requiredDragDirection)
+                            {
+                                Vector2 required = fingerSetting.arrowDirection.normalized;
+                                float dot = Vector2.Dot(dragDir, required);
+                                float minDot = Mathf.Cos(fingerSetting.dragDirectionTolerance * Mathf.Deg2Rad);
+
+                                if (dot < minDot)
+                                    valid = false;
+                            }
+
+                            if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
+                                valid = false;
+
+                            if (valid)
+                            {
+                                status.isComplete = true;
+                                if (fingerSetting.deactivateObjectAfterDrag)
+                                    status.draggedObject.SetActive(false);
+                            }
+                            else
+                            {
+                                status.isDragging = false;
+                                status.draggedObject = null;
+
+                                if (fingerSetting.OverDrag != null)
+                                    ApplyPenalty(fingerSetting.OverDrag);
+                            }
+                        }
+                        break;
                 }
+
+                // 전체 유효성 확인용
+                if (!status.isDragging && !status.isComplete)
+                    allDragging = false;
             }
 
+            // 전부 유효하게 드래그 완료한 경우
+            if (allDragging && AllMultiDragCompleted(settings.fingerSettings.Count))
+            {
+                AdvanceToNextStage();
+            }
+        }
+
+        private bool AllMultiDragCompleted(int requiredCount)
+        {
+            for (int i = 0; i < requiredCount; i++)
+            {
+                if (!fingerDragStatus.ContainsKey(i) || !fingerDragStatus[i].isComplete)
+                    return false;
+            }
             return true;
         }
+
+
 
         /// <summary>
         /// 단일 손가락 드래그를 처리합니다.
@@ -1276,228 +1210,7 @@ namespace Nursing.Managers
             }
         }
 
-        /// <summary>
-        /// 두 손가락 드래그를 처리합니다.
-        /// </summary>
-       
-        private void HandleTwoFingerDrag(InteractionSettings settings)
-        {
-            if (settings.fingerSettings.Count < 2)
-            {
-                Debug.LogError("두 손가락 드래그에 필요한 설정이 부족합니다.");
-                return;
-            }
-
-            var firstFingerSetting = settings.fingerSettings[0];
-            var secondFingerSetting = settings.fingerSettings[1];
-
-            float threshold = settings.multiDragSyncThreshold > 0 ? settings.multiDragSyncThreshold : 0.2f;
-
-            if (Input.touchCount == 2)
-            {
-                Touch touch1 = Input.GetTouch(0);
-                Touch touch2 = Input.GetTouch(1);
-
-                GameObject target1 = null;
-                GameObject target2 = null;
-
-                if (!isDragging &&
-                    (touch1.phase == TouchPhase.Began || touch1.phase == TouchPhase.Moved) &&
-                    (touch2.phase == TouchPhase.Began || touch2.phase == TouchPhase.Moved))
-                {
-                    PointerEventData eventData1 = new PointerEventData(EventSystem.current);
-                    eventData1.position = touch1.position;
-                    List<RaycastResult> results1 = new List<RaycastResult>();
-                    EventSystem.current.RaycastAll(eventData1, results1);
-
-                    foreach (RaycastResult result in results1)
-                    {
-                        if (result.gameObject.CompareTag(firstFingerSetting.targetObjectTag))
-                        {
-                            target1 = result.gameObject;
-                            break;
-                        }
-                    }
-
-                    PointerEventData eventData2 = new PointerEventData(EventSystem.current);
-                    eventData2.position = touch2.position;
-                    List<RaycastResult> results2 = new List<RaycastResult>();
-                    EventSystem.current.RaycastAll(eventData2, results2);
-
-                    foreach (RaycastResult result in results2)
-                    {
-                        if (result.gameObject.CompareTag(secondFingerSetting.targetObjectTag))
-                        {
-                            target2 = result.gameObject;
-                            break;
-                        }
-                    }
-
-                    if (target1 != null && target2 != null)
-                    {
-                        isDragging = true;
-                        finger0StartTime = Time.time;
-                        finger1StartTime = Time.time;
-
-                        dragStartPosition = touch1.position;
-                        secondTouchStartPosition = touch2.position;
-                        draggedObject = target1;
-                        secondDraggedObject = target2;
-
-                        ClearArrows();
-                        Debug.Log("두 손가락 동시 드래그 시작됨");
-                    }
-                }
-                else if (isDragging &&
-                        (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved))
-                {
-                    if (draggedObject != null && firstFingerSetting.followDragMovement)
-                    {
-                        ProcessFingerDrag(
-                            draggedObject,
-                            touch1.position,
-                            dragStartPosition,
-                            firstFingerSetting);
-                    }
-
-                    if (secondDraggedObject != null && secondFingerSetting.followDragMovement)
-                    {
-                        ProcessFingerDrag(
-                            secondDraggedObject,
-                            touch2.position,
-                            secondTouchStartPosition,
-                            secondFingerSetting);
-                    }
-                }
-                else if (isDragging &&
-                        (touch1.phase == TouchPhase.Ended || touch1.phase == TouchPhase.Canceled ||
-                         touch2.phase == TouchPhase.Ended || touch2.phase == TouchPhase.Canceled))
-                {
-                    finger0EndTime = Time.time;
-                    finger1EndTime = Time.time;
-
-                    float timeDiffStart = Mathf.Abs(finger0StartTime - finger1StartTime);
-                    float timeDiffEnd = Mathf.Abs(finger0EndTime - finger1EndTime);
-
-                    bool firstFingerValid = CheckFingerDragValid(
-                        touch1.position,
-                        dragStartPosition,
-                        firstFingerSetting);
-
-                    bool secondFingerValid = CheckFingerDragValid(
-                        touch2.position,
-                        secondTouchStartPosition,
-                        secondFingerSetting);
-
-                    if (firstFingerValid && secondFingerValid &&
-                        timeDiffStart <= threshold && timeDiffEnd <= threshold)
-                    {
-                        if (draggedObject != null && firstFingerSetting.deactivateObjectAfterDrag)
-                            draggedObject.SetActive(false);
-
-                        if (secondDraggedObject != null && secondFingerSetting.deactivateObjectAfterDrag)
-                            secondDraggedObject.SetActive(false);
-
-                        isDragging = false;
-                        draggedObject = null;
-                        secondDraggedObject = null;
-                        AdvanceToNextStage();
-                    }
-                    else
-                    {
-                        if (!firstFingerValid && firstFingerSetting.OverDrag != null)
-                            ApplyPenalty(firstFingerSetting.OverDrag);
-                        if (!secondFingerValid && secondFingerSetting.OverDrag != null)
-                            ApplyPenalty(secondFingerSetting.OverDrag);
-
-                        if (timeDiffStart > threshold || timeDiffEnd > threshold)
-                        {
-                            Debug.Log("두 손가락이 동시에 드래그되지 않았습니다.");
-                            if (dialogueManager != null)
-                                dialogueManager.ShowGuideMessage("두 손가락을 동시에 드래그해야 해요!");
-                        }
-
-                        isDragging = false;
-                        draggedObject = null;
-                        secondDraggedObject = null;
-                    }
-                }
-            }
-            else if (isDragging && Input.touchCount < 2)
-            {
-                isDragging = false;
-                draggedObject = null;
-                secondDraggedObject = null;
-
-                if (dialogueManager != null)
-                {
-                    dialogueManager.ShowGuideMessage("두 손가락으로 동시에 드래그해야 해요!");
-                }
-            }
-        }
-
-
-        // 손가락 드래그 처리 메서드 (FingerDragSettings 클래스 사용)
-        private void ProcessFingerDrag(GameObject targetObject, Vector2 currentPos, Vector2 startPos, InteractionSettings.FingerDragSettings fingerSetting)
-        {
-            // 월드 좌표로 변환
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(currentPos.x, currentPos.y, 10f));
-            targetObject.transform.position = new Vector3(worldPos.x, worldPos.y, targetObject.transform.position.z);
-
-            // 경계 확인
-            if (!string.IsNullOrEmpty(fingerSetting.boundaryObjectTag))
-            {
-                GameObject boundary = GameObject.FindWithTag(fingerSetting.boundaryObjectTag);
-                if (boundary != null)
-                {
-                    Collider2D boundaryCollider = boundary.GetComponent<Collider2D>();
-                    Collider2D objCollider = targetObject.GetComponent<Collider2D>();
-
-                    if (boundaryCollider != null && objCollider != null)
-                    {
-                        if (!boundaryCollider.bounds.Contains(targetObject.transform.position))
-                        {
-                            // 경계 벗어남 처리
-                            if (fingerSetting.OverDrag != null)
-                            {
-                                ApplyPenalty(fingerSetting.OverDrag);
-                            }
-                        }
-                    }
-                }
-
-                else return;
-            }
-        }
-
-        // 손가락 드래그 유효성 검사 메서드 (FingerDragSettings 클래스 사용)
-        private bool CheckFingerDragValid(Vector2 endPos, Vector2 startPos, InteractionSettings.FingerDragSettings fingerSetting)
-        {
-            Vector2 dragDirection = (endPos - startPos).normalized;
-            float dragDistance = Vector2.Distance(endPos, startPos);
-
-            // 방향 확인
-            if (fingerSetting.requiredDragDirection)
-            {
-                Vector2 requiredDirection = fingerSetting.arrowDirection.normalized;
-                float dot = Vector2.Dot(dragDirection, requiredDirection);
-                float minDotValue = Mathf.Cos(fingerSetting.dragDirectionTolerance * Mathf.Deg2Rad);
-
-                if (dot < minDotValue)
-                {
-                    return false;
-                }
-            }
-
-            // 거리 확인
-            if (fingerSetting.dragDistanceLimit > 0 && dragDistance > fingerSetting.dragDistanceLimit)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
+        
 
 
         /// <summary>

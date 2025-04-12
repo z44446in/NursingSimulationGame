@@ -94,6 +94,7 @@ namespace Nursing.Interaction
             public PenaltyData OverDrag;
         }
 
+
         [Header("멀티 드래그 조건")]
         [Tooltip("두 손가락이 얼마나 동시에 눌러야 인정되는지 (초 단위)")]
         [Range(0f, 1f)] public float multiDragSyncThreshold = 0.2f;
