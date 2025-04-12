@@ -875,18 +875,15 @@ namespace Nursing.Managers
             if (settings == null || settings.fingerSettings.Count == 0)
                 return;
 
-            // 필요한 손가락 상태 정보 초기화
+            // 필요한 손가락 수만큼 상태 초기화
             for (int i = 0; i < settings.fingerSettings.Count; i++)
             {
                 if (!fingerDragStatus.ContainsKey(i))
                     fingerDragStatus[i] = new FingerDragStatus();
 
-                // 화살표 생성 (아직 생성되지 않았거나 완료되지 않은 설정에 대해)
-                var status = fingerDragStatus[i];
+                // 초기 화살표 표시
                 var fingerSetting = settings.fingerSettings[i];
-
-                if (!status.isComplete && fingerSetting.haveDirection &&
-                    fingerSetting.requiredDragDirection && fingerSetting.showDirectionArrows)
+                if (fingerSetting.haveDirection && fingerSetting.requiredDragDirection && fingerSetting.showDirectionArrows)
                 {
                     if (!fingerArrows.ContainsKey(i) || fingerArrows[i].Count == 0)
                     {
@@ -895,23 +892,28 @@ namespace Nursing.Managers
                 }
             }
 
-            // 화면 중앙 X 좌표 계산
-            float screenCenterX = Screen.width * 0.5f;
+            // 동시 터치가 2개 미만이면 처리하지 않음
+            if (Input.touchCount < 2)
+                return;
 
-            // 각 터치에 대해 처리
-            for (int i = 0; i < Input.touchCount; i++)
+            // 터치를 X좌표 기준으로 정렬
+            List<Touch> sortedTouches = new List<Touch>();
+            for (int i = 0; i < Input.touchCount && i < 2; i++)  // 최대 2개만 처리
             {
-                Touch touch = Input.GetTouch(i);
+                sortedTouches.Add(Input.GetTouch(i));
+            }
 
-                // 화면 위치에 따라 왼쪽(인덱스 0) 또는 오른쪽(인덱스 1) 할당
-                int fingerIndex = touch.position.x < screenCenterX ? 0 : 1;
+            // X좌표로 정렬 (왼쪽->오른쪽)
+            sortedTouches.Sort((a, b) => a.position.x.CompareTo(b.position.x));
+
+            // 정렬된 터치 처리
+            for (int i = 0; i < sortedTouches.Count && i < 2; i++)
+            {
+                Touch touch = sortedTouches[i];
+                int fingerIndex = i;  // 정렬 후의 인덱스 사용 (0: 왼쪽, 1: 오른쪽)
 
                 // 해당 인덱스가 범위를 벗어나면 건너뜀
                 if (fingerIndex >= settings.fingerSettings.Count)
-                    continue;
-
-                // 이미 완료된 손가락 설정은 건너뜀
-                if (fingerDragStatus[fingerIndex].isComplete)
                     continue;
 
                 var fingerSetting = settings.fingerSettings[fingerIndex];
@@ -946,7 +948,7 @@ namespace Nursing.Managers
                                     fingerArrows[fingerIndex].Clear();
                                 }
 
-                                Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 시작 - 위치: {touch.position} - 오브젝트: {result.gameObject.name}");
+                                Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 시작 - 위치: {touch.position}");
                                 break;
                             }
                         }
@@ -975,8 +977,6 @@ namespace Nursing.Managers
                                 float dot = Vector2.Dot(dragDir, required);
                                 float angleTolerance = fingerSetting.dragDirectionTolerance;
                                 float minDot = Mathf.Cos(angleTolerance * Mathf.Deg2Rad);
-
-                                Debug.Log($"드래그 방향: {dragDir}, 요구 방향: {required}, 각도 코사인: {dot}, 허용 오차: {angleTolerance}도");
 
                                 if (dot < minDot)
                                 {
@@ -1037,11 +1037,7 @@ namespace Nursing.Managers
                 AdvanceToNextStage();
             }
 
-            // 인터랙션 상태 활성화
-            if (!interactionInProgress)
-            {
-                interactionInProgress = true;
-            }
+            interactionInProgress = true;
         }
         private bool AllMultiDragCompleted(int requiredCount)
         {
