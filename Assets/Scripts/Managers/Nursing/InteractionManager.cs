@@ -937,16 +937,7 @@ namespace Nursing.Managers
                                 status.draggedObject = result.gameObject;
                                 status.isDragging = true;
 
-                                // 화살표 제거
-                                if (fingerArrows.ContainsKey(fingerIndex))
-                                {
-                                    foreach (var arrow in fingerArrows[fingerIndex])
-                                    {
-                                        if (arrow != null)
-                                            Destroy(arrow);
-                                    }
-                                    fingerArrows[fingerIndex].Clear();
-                                }
+                                
 
                                 Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 시작 - 위치: {touch.position}");
                                 break;
@@ -981,24 +972,9 @@ namespace Nursing.Managers
                                 if (dot < minDot)
                                 {
                                     valid = false;
-                                    // 방향 힌트
-                                    if (dialogueManager != null)
-                                    {
-                                        float angle = Vector2.SignedAngle(dragDir, required);
-                                        string directionHint = "";
+                                   
 
-                                        if (angle > 15f) directionHint = "더 왼쪽으로";
-                                        else if (angle < -15f) directionHint = "더 오른쪽으로";
-                                        else if (dot < 0) directionHint = "반대 방향으로";
-
-                                        dialogueManager.ShowGuideMessage($"손가락 {fingerIndex + 1}: 올바른 방향으로 드래그해주세요. {directionHint}");
-                                    }
-
-                                    // 화살표 다시 표시
-                                    if (fingerSetting.showDirectionArrows)
-                                    {
-                                        CreateDirectionArrows(fingerSetting.arrowStartPosition, fingerSetting.arrowDirection, fingerIndex);
-                                    }
+                                    
                                 }
                             }
 
