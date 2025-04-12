@@ -885,7 +885,7 @@ namespace Nursing.Managers
             // 필요한 손가락 수만큼 동시 입력이 들어왔는지 확인
             if (Input.touchCount < settings.fingerSettings.Count)
             {
-                Debug.Log("손가락 입력 안먹음");
+               
 
                 return;
             }
