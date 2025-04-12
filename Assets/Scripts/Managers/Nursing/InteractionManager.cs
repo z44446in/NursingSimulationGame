@@ -977,16 +977,10 @@ namespace Nursing.Managers
                             {
                                 status.isComplete = true;
                                 Debug.Log($"[MultiDrag] 손가락 {touch.fingerId} 완료됨");
-                                if (fingerSetting.deactivateObjectAfterDrag)
-                                    status.draggedObject.SetActive(false);
                             }
                             else
                             {
-                                status.isDragging = false;
-                                status.draggedObject = null;
-
-                                if (fingerSetting.OverDrag != null)
-                                    ApplyPenalty(fingerSetting.OverDrag);
+                                Debug.LogWarning($"[MultiDrag] 손가락 {touch.fingerId} 실패 - valid = false | 방향조건: {fingerSetting.requiredDragDirection}, 거리제한: {fingerSetting.dragDistanceLimit}, 드래그 거리: {dragDist:F2}");
                             }
                         }
                         break;
