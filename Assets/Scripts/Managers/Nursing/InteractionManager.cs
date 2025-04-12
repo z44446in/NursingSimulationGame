@@ -917,16 +917,15 @@ namespace Nursing.Managers
                             {
 
                                 status.startPosition = touch.position;
-                                status.draggedObject= result.gameObject;
+                                status.draggedObject = result.gameObject;
                                 status.isDragging = true;
-                                
+
 
                                 ClearArrows();
-                                
+
                             }
                         }
                         break;
-                        
 
 
                     case TouchPhase.Moved:
@@ -956,28 +955,54 @@ namespace Nursing.Managers
                             {
                                 Vector2 required = fingerSetting.arrowDirection.normalized;
                                 float dot = Vector2.Dot(dragDir, required);
-                                float minDot = Mathf.Cos(fingerSetting.dragDirectionTolerance * Mathf.Deg2Rad);
+                                float angleTolerance = fingerSetting.dragDirectionTolerance;
+                                float minDot = Mathf.Cos(angleTolerance * Mathf.Deg2Rad);
+
+                                Debug.Log($"드래그 방향: {dragDir}, 요구 방향: {required}, 각도 코사인: {dot}, 허용 오차: {angleTolerance}도");
 
                                 if (dot < minDot)
+                                {
                                     valid = false;
-                            }
+                                    // 시각적 피드백 - 잘못된 방향 표시
+                                    if (dialogueManager != null)
+                                    {
+                                        // 방향 힌트 계산
+                                        float angle = Vector2.SignedAngle(dragDir, required);
+                                        string directionHint = "";
 
-                            if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
-                                valid = false;
+                                        if (angle > 15f) directionHint = "더 왼쪽으로";
+                                        else if (angle < -15f) directionHint = "더 오른쪽으로";
+                                        else if (dot < 0) directionHint = "반대 방향으로";
 
-                            if (valid)
-                            {
-                                status.isComplete = true;
-                                Debug.Log($"[MultiDrag] 손가락 {touch.fingerId} 완료됨");
+                                        dialogueManager.ShowGuideMessage($"올바른 방향으로 드래그해주세요. (허용 오차: {angleTolerance}°) {directionHint}");
+
+                                    }
+
+                                    // 화살표 방향을 다시 표시 (힌트)
+                                    if (settings.showDirectionArrows && arrowPrefab != null)
+                                    {
+                                        CreateDirectionArrows(settings.arrowStartPosition, settings.arrowDirection);
+                                    }
+
+                                }
+
+                                if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
+                                    valid = false;
+
+                                if (valid)
+                                {
+                                    status.isComplete = true;
+                                    Debug.Log($"[MultiDrag] 손가락 {touch.fingerId} 완료됨");
+                                }
+                                else
+                                {
+                                    Debug.LogWarning($"[MultiDrag] 손가락 {touch.fingerId} 실패 - valid = false | 방향조건: {fingerSetting.requiredDragDirection}, 거리제한: {fingerSetting.dragDistanceLimit}, 드래그 거리: {dragDist:F2}");
+                                }
                             }
-                            else
-                            {
-                                Debug.LogWarning($"[MultiDrag] 손가락 {touch.fingerId} 실패 - valid = false | 방향조건: {fingerSetting.requiredDragDirection}, 거리제한: {fingerSetting.dragDistanceLimit}, 드래그 거리: {dragDist:F2}");
-                            }
+                           
                         }
                         break;
                 }
-                
 
                 // 전체 유효성 확인용
                 if (!status.isDragging && !status.isComplete)
