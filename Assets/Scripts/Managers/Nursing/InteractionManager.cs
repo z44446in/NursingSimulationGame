@@ -909,8 +909,6 @@ namespace Nursing.Managers
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
-                        Debug.Log($"[Touch] TouchPhase.Began | fingerId: {touch.fingerId}");
-
                         PointerEventData eventData = new PointerEventData(EventSystem.current);
                         eventData.position = touch.position;
                         List<RaycastResult> results = new List<RaycastResult>();
@@ -918,29 +916,13 @@ namespace Nursing.Managers
 
                         if (results.Count == 0)
                         {
-                            Debug.LogWarning($"[MultiDrag] Raycast 실패 - 잡힌 오브젝트 없음 @ {touch.position}");
+                            Debug.LogWarning($"[Raycast] 손가락 {touch.fingerId} 아무것도 안 걸림!!");
                         }
-
-                        foreach (var result in results)
+                        else
                         {
-                            Debug.Log($"[MultiDrag] RaycastHit: {result.gameObject.name} (tag: {result.gameObject.tag})");
-                        }
-
-                        var rayEvent = new PointerEventData(EventSystem.current)
-                        {
-                            position = touch.position
-                        };
-                    
-
-                        foreach (var result in results)
-                        {
-                            if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
+                            foreach (var r in results)
                             {
-
-                                status.draggedObject = result.gameObject;
-                                status.isDragging = true;
-                                Debug.Log($"[TouchStart] 손가락 {touch.fingerId} 시작 - {result.gameObject.name}");
-                                break;
+                                Debug.Log($"[Raycast] {touch.fingerId}번째 손가락 hit: {r.gameObject.name}, tag: {r.gameObject.tag}");
                             }
                         }
 

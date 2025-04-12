@@ -8828,6 +8828,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 749101238}
     m_Modifications:
+    - target: {fileID: 957902903658580505, guid: d611c13542b54d44b890fc8d7f1ead56, type: 3}
+      propertyPath: m_TagString
+      value: SmallVynl
+      objectReference: {fileID: 0}
     - target: {fileID: 1620158221825356620, guid: d611c13542b54d44b890fc8d7f1ead56, type: 3}
       propertyPath: m_Name
       value: BeforeOpenSmallVynyl
