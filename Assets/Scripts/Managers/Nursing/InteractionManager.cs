@@ -978,7 +978,7 @@ namespace Nursing.Managers
                         }
                         break;
                 }
-                Debug.Log($"[Touch] Finger {touch.fingerId} | Phase: {touch.phase} | Pos: {touch.position}");
+                
 
                 // 전체 유효성 확인용
                 if (!status.isDragging && !status.isComplete)
