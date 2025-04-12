@@ -890,11 +890,13 @@ namespace Nursing.Managers
                 return;
             }
 
+
             bool allDragging = true;
 
             for (int i = 0; i < settings.fingerSettings.Count; i++)
             {
                 Touch touch = Input.GetTouch(i);
+
 
                 // 손가락 상태 가져오기 (없으면 새로 생성)
                 if (!fingerDragStatus.ContainsKey(i))
@@ -903,6 +905,7 @@ namespace Nursing.Managers
                 var status = fingerDragStatus[i];
                 var fingerSetting = settings.fingerSettings[i];
 
+
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
@@ -910,6 +913,7 @@ namespace Nursing.Managers
                         status.isDragging = false;
                         status.isComplete = false;
                         status.draggedObject = null;
+
 
                         var rayEvent = new PointerEventData(EventSystem.current)
                         {
@@ -922,12 +926,17 @@ namespace Nursing.Managers
                         {
                             if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
                             {
+
                                 status.draggedObject = result.gameObject;
                                 status.isDragging = true;
+                                Debug.Log($"[TouchStart] 손가락 {touch.fingerId} 시작 - {result.gameObject.name}");
                                 break;
                             }
                         }
+
+
                         break;
+
 
                     case TouchPhase.Moved:
                         if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
@@ -982,6 +991,7 @@ namespace Nursing.Managers
                         }
                         break;
                 }
+                Debug.Log($"[Touch] Finger {touch.fingerId} | Phase: {touch.phase} | Pos: {touch.position}");
 
                 // 전체 유효성 확인용
                 if (!status.isDragging && !status.isComplete)
