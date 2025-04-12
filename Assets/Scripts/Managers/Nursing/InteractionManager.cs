@@ -909,18 +909,28 @@ namespace Nursing.Managers
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
-                        status.startPosition = touch.position;
-                        status.isDragging = false;
-                        status.isComplete = false;
-                        status.draggedObject = null;
+                        Debug.Log($"[Touch] TouchPhase.Began | fingerId: {touch.fingerId}");
 
+                        PointerEventData eventData = new PointerEventData(EventSystem.current);
+                        eventData.position = touch.position;
+                        List<RaycastResult> results = new List<RaycastResult>();
+                        EventSystem.current.RaycastAll(eventData, results);
+
+                        if (results.Count == 0)
+                        {
+                            Debug.LogWarning($"[MultiDrag] Raycast 실패 - 잡힌 오브젝트 없음 @ {touch.position}");
+                        }
+
+                        foreach (var result in results)
+                        {
+                            Debug.Log($"[MultiDrag] RaycastHit: {result.gameObject.name} (tag: {result.gameObject.tag})");
+                        }
 
                         var rayEvent = new PointerEventData(EventSystem.current)
                         {
                             position = touch.position
                         };
-                        var results = new List<RaycastResult>();
-                        EventSystem.current.RaycastAll(rayEvent, results);
+                    
 
                         foreach (var result in results)
                         {
@@ -939,6 +949,7 @@ namespace Nursing.Managers
 
 
                     case TouchPhase.Moved:
+                        Debug.Log($"[Check] {touch.fingerId} | isDragging: {status.isDragging}, draggedObj: {(status.draggedObject != null ? status.draggedObject.name : "null")}, follow: {fingerSetting.followDragMovement}");
                         if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
                         {
                             Vector2 currentPos = touch.position;
