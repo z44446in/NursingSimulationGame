@@ -917,8 +917,8 @@ namespace Nursing.Managers
                             {
 
                                 status.startPosition = touch.position;
-                                draggedObject = result.gameObject;
-                                isDragging = true;
+                                status.draggedObject= result.gameObject;
+                                status.isDragging = true;
                                 
 
                                 ClearArrows();
