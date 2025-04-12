@@ -873,30 +873,49 @@ namespace Nursing.Managers
         {
             var settings = currentStage.settings;
             if (settings == null || settings.fingerSettings.Count == 0)
-            {
-                Debug.LogError("다중 드래그 인터랙션 설정이 없거나 손가락 설정이 없습니다.");
-                AdvanceToNextStage();
                 return;
-            }
 
-            // 각 손가락 설정에 대한 상태 초기화 (아직 초기화되지 않은 경우)
+            // 필요한 손가락 상태 정보 초기화
             for (int i = 0; i < settings.fingerSettings.Count; i++)
             {
                 if (!fingerDragStatus.ContainsKey(i))
                     fingerDragStatus[i] = new FingerDragStatus();
+
+                // 화살표 생성 (아직 생성되지 않았거나 완료되지 않은 설정에 대해)
+                var status = fingerDragStatus[i];
+                var fingerSetting = settings.fingerSettings[i];
+
+                if (!status.isComplete && fingerSetting.haveDirection &&
+                    fingerSetting.requiredDragDirection && fingerSetting.showDirectionArrows)
+                {
+                    if (!fingerArrows.ContainsKey(i) || fingerArrows[i].Count == 0)
+                    {
+                        CreateDirectionArrows(fingerSetting.arrowStartPosition, fingerSetting.arrowDirection, i);
+                    }
+                }
             }
+
+            // 화면 중앙 X 좌표 계산
+            float screenCenterX = Screen.width * 0.5f;
 
             // 각 터치에 대해 처리
             for (int i = 0; i < Input.touchCount; i++)
             {
                 Touch touch = Input.GetTouch(i);
 
-                // 터치 위치를 기반으로 가장 가까운/적합한 손가락 설정 찾기
-                int bestMatchIndex = FindBestMatchingFingerSetting(touch.position, settings.fingerSettings);
-                if (bestMatchIndex < 0) continue;
+                // 화면 위치에 따라 왼쪽(인덱스 0) 또는 오른쪽(인덱스 1) 할당
+                int fingerIndex = touch.position.x < screenCenterX ? 0 : 1;
 
-                var fingerSetting = settings.fingerSettings[bestMatchIndex];
-                var status = fingerDragStatus[bestMatchIndex];
+                // 해당 인덱스가 범위를 벗어나면 건너뜀
+                if (fingerIndex >= settings.fingerSettings.Count)
+                    continue;
+
+                // 이미 완료된 손가락 설정은 건너뜀
+                if (fingerDragStatus[fingerIndex].isComplete)
+                    continue;
+
+                var fingerSetting = settings.fingerSettings[fingerIndex];
+                var status = fingerDragStatus[fingerIndex];
 
                 switch (touch.phase)
                 {
@@ -916,18 +935,18 @@ namespace Nursing.Managers
                                 status.draggedObject = result.gameObject;
                                 status.isDragging = true;
 
-                                // 이 손가락 설정에 대한 화살표 제거
-                                if (fingerArrows.ContainsKey(bestMatchIndex))
+                                // 화살표 제거
+                                if (fingerArrows.ContainsKey(fingerIndex))
                                 {
-                                    foreach (var arrow in fingerArrows[bestMatchIndex])
+                                    foreach (var arrow in fingerArrows[fingerIndex])
                                     {
                                         if (arrow != null)
                                             Destroy(arrow);
                                     }
-                                    fingerArrows[bestMatchIndex].Clear();
+                                    fingerArrows[fingerIndex].Clear();
                                 }
 
-                                Debug.Log($"[MultiDrag] 손가락 설정 {bestMatchIndex} 드래그 시작 - 오브젝트: {result.gameObject.name}");
+                                Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 시작 - 위치: {touch.position} - 오브젝트: {result.gameObject.name}");
                                 break;
                             }
                         }
@@ -962,21 +981,23 @@ namespace Nursing.Managers
                                 if (dot < minDot)
                                 {
                                     valid = false;
-                                    // 잘못된 방향 피드백
+                                    // 방향 힌트
                                     if (dialogueManager != null)
                                     {
                                         float angle = Vector2.SignedAngle(dragDir, required);
-                                        string directionHint = angle > 15f ? "더 왼쪽으로" :
-                                                              angle < -15f ? "더 오른쪽으로" :
-                                                              dot < 0 ? "반대 방향으로" : "";
+                                        string directionHint = "";
 
-                                        dialogueManager.ShowGuideMessage($"손가락 {bestMatchIndex + 1}: 올바른 방향으로 드래그해주세요. {directionHint}");
+                                        if (angle > 15f) directionHint = "더 왼쪽으로";
+                                        else if (angle < -15f) directionHint = "더 오른쪽으로";
+                                        else if (dot < 0) directionHint = "반대 방향으로";
+
+                                        dialogueManager.ShowGuideMessage($"손가락 {fingerIndex + 1}: 올바른 방향으로 드래그해주세요. {directionHint}");
                                     }
 
                                     // 화살표 다시 표시
                                     if (fingerSetting.showDirectionArrows)
                                     {
-                                        CreateDirectionArrows(fingerSetting.arrowStartPosition, fingerSetting.arrowDirection, bestMatchIndex);
+                                        CreateDirectionArrows(fingerSetting.arrowStartPosition, fingerSetting.arrowDirection, fingerIndex);
                                     }
                                 }
                             }
@@ -992,23 +1013,19 @@ namespace Nursing.Managers
                             }
 
                             // 드래그 후 오브젝트 처리
-                            if (fingerSetting.deactivateObjectAfterDrag && status.draggedObject != null)
+                            if (fingerSetting.deactivateObjectAfterDrag && valid)
                             {
                                 Destroy(status.draggedObject);
-                                status.draggedObject = null;
                             }
 
                             if (valid)
                             {
                                 status.isComplete = true;
-                                Debug.Log($"[MultiDrag] 손가락 설정 {bestMatchIndex} 드래그 완료");
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"[MultiDrag] 손가락 설정 {bestMatchIndex} 드래그 실패");
+                                Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 완료");
                             }
 
                             status.isDragging = false;
+                            status.draggedObject = null;
                         }
                         break;
                 }
@@ -1020,83 +1037,12 @@ namespace Nursing.Managers
                 AdvanceToNextStage();
             }
 
-            // 처음 시작 시 모든 손가락 화살표 표시
+            // 인터랙션 상태 활성화
             if (!interactionInProgress)
             {
-                for (int i = 0; i < settings.fingerSettings.Count; i++)
-                {
-                    var fingerSetting = settings.fingerSettings[i];
-                    if (fingerSetting.haveDirection && fingerSetting.showDirectionArrows && fingerSetting.requiredDragDirection)
-                    {
-                        if (!fingerArrows.ContainsKey(i) || fingerArrows[i].Count == 0)
-                        {
-                            CreateDirectionArrows(fingerSetting.arrowStartPosition, fingerSetting.arrowDirection, i);
-                        }
-                    }
-                }
                 interactionInProgress = true;
             }
         }
-
-        // 터치 위치에 가장 적합한 손가락 설정 인덱스 찾기
-        private int FindBestMatchingFingerSetting(Vector2 touchPosition, List<InteractionSettings.FingerDragSettings> fingerSettings)
-        {
-            // 각 손가락 설정의 위치와 터치 위치 간의 거리 계산
-            Dictionary<int, float> distanceScores = new Dictionary<int, float>();
-
-            for (int i = 0; i < fingerSettings.Count; i++)
-            {
-                // 이미 완료된 손가락 설정은 건너뜀
-                if (fingerDragStatus.ContainsKey(i) && fingerDragStatus[i].isComplete)
-                    continue;
-
-                // 아직 드래그 중인 손가락 설정도 건너뜀
-                if (fingerDragStatus.ContainsKey(i) && fingerDragStatus[i].isDragging)
-                    continue;
-
-                // 손가락 설정의 시작 위치를 스크린 좌표로 변환
-                Vector2 screenPos;
-                if (fingerSettings[i].arrowStartPosition == Vector2.zero)
-                {
-                    // 대상 오브젝트 위치 사용
-                    GameObject targetObj = GameObject.FindWithTag(fingerSettings[i].targetObjectTag);
-                    if (targetObj != null)
-                    {
-                        screenPos = Camera.main.WorldToScreenPoint(targetObj.transform.position);
-                    }
-                    else
-                    {
-                        continue; // 대상 오브젝트가 없으면 건너뜀
-                    }
-                }
-                else
-                {
-                    screenPos = Camera.main.WorldToScreenPoint(fingerSettings[i].arrowStartPosition);
-                }
-
-                float distance = Vector2.Distance(screenPos, touchPosition);
-                distanceScores[i] = distance;
-            }
-
-            // 가장 가까운 손가락 설정 찾기
-            int bestMatchIndex = -1;
-            float closestDistance = float.MaxValue;
-
-            foreach (var pair in distanceScores)
-            {
-                if (pair.Value < closestDistance)
-                {
-                    closestDistance = pair.Value;
-                    bestMatchIndex = pair.Key;
-                }
-            }
-
-            // 최대 허용 거리 설정 (필요에 따라 조정)
-            float maxAllowedDistance = Screen.width * 0.4f; // 화면 너비의 40%
-
-            return (closestDistance <= maxAllowedDistance) ? bestMatchIndex : -1;
-        }
-
         private bool AllMultiDragCompleted(int requiredCount)
         {
             for (int i = 0; i < requiredCount; i++)
