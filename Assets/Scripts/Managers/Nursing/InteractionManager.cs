@@ -53,14 +53,7 @@ namespace Nursing.Managers
        
 
 
-        private class TouchInfo
-        {
-            public Vector2 startPosition;
-            public GameObject draggedObject;
-            public bool isDragging = false;
-            public bool isCompleted = false;
-            public float startTime;
-        }
+        
 
 
 
@@ -909,25 +902,31 @@ namespace Nursing.Managers
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
-                        PointerEventData eventData = new PointerEventData(EventSystem.current);
-    eventData.position = touch.position;
-    List<RaycastResult> results = new List<RaycastResult>();
-    EventSystem.current.RaycastAll(eventData, results);
+                        InteractionSettings.FingerDragSettings fingerSettings = settings.fingerSettings[i];
 
-    if (results.Count == 0)
-    {
-        Debug.LogWarning($"[Raycast] 손가락 {touch.fingerId} 아무것도 안 걸림!!");
-    }
-    else
-    {
-        foreach (var r in results)
-        {
-            Debug.Log($"[Raycast] {touch.fingerId}번째 손가락 hit: {r.gameObject.name}, tag: {r.gameObject.tag}");
-        }
-    }
+                        PointerEventData eventData = new PointerEventData(EventSystem.current)
+                        {
+                            position = touch.position
+                        };
+                        List<RaycastResult> results = new List<RaycastResult>();
+                        EventSystem.current.RaycastAll(eventData, results);
 
+                        foreach (var result in results)
+                        {
+                            if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
+                            {
 
+                                status.startPosition = touch.position;
+                                draggedObject = result.gameObject;
+                                isDragging = true;
+                                
+
+                                ClearArrows();
+                                
+                            }
+                        }
                         break;
+                        
 
 
                     case TouchPhase.Moved:
