@@ -828,14 +828,11 @@ namespace Nursing.Managers
             currentStage = null;
             currentStageIndex = -1;
         }
-
+        
         #endregion
-        private float simultaneousWindow = 0.5f; // 최대 0.2초 안에 들어오면 동시에 터치한 것으로 간주
-        private float simultaneousStartTime = -1f;
-        private HashSet<int> trackedFingerIds = new();  // 동시에 눌린 fingerId 저장
-
+        
         #region 입력 처리
-
+        
         private void Update()
         {
             if (!interactionInProgress || currentStage == null || currentStage.settings == null)
@@ -859,41 +856,55 @@ namespace Nursing.Managers
                     HandleSustainedClick();
                     break;
             }
-
             var settings = currentStage.settings;
-            if (waitingForSimultaneousStart && Input.touchCount > 0)
+            if (waitingForSimultaneousStart && Input.touchCount == settings.fingerSettings.Count)
             {
-                foreach (var touch in Input.touches)
+                bool allBegan = Input.touches.All(t => t.phase == TouchPhase.Began);
+                if (allBegan)
                 {
-                    if (touch.phase == TouchPhase.Began)
+                    // 동시에 터치가 시작되었으므로 매핑 시도
+                    foreach (Touch touch in Input.touches)
                     {
-                        if (simultaneousStartTime < 0f)
-                        {
-                            simultaneousStartTime = Time.time;
-                        }
+                        PointerEventData eventData = new(EventSystem.current) { position = touch.position };
+                        List<RaycastResult> results = new();
+                        EventSystem.current.RaycastAll(eventData, results);
 
-                        trackedFingerIds.Add(touch.fingerId);
+                        foreach (RaycastResult result in results)
+                        {
+                            for (int i = 0; i < settings.fingerSettings.Count; i++)
+                            {
+                                var setting = settings.fingerSettings[i];
+
+                                if (!usedSettingIndices.Contains(i) && result.gameObject.CompareTag(setting.targetObjectTag))
+                                {
+                                    fingerToSetting[touch.fingerId] = i;
+                                    fingerDragStatus[touch.fingerId] = new FingerDragStatus
+                                    {
+                                        isDragging = true,
+                                        startPosition = touch.position,
+                                        draggedObject = result.gameObject
+                                    };
+                                    usedSettingIndices.Add(i);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (fingerToSetting.Count == settings.fingerSettings.Count)
+                    {
+                        Debug.Log("🎯 Simultaneous multi-drag 시작!");
+                        waitingForSimultaneousStart = false;
+                    }
+                    else
+                    {
+                        // 실패한 경우 초기화
+                        fingerToSetting.Clear();
+                        fingerDragStatus.Clear();
+                        usedSettingIndices.Clear();
                     }
                 }
-
-                // 일정 시간 안에 모든 손가락이 눌렸는지 확인
-                if (trackedFingerIds.Count == settings.fingerSettings.Count && Time.time - simultaneousStartTime <= simultaneousWindow)
-                {
-                    Debug.Log("🎯 시간 기반 동시 터치 감지 성공!");
-                    waitingForSimultaneousStart = false;
-
-                    // 여기에 mapping 로직 실행 (fingerId ↔ setting index)
-                    MapFingersToSettings(trackedFingerIds);
-                }
-                else if (Time.time - simultaneousStartTime > simultaneousWindow)
-                {
-                    // 시간 초과 → 실패 → 리셋
-                    simultaneousStartTime = -1f;
-                    trackedFingerIds.Clear();
-                }
             }
-
-
 
         }
 
@@ -901,41 +912,6 @@ namespace Nursing.Managers
         /// 드래그 인터랙션을 처리합니다.
         /// </summary>
 
-        private void MapFingersToSettings(HashSet<int> fingerIds)
-        {
-            fingerToSetting.Clear();
-            usedSettingIndices.Clear();
-
-            foreach (var touch in Input.touches)
-            {
-                if (!fingerIds.Contains(touch.fingerId)) continue;
-
-                PointerEventData eventData = new(EventSystem.current) { position = touch.position };
-                List<RaycastResult> results = new();
-                EventSystem.current.RaycastAll(eventData, results);
-                var settings = currentStage.settings;
-
-                foreach (var result in results)
-                {
-                    for (int i = 0; i < settings.fingerSettings.Count; i++)
-                    {
-                        var setting = settings.fingerSettings[i];
-                        if (!usedSettingIndices.Contains(i) && result.gameObject.CompareTag(setting.targetObjectTag))
-                        {
-                            fingerToSetting[touch.fingerId] = i;
-                            fingerDragStatus[touch.fingerId] = new FingerDragStatus
-                            {
-                                isDragging = true,
-                                startPosition = touch.position,
-                                draggedObject = result.gameObject
-                            };
-                            usedSettingIndices.Add(i);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
 
         // 단일 드래그 처리
         private void HandleSingleDragInteraction()
