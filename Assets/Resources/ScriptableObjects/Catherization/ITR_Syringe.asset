@@ -53,6 +53,7 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 1620158221825356620, guid: d611c13542b54d44b890fc8d7f1ead56, type: 3}
@@ -161,10 +162,10 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 1"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 949, y: 293}
-        arrowDirection: {x: 1, y: 0}
+        arrowStartPosition: {x: 747, y: 293}
+        arrowDirection: {x: -1, y: 0}
         requiredDragDirection: 1
-        dragDirectionTolerance: 13.1
+        dragDirectionTolerance: 27
         targetObjectTag: SmallVynl
         deactivateObjectAfterDrag: 0
         followDragMovement: 0
@@ -182,10 +183,10 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 2"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 747, y: 293}
-        arrowDirection: {x: -1, y: 0}
+        arrowStartPosition: {x: 949, y: 293}
+        arrowDirection: {x: 1, y: 0}
         requiredDragDirection: 1
-        dragDirectionTolerance: 12.2
+        dragDirectionTolerance: 33.5
         targetObjectTag: SmallVynl
         deactivateObjectAfterDrag: 0
         followDragMovement: 0
@@ -200,6 +201,7 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 0}
@@ -228,6 +230,154 @@ MonoBehaviour:
       sustainedClickTargetTag: 
       deleteObject: 0
       objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: Syringe_2
+    name: "\uBE44\uB2D0 \uC7A1\uACE0 \uC788\uB294 \uC190 \uC0AD"
+    StageNum: 2
+    guideMessage: 
+    interactionType: 5
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      haveDirection: 1
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 1
+      requiredDragDirection: 1
+      dragDirectionTolerance: 0
+      targetObjectTag: 
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      fingerSettings:
+      - name: "\uC190\uAC00\uB77D 1"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 949, y: 293}
+        arrowDirection: {x: 1000, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 38.3
+        targetObjectTag: SmallVynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      - name: "\uC190\uAC00\uB77D 2"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 747, y: 293}
+        arrowDirection: {x: -1000, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 44.8
+        targetObjectTag: SmallVynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      multiDragSyncThreshold: 0.2
+      createObject: 1
+      objectToCreate:
+      - {fileID: 0}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - SmallVynl
       moveObject: 0
       objectToMoveTag: 
       moveDirection: {x: 0, y: 0}
