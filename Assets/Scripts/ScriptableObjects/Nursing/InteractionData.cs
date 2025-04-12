@@ -48,26 +48,51 @@ namespace Nursing.Interaction
     }
 
     [Serializable]
+  
     public class InteractionSettings
     {
+        // SingleDragInteraction 설정
         [Header("드래그 설정")]
         public bool isDragInteraction;
         public bool showDirectionArrows;
         public bool haveDirection;
         public Vector2 arrowStartPosition;
         public Vector2 arrowDirection;
-        public bool requireTwoFingerDrag;
+        public bool requireTwoFingerDrag; // 이 필드는 유지하되 SingleDragInteraction에서만 사용
         public bool requiredDragDirection;
-        [Range(0, 90)] public float dragDirectionTolerance = 45f; // 드래그 방향 허용 오차 (각도)
+        [Range(0, 90)] public float dragDirectionTolerance = 45f;
         public string targetObjectTag;
         public bool deactivateObjectAfterDrag = false;
         public bool followDragMovement;
         public float dragDistanceLimit;
         public string boundaryObjectTag;
         public string collisionZoneTag;
-        public PenaltyData OverDrag; // dragDIstanceLimit를 넘거나, boundaryObjectTag를 벗어날 때 발생 
+        public PenaltyData OverDrag;
         public PenaltyData CollideDrag;
-        
+
+        // MultiDragInteraction 설정
+        [Header("다중 드래그 설정")]
+        public List<FingerDragSettings> fingerSettings = new List<FingerDragSettings>();
+
+        // 추가: 다중 손가락 드래그를 위한 내부 클래스
+        [Serializable]
+        public class FingerDragSettings
+        {
+            public string name = "손가락";
+            public bool showDirectionArrows;
+            public bool haveDirection;
+            public Vector2 arrowStartPosition;
+            public Vector2 arrowDirection;
+            public bool requiredDragDirection;
+            [Range(0, 90)] public float dragDirectionTolerance = 45f;
+            public string targetObjectTag;
+            public bool deactivateObjectAfterDrag = false;
+            public bool followDragMovement;
+            public float dragDistanceLimit;
+            public string boundaryObjectTag;
+            public string collisionZoneTag;
+            public PenaltyData OverDrag;
+        }
 
         [Header("오브젝트 생성")]
         public bool createObject;
@@ -111,4 +136,6 @@ namespace Nursing.Interaction
         public bool startMiniGame;
         public GameObject miniGamePrefab;
     }
+
+
 }

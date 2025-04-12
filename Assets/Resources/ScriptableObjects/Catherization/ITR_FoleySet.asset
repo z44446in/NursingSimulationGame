@@ -20,7 +20,7 @@ MonoBehaviour:
     name: "\uD3F4\uB9AC\uC138\uD2B81 \uC0DD\uC131"
     StageNum: 0
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 0
@@ -52,6 +52,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 7246886069874315384, guid: 39f60e1ad851a9d4999792462f875537, type: 3}
@@ -155,6 +156,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 0}
@@ -258,6 +260,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 0}
@@ -345,7 +348,7 @@ MonoBehaviour:
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
-      collisionZoneTag: Trash
+      collisionZoneTag: Belly
       OverDrag:
         penaltyType: 2
         penaltyScore: 0
@@ -365,6 +368,7 @@ MonoBehaviour:
           \uD569\uB2C8\uB2E4. "
         flashRedScreen: 1
         flashCount: 3
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 0}
@@ -437,7 +441,7 @@ MonoBehaviour:
     name: "\uD3F4\uB9AC \uC5F4 \uB584 \uD034\uC988"
     StageNum: 4
     guideMessage: 
-    interactionType: 6
+    interactionType: 7
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -469,6 +473,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
@@ -552,7 +557,7 @@ MonoBehaviour:
     name: "\uD3F4\uB9AC\uC138\uD2B82\uC0DD\uC131"
     StageNum: 5
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -584,6 +589,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 2186942617385095293, guid: 73a208edc25613c4997a06bb1f40ab46, type: 3}
@@ -671,7 +677,7 @@ MonoBehaviour:
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
-      collisionZoneTag: Trash
+      collisionZoneTag: Belly
       OverDrag:
         penaltyType: 2
         penaltyScore: 0
@@ -691,6 +697,7 @@ MonoBehaviour:
           \uD569\uB2C8\uB2E4. "
         flashRedScreen: 1
         flashCount: 3
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
@@ -763,7 +770,7 @@ MonoBehaviour:
     name: "\uD3F4\uB9AC\uC138\uD2B8 3 \uC0DD\uC131"
     StageNum: 7
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -795,6 +802,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 4087813158059038327, guid: 0ef1e246ebe431545aeaf4e8644324b1, type: 3}
@@ -882,7 +890,7 @@ MonoBehaviour:
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
-      collisionZoneTag: Trash
+      collisionZoneTag: Belly
       OverDrag:
         penaltyType: 2
         penaltyScore: 0
@@ -902,6 +910,7 @@ MonoBehaviour:
           \uD569\uB2C8\uB2E4. "
         flashRedScreen: 1
         flashCount: 3
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
@@ -974,7 +983,7 @@ MonoBehaviour:
     name: "\uD3F4\uB9AC\uC138\uD2B8 4 \uC0DD\uC131"
     StageNum: 9
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -1006,6 +1015,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 6878524456723974197, guid: 8121d029d5478fa4a8c025581d91ba6d, type: 3}
@@ -1093,7 +1103,7 @@ MonoBehaviour:
       followDragMovement: 0
       dragDistanceLimit: 0
       boundaryObjectTag: 
-      collisionZoneTag: Trash
+      collisionZoneTag: Belly
       OverDrag:
         penaltyType: 2
         penaltyScore: 0
@@ -1113,6 +1123,7 @@ MonoBehaviour:
           \uD569\uB2C8\uB2E4. "
         flashRedScreen: 1
         flashCount: 3
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
@@ -1185,7 +1196,7 @@ MonoBehaviour:
     name: "\uD3F4\uB9AC\uC138\uD2B85 \uC0DD\uC131"
     StageNum: 11
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -1217,6 +1228,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 2
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}

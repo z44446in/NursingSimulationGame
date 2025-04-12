@@ -9,9 +9,12 @@ namespace Nursing.Interaction
     [Serializable]
     public enum InteractionType
     {
-        [Tooltip("드래그 상호작용 - 오브젝트를 드래그하는 상호작용")]
-        DragInteraction,
-        
+        [Tooltip("단일 드래그 상호작용 - 오브젝트를 드래그하는 상호작용")]
+        SingleDragInteraction,
+
+        [Tooltip("다중 드래그 상호작용 - 오브젝트를 드래그하는 상호작용")]
+        MultiDragInteraction,
+
         [Tooltip("오브젝트 생성 - 새로운 오브젝트를 생성하는 상호작용")]
         ObjectCreation,
         

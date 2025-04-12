@@ -209,11 +209,29 @@ namespace Nursing.UI
         {
             if (isAnswered || quizCompleted) return;
 
-            isAnswered = true;
+            if (optionIndex > -50)  isAnswered = true;
+
             bool isCorrect = optionIndex == correctAnswerIndex;
 
-            // 모든 버튼에 대해 아웃라인 하이라이트 적용
-            HighlightOptions();
+
+            // 모든 버튼 비활성화 및 정답/오답 표시
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                // 버튼 비활성화
+                optionButtons[i].interactable = false;
+
+                // 정답인 버튼에 파란색 테두리 표시
+                if (i == correctAnswerIndex)
+                {
+                    SetButtonOutline(optionButtons[i], Color.blue);
+                }
+                // 사용자가 선택한 오답 버튼에 빨간색 테두리 표시
+                else  
+                {
+                    SetButtonOutline(optionButtons[i], Color.red);
+                }
+            }
+
 
             // 결과 표시
             ShowQuizResult(isCorrect);
@@ -227,8 +245,8 @@ namespace Nursing.UI
         {
             if (isAnswered || quizCompleted) return;
 
-            HighlightOptions();
-            ShowQuizResult(false);
+            OnOptionClicked(-100);
+            
         }
 
 
@@ -254,51 +272,24 @@ namespace Nursing.UI
             StartCoroutine(AutoCompleteQuiz(isCorrect));
            
         }
-        // 아웃라인 하이라이트 적용 메서드 추가
-        private void HighlightOptions()
-        {
-            
-            for (int i = 0; i < optionButtons.Length; i++)
-            {
-                if (i == correctAnswerIndex)
-                {
-                    // 정답 버튼에 파란색 아웃라인 적용
-                    ApplyOutline(optionButtons[i].gameObject, Color.blue, 2f);
-                }
-                else 
-                {
-                    // 오답 버튼에 붉은색 아웃라인 적용
-                    ApplyOutline(optionButtons[i].gameObject, Color.red, 2f);
-                }
-            }
-        }
 
-        // 아웃라인 적용 유틸리티 메서드
-        private void ApplyOutline(GameObject targetObject, Color outlineColor, float outlineWidth)
+        // 버튼에 아웃라인 설정하는 메서드 추가
+        private void SetButtonOutline(Button button, Color color)
         {
-            
-            // 기존 아웃라인 컴포넌트 확인
-            cakeslice.Outline outline = targetObject.GetComponent<cakeslice.Outline>();
+            // 방법 1: 버튼에 Outline 컴포넌트가 있는 경우
+            Outline outline = button.GetComponent<Outline>();
+            if (outline != null)
 
-            // 없으면 추가
-            if (outline == null)
-            {
-                outline = targetObject.AddComponent<cakeslice.Outline>();
-              
+            { 
+                outline.effectColor = color;
+                outline.enabled = true;
+                return;
             }
 
-            // 아웃라인 색상 설정 (cakeslice.Outline은 색상을 0, 1, 2 인덱스로 관리)
-            if (outlineColor == Color.blue)
-                outline.color = 2; // 파란색
-            else if (outlineColor == Color.red)
-                outline.color = 0; // 빨간색
-            else
-                outline.color = 1; // 그 외의 경우 (녹색)
 
-            // 아웃라인 활성화
-            outline.enabled = true;
-            
         }
+
+        
 
         // 자동 완료 코루틴
         private IEnumerator AutoCompleteQuiz(bool isCorrect)

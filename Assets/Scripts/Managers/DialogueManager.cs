@@ -137,6 +137,8 @@ namespace Nursing.Managers
             if (speakerImage != null && currentSpeaker.speakerSprite != null)
             {
                 speakerImage.sprite = currentSpeaker.speakerSprite;
+                // 이미지의 Native Size로 설정
+                speakerImage.SetNativeSize();
             }
 
             // 대화 내용 설정

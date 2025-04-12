@@ -20,7 +20,7 @@ MonoBehaviour:
     name: "\uC190\uBAA8\uC591 \uC0DD\uC131"
     StageNum: 0
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 0
@@ -52,6 +52,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 6948918642296159764, guid: ce03efa0d94b43e4bb891c72ba6f9349, type: 3}
@@ -128,7 +129,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1282, y: 189}
+      arrowStartPosition: {x: 1155, y: 224}
       arrowDirection: {x: -0.9501575, y: -0.31177044}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -155,6 +156,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 6948918642296159764, guid: ce03efa0d94b43e4bb891c72ba6f9349, type: 3}
@@ -226,7 +228,7 @@ MonoBehaviour:
     name: "\uB450\uBC88\uC9F8 \uC190 \uC0DD\uC131"
     StageNum: 2
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -258,6 +260,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
@@ -329,7 +332,7 @@ MonoBehaviour:
     name: "\uC724\uD65C\uC81C \uC4F0\uB808\uAE30\uD1B5\uC5D0 \uC9DC\uAE30 "
     StageNum: 3
     guideMessage: "\uC724\uD65C\uC81C\uB97C \uC9E4 \uACF3\uC744 \uD130\uCE58\uD574\uC8FC\uC138\uC694."
-    interactionType: 2
+    interactionType: 3
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -361,6 +364,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
@@ -463,7 +467,7 @@ MonoBehaviour:
     name: "\uC4F0\uB808\uAE30\uD1B5\uC5D0 \uC824 \uC0DD\uC131"
     StageNum: 4
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -495,6 +499,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 1423824034302344488, guid: dd9152e75cace6548ac68f3c6ec98894, type: 3}
@@ -593,7 +598,7 @@ MonoBehaviour:
     StageNum: 5
     guideMessage: "\uB2E4\uC74C\uC73C\uB85C \uC724\uD65C\uC81C\uB97C \uC9E4 \uACF3\uC744
       \uD130\uCE58\uD574\uC8FC\uC138\uC694."
-    interactionType: 2
+    interactionType: 3
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -625,6 +630,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
@@ -722,7 +728,7 @@ MonoBehaviour:
     name: "\uC824 \uC0DD\uC131"
     StageNum: 6
     guideMessage: 
-    interactionType: 1
+    interactionType: 2
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -754,6 +760,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 5794344015829654679, guid: 21e0a5b35fd96a245aea21bb95ec9541, type: 3}
@@ -851,7 +858,7 @@ MonoBehaviour:
     name: "\uC190 \uC5C6\uC5B4\uC9D0"
     StageNum: 7
     guideMessage: 
-    interactionType: 4
+    interactionType: 5
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
@@ -883,6 +890,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
+      fingerSettings: []
       createObject: 1
       objectToCreate:
       - {fileID: 5794344015829654679, guid: 21e0a5b35fd96a245aea21bb95ec9541, type: 3}

@@ -239,10 +239,15 @@ namespace Nursing.Editor
         {
             switch (interactionType)
             {
-                case InteractionType.DragInteraction:
-                    DrawDragInteractionSettings(settingsProp);
+               
+                case InteractionType.SingleDragInteraction:
+                    DrawSingleDragInteractionSettings(settingsProp);
                     break;
-                    
+
+                case InteractionType.MultiDragInteraction:
+                    DrawMultiDragInteractionSettings(settingsProp);
+                    break;
+
                 case InteractionType.ObjectCreation:
                     DrawObjectCreationSettings(settingsProp);
                     break;
@@ -272,10 +277,10 @@ namespace Nursing.Editor
                     break;
             }
         }
-        
+
         #region 인터랙션 타입별 설정 드로잉 메서드
-        
-        private void DrawDragInteractionSettings(SerializedProperty settingsProp)
+
+        private void DrawSingleDragInteractionSettings(SerializedProperty settingsProp)
         {
             SerializedProperty isDragInteractionProp = settingsProp.FindPropertyRelative("isDragInteraction");
             SerializedProperty showDirectionArrowsProp = settingsProp.FindPropertyRelative("showDirectionArrows");
@@ -290,7 +295,7 @@ namespace Nursing.Editor
             SerializedProperty boundaryObjectTagProp = settingsProp.FindPropertyRelative("boundaryObjectTag");
             SerializedProperty collisionZoneTagProp = settingsProp.FindPropertyRelative("collisionZoneTag");
             SerializedProperty OverDragProp = settingsProp.FindPropertyRelative("OverDrag");
-            
+
             SerializedProperty CollideDragProp = settingsProp.FindPropertyRelative("CollideDrag");
             SerializedProperty deactivateObjectAfterDragProp = settingsProp.FindPropertyRelative("deactivateObjectAfterDrag");
             SerializedProperty haveDirectionProp = settingsProp.FindPropertyRelative("haveDirection");
@@ -298,52 +303,52 @@ namespace Nursing.Editor
 
             // 이 인터랙션 타입을 활성화하기 위한 플래그
             isDragInteractionProp.boolValue = true;
-            
+
             // 기본 설정
             EditorGUILayout.LabelField("드래그 기본 설정", subheaderStyle);
             EditorGUILayout.PropertyField(targetObjectTagProp, new GUIContent("대상 오브젝트 태그", "드래그할 오브젝트의 태그"));
-            EditorGUILayout.PropertyField(requireTwoFingerDragProp, new GUIContent("두 손가락 드래그 필요", "드래그에 두 손가락이 필요한지 여부"));
             
+
             EditorGUILayout.Space();
-            
+
             // 방향 설정
             EditorGUILayout.LabelField("방향 설정", subheaderStyle);
             EditorGUILayout.PropertyField(haveDirectionProp, new GUIContent("방향 존재 유무", "방향 표시 여부"));
 
-            
-                if (haveDirectionProp.boolValue)
+
+            if (haveDirectionProp.boolValue)
             {
                 EditorGUILayout.PropertyField(arrowStartPositionProp, new GUIContent("드래그 시작 위치", "드래그가 표시될 시작 위치"));
-                
+
                 // 드래그 방향 시각적 컨트롤
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(new GUIContent("드래그 방향", "드래그가 가리킬 방향"));
-                
+
                 // 현재 방향 값 가져오기
                 Vector2 currentDirection = arrowDirectionProp.vector2Value;
-                
+
                 // 시각적인 방향 컨트롤 (360도 다이얼)
                 Rect directionRect = EditorGUILayout.GetControlRect(false, 100f);
-                
+
                 // 다이얼 그리기
                 Rect circleRect = new Rect(directionRect.x + directionRect.width / 2 - 40, directionRect.y, 80, 80);
                 EditorGUI.DrawRect(new Rect(circleRect.x - 1, circleRect.y - 1, circleRect.width + 2, circleRect.height + 2), new Color(0.3f, 0.3f, 0.3f));
                 EditorGUI.DrawRect(circleRect, new Color(0.2f, 0.2f, 0.2f));
-                
+
                 // 중심점
                 Vector2 center = new Vector2(circleRect.x + circleRect.width / 2, circleRect.y + circleRect.height / 2);
-                
+
                 // 현재 방향 라인
                 float length = 35f;
                 Vector2 normalizedDir = currentDirection.normalized;
                 Vector2 lineEnd = center + normalizedDir * length;
                 Handles.color = Color.white;
                 Handles.DrawLine(center, lineEnd);
-                
+
                 // 화살표 끝
                 Vector2 arrowSize = new Vector2(8, 8);
                 float angle = Mathf.Atan2(normalizedDir.y, normalizedDir.x) * Mathf.Rad2Deg;
-                
+
                 // 방향 컨트롤 이벤트 처리
                 Event evt = Event.current;
                 if (evt.type == EventType.MouseDown || evt.type == EventType.MouseDrag)
@@ -357,12 +362,12 @@ namespace Nursing.Editor
                         evt.Use();
                     }
                 }
-                
+
                 // N, E, S, W 보조선
                 Handles.color = new Color(0.6f, 0.6f, 0.6f, 0.3f);
                 Handles.DrawLine(center - new Vector2(length, 0), center + new Vector2(length, 0)); // 수평선
                 Handles.DrawLine(center - new Vector2(0, length), center + new Vector2(0, length)); // 수직선
-                
+
                 // 허용 각도 범위 표시 (requiredDragDirection이 true인 경우에만)
                 if (requiredDragDirectionProp.boolValue)
                 {
@@ -373,31 +378,31 @@ namespace Nursing.Editor
                         Handles.color = new Color(0.0f, 0.8f, 0.0f, 0.15f);
                         float startAngle = angle - toleranceAngle;
                         float endAngle = angle + toleranceAngle;
-                        Handles.DrawSolidArc(center, Vector3.forward, new Vector3(Mathf.Cos(startAngle * Mathf.Deg2Rad), Mathf.Sin(startAngle * Mathf.Deg2Rad), 0), 
+                        Handles.DrawSolidArc(center, Vector3.forward, new Vector3(Mathf.Cos(startAngle * Mathf.Deg2Rad), Mathf.Sin(startAngle * Mathf.Deg2Rad), 0),
                                             toleranceAngle * 2 * Mathf.Deg2Rad, length);
-                        
+
                         // 허용 각도 경계선 그리기
                         Handles.color = new Color(0.0f, 0.7f, 0.0f, 0.5f);
-                        Vector2 leftBoundary = new Vector2(Mathf.Cos((angle - toleranceAngle) * Mathf.Deg2Rad), 
+                        Vector2 leftBoundary = new Vector2(Mathf.Cos((angle - toleranceAngle) * Mathf.Deg2Rad),
                                                           Mathf.Sin((angle - toleranceAngle) * Mathf.Deg2Rad)) * length;
-                        Vector2 rightBoundary = new Vector2(Mathf.Cos((angle + toleranceAngle) * Mathf.Deg2Rad), 
+                        Vector2 rightBoundary = new Vector2(Mathf.Cos((angle + toleranceAngle) * Mathf.Deg2Rad),
                                                            Mathf.Sin((angle + toleranceAngle) * Mathf.Deg2Rad)) * length;
                         Handles.DrawLine(center, center + leftBoundary);
                         Handles.DrawLine(center, center + rightBoundary);
                     }
 
                     EditorGUILayout.PropertyField(showDirectionArrowsProp, new GUIContent("화살표 존재 유무", "화살표가 있는지 없는지"));
-                    
+
                 }
-                
+
                 EditorGUILayout.EndHorizontal();
-                
+
                 // 수동 입력 필드 (좌표 직접 설정)
                 EditorGUILayout.PropertyField(arrowDirectionProp, new GUIContent("방향 좌표 직접 설정", "화살표 방향 좌표 직접 설정"));
-                
+
                 // 필수 드래그 방향 설정
                 EditorGUILayout.PropertyField(requiredDragDirectionProp, new GUIContent("필수 드래그 방향", "특정 방향으로 드래그해야 하는지 여부"));
-                
+
                 if (requiredDragDirectionProp.boolValue)
                 {
                     // 드래그 방향 오차 허용 범위 설정
@@ -412,28 +417,168 @@ namespace Nursing.Editor
             EditorGUILayout.PropertyField(deactivateObjectAfterDragProp, new GUIContent("드래그 후 오브젝트 비활성화", "드래그 완료 후 해당 오브젝트를 비활성화할지 여부"));
 
             EditorGUILayout.Space();
-            
+
 
             // 이동 설정
             EditorGUILayout.LabelField("이동 설정", subheaderStyle);
             EditorGUILayout.PropertyField(followDragMovementProp, new GUIContent("드래그 따라 이동", "드래그 위치를 따라 오브젝트가 이동하는지 여부"));
-            
-            
-                EditorGUILayout.PropertyField(dragDistanceLimitProp, new GUIContent("드래그 거리 제한", "최대 드래그 거리 (0 = 제한 없음)"));
-                EditorGUILayout.PropertyField(boundaryObjectTagProp, new GUIContent("경계 오브젝트 태그", "오브젝트가 넘어가면 안 되는 경계의 태그"));
-                EditorGUILayout.PropertyField(collisionZoneTagProp, new GUIContent("충돌 영역 태그", "오브젝트가 충돌하면 안 되는 영역의 태그"));
-            
-            
+
+
+            EditorGUILayout.PropertyField(dragDistanceLimitProp, new GUIContent("드래그 거리 제한", "최대 드래그 거리 (0 = 제한 없음)"));
+            EditorGUILayout.PropertyField(boundaryObjectTagProp, new GUIContent("경계 오브젝트 태그", "오브젝트가 넘어가면 안 되는 경계의 태그"));
+            EditorGUILayout.PropertyField(collisionZoneTagProp, new GUIContent("충돌 영역 태그", "오브젝트가 충돌하면 안 되는 영역의 태그"));
+
+
             EditorGUILayout.Space();
-            
+
             // 패널티 설정
             EditorGUILayout.LabelField("패널티 설정", subheaderStyle);
             EditorGUILayout.PropertyField(OverDragProp, new GUIContent("과도한 드래그 패널티", "드래그 제한을 초과하거나 경계를 벗어날 때 적용할 패널티"));
             EditorGUILayout.PropertyField(CollideDragProp, new GUIContent("충돌 드래그 패널티", "드래그 충돌 시 패널티"));
-           
+
             //CollideDrag
         }
 
+        private void DrawMultiDragInteractionSettings(SerializedProperty settingsProp)
+        {
+            SerializedProperty isDragInteractionProp = settingsProp.FindPropertyRelative("isDragInteraction");
+            SerializedProperty fingerSettingsProp = settingsProp.FindPropertyRelative("fingerSettings");
+
+            // 이 인터랙션 타입을 활성화하기 위한 플래그
+            isDragInteractionProp.boolValue = true;
+
+            EditorGUILayout.LabelField("다중 손가락 드래그 설정", subheaderStyle);
+
+            // 손가락 설정 목록 관리 버튼
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("손가락 추가", GUILayout.Width(100)))
+            {
+                fingerSettingsProp.arraySize++;
+                int newIndex = fingerSettingsProp.arraySize - 1;
+                SerializedProperty newFingerProp = fingerSettingsProp.GetArrayElementAtIndex(newIndex);
+                SerializedProperty nameProp = newFingerProp.FindPropertyRelative("name");
+                nameProp.stringValue = $"손가락 {newIndex + 1}";
+            }
+
+            if (fingerSettingsProp.arraySize > 0 && GUILayout.Button("손가락 제거", GUILayout.Width(100)))
+            {
+                fingerSettingsProp.arraySize--;
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+
+            // 각 손가락 설정 표시
+            for (int i = 0; i < fingerSettingsProp.arraySize; i++)
+            {
+                SerializedProperty fingerProp = fingerSettingsProp.GetArrayElementAtIndex(i);
+                SerializedProperty nameProp = fingerProp.FindPropertyRelative("name");
+
+                bool foldout = EditorGUILayout.Foldout(
+                    EditorPrefs.GetBool($"FingerSetting_{i}", true),
+                    nameProp.stringValue,
+                    true
+                );
+
+                EditorPrefs.SetBool($"FingerSetting_{i}", foldout);
+
+                if (foldout)
+                {
+                    EditorGUI.indentLevel++;
+
+                    // 손가락 이름 설정
+                    EditorGUILayout.PropertyField(nameProp, new GUIContent("이름", "손가락 식별 이름"));
+
+                    // 손가락별 드래그 설정
+                    DrawFingerDragSettings(fingerProp);
+
+                    EditorGUI.indentLevel--;
+                    EditorGUILayout.Space();
+                }
+            }
+        }
+
+        private void DrawFingerDragSettings(SerializedProperty fingerProp)
+        {
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("targetObjectTag"),
+                new GUIContent("대상 오브젝트 태그", "드래그할 오브젝트의 태그")
+            );
+
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("haveDirection"),
+                new GUIContent("방향 존재 유무", "드래그 방향이 있는지 여부")
+            );
+
+            bool haveDirection = fingerProp.FindPropertyRelative("haveDirection").boolValue;
+            if (haveDirection)
+            {
+                EditorGUILayout.PropertyField(
+                    fingerProp.FindPropertyRelative("showDirectionArrows"),
+                    new GUIContent("화살표 표시", "방향 화살표를 표시할지 여부")
+                );
+
+                EditorGUILayout.PropertyField(
+                    fingerProp.FindPropertyRelative("arrowStartPosition"),
+                    new GUIContent("화살표 시작 위치", "방향 화살표의 시작 위치")
+                );
+
+                EditorGUILayout.PropertyField(
+                    fingerProp.FindPropertyRelative("arrowDirection"),
+                    new GUIContent("화살표 방향", "드래그 방향 벡터")
+                );
+
+                EditorGUILayout.PropertyField(
+                    fingerProp.FindPropertyRelative("requiredDragDirection"),
+                    new GUIContent("필수 드래그 방향", "지정된 방향으로 드래그해야 하는지 여부")
+                );
+
+                bool requiredDirection = fingerProp.FindPropertyRelative("requiredDragDirection").boolValue;
+                if (requiredDirection)
+                {
+                    EditorGUILayout.Slider(
+                        fingerProp.FindPropertyRelative("dragDirectionTolerance"),
+                        0f, 90f,
+                        new GUIContent("방향 오차 허용 범위", "드래그 방향의 허용 오차 범위 (각도)")
+                    );
+                }
+            }
+
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("followDragMovement"),
+                new GUIContent("드래그 따라 이동", "드래그 위치를 따라 오브젝트가 이동하는지 여부")
+            );
+
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("dragDistanceLimit"),
+                new GUIContent("드래그 거리 제한", "최대 드래그 거리 (0 = 제한 없음)")
+            );
+
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("boundaryObjectTag"),
+                new GUIContent("경계 오브젝트 태그", "오브젝트가 넘어가면 안 되는 경계의 태그")
+            );
+
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("collisionZoneTag"),
+                new GUIContent("충돌 영역 태그", "오브젝트가 충돌하면 안 되는 영역의 태그")
+            );
+
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("OverDrag"),
+                new GUIContent("과도한 드래그 패널티", "드래그 제한을 초과하거나 경계를 벗어날 때 적용할 패널티")
+            );
+
+            EditorGUILayout.PropertyField(
+                fingerProp.FindPropertyRelative("deactivateObjectAfterDrag"),
+                new GUIContent("드래그 후 오브젝트 비활성화", "드래그 완료 후 해당 오브젝트를 비활성화할지 여부")
+            );
+        }
+
+        
+
+        // 새로운 메서드 추가
+        
         private void DrawObjectCreationSettings(SerializedProperty settingsProp)
         {
             SerializedProperty createObjectProp = settingsProp.FindPropertyRelative("createObject");

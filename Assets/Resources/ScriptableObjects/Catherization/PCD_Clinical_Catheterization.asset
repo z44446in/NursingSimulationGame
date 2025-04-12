@@ -114,3 +114,36 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
+  - id: Catheterization_Clinical_3
+    name: "\uC2DC\uB9B0\uC9C0 \uB72F\uC5B4\uC11C \uB123\uAE30 "
+    guideMessage: "\uB2E4\uC74C\uC73C\uB85C \uAEBC\uB0BC \uBB3C\uAC74\uC744 \uC120\uD0DD\uD558\uC138\uC694."
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: syringe10
+      interactionDataId: ITR_Syringe
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds:
+    - Catheterization_Clinical_0
+    incorrectOrderPenalty:
+      penaltyType: 1
+      penaltyScore: 10
+      speaker: 0
+      penaltyMessage: "\uC74C.. \uB0C5\uB2E4 \uBA78\uADE0\uC99D\uB958\uC218 \uB4E4\uC5B4\uC11C
+        \uBB50\uD558\uAC8C? \uC77C\uB2E8 \uD3F4\uB9AC \uC138\uD2B8\uBD80\uD130 \uC5F4\uAE4C?"
+      databaseMessage: 
+      flashRedScreen: 1
+      flashCount: 1
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
