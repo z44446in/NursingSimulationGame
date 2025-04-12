@@ -48,6 +48,7 @@ namespace Nursing.Managers
             public bool isComplete = false;
             public Vector2 startPosition;
             public GameObject draggedObject;
+            public int matchedSettingIndex = -1;
         }
 
        
@@ -878,32 +879,30 @@ namespace Nursing.Managers
             // 필요한 손가락 수만큼 동시 입력이 들어왔는지 확인
             if (Input.touchCount < settings.fingerSettings.Count)
             {
-               
-
-                return;
+              
+                return; 
             }
-
-
             bool allDragging = true;
+            int requiredCount = settings.fingerSettings.Count;
 
-            for (int i = 0; i < settings.fingerSettings.Count; i++)
+
+
+            for (int i = 0; i < Input.touchCount; i++)
             {
                 Touch touch = Input.GetTouch(i);
+                int fingerId = touch.fingerId;
 
 
-                // 손가락 상태 가져오기 (없으면 새로 생성)
-                if (!fingerDragStatus.ContainsKey(i))
-                    fingerDragStatus[i] = new FingerDragStatus();
+                // 손가락 상태 가져오기
+                if (!fingerDragStatus.ContainsKey(fingerId))
+                    fingerDragStatus[fingerId] = new FingerDragStatus();
 
-                var status = fingerDragStatus[i];
-                var fingerSetting = settings.fingerSettings[i];
+                var status = fingerDragStatus[fingerId];
 
 
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
-                        InteractionSettings.FingerDragSettings fingerSettings = settings.fingerSettings[i];
-
                         PointerEventData eventData = new PointerEventData(EventSystem.current)
                         {
                             position = touch.position
@@ -913,30 +912,44 @@ namespace Nursing.Managers
 
                         foreach (var result in results)
                         {
-                            if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
+                            for (int s = 0; s < settings.fingerSettings.Count; s++)
                             {
+                                if (status.matchedSettingIndex != -1) break; // 이미 매칭됨
 
-                                status.startPosition = touch.position;
-                                status.draggedObject = result.gameObject;
-                                status.isDragging = true;
+                                var setting = settings.fingerSettings[s];
 
+                                // 이 설정이 다른 손가락에 이미 사용됐는지 확인
+                                bool alreadyUsed = false;
+                                foreach (var kvp in fingerDragStatus)
+                                {
+                                    if (kvp.Value.matchedSettingIndex == s)
+                                    {
+                                        alreadyUsed = true;
+                                        break;
+                                    }
+                                }
 
-                                ClearArrows();
+                                if (!alreadyUsed && result.gameObject.CompareTag(setting.targetObjectTag))
+                                {
+                                    status.startPosition = touch.position;
+                                    status.draggedObject = result.gameObject;
+                                    status.isDragging = true;
+                                    status.matchedSettingIndex = s;
 
+                                    Debug.Log($"[MultiDrag] 손가락 {fingerId} => 설정 {s} 매칭됨");
+
+                                    ClearArrows();
+                                    break;
+                                }
                             }
                         }
                         break;
 
 
                     case TouchPhase.Moved:
-                        Debug.Log($"[Check] {touch.fingerId} | isDragging: {status.isDragging}, draggedObj: {(status.draggedObject != null ? status.draggedObject.name : "null")}, follow: {fingerSetting.followDragMovement}");
-                        if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
+                        if (status.isDragging && status.draggedObject != null &&
+                   status.matchedSettingIndex >= 0 && settings.fingerSettings[status.matchedSettingIndex].followDragMovement)
                         {
-                            Vector2 currentPos = touch.position;
-                            Vector2 delta = currentPos - status.startPosition;
-
-                            Debug.Log($"[Dragging] 손가락 {touch.fingerId} 이동 중, Δ: {delta.magnitude:F2}");
-
                             Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
                             status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
                         }
@@ -944,21 +957,20 @@ namespace Nursing.Managers
 
                     case TouchPhase.Ended:
                     case TouchPhase.Canceled:
-                        if (status.isDragging && status.draggedObject != null)
+                        if (status.isDragging && status.draggedObject != null && status.matchedSettingIndex >= 0)
                         {
+                            var setting = settings.fingerSettings[status.matchedSettingIndex];
                             Vector2 endPos = touch.position;
                             Vector2 dragDir = (endPos - status.startPosition).normalized;
                             float dragDist = Vector2.Distance(endPos, status.startPosition);
 
                             bool valid = true;
-                            if (fingerSetting.requiredDragDirection)
+                            if (setting.requiredDragDirection)
                             {
-                                Vector2 required = fingerSetting.arrowDirection.normalized;
-                                float dot = Vector2.Dot(dragDir, required);
-                                float angleTolerance = fingerSetting.dragDirectionTolerance;
-                                float minDot = Mathf.Cos(angleTolerance * Mathf.Deg2Rad);
+                                float dot = Vector2.Dot(dragDir, setting.arrowDirection.normalized);
+                                float minDot = Mathf.Cos(setting.dragDirectionTolerance * Mathf.Deg2Rad);
 
-                                Debug.Log($"드래그 방향: {dragDir}, 요구 방향: {required}, 각도 코사인: {dot}, 허용 오차: {angleTolerance}도");
+                                Debug.Log($"드래그 방향: {dragDir}, 요구 방향: { setting.arrowDirection.normalized}, 각도 코사인: {dot}, 허용 오차: {setting.dragDirectionTolerance}도");
 
                                 if (dot < minDot)
                                 {
@@ -967,14 +979,14 @@ namespace Nursing.Managers
                                     if (dialogueManager != null)
                                     {
                                         // 방향 힌트 계산
-                                        float angle = Vector2.SignedAngle(dragDir, required);
+                                        float angle = Vector2.SignedAngle(dragDir, setting.arrowDirection.normalized);
                                         string directionHint = "";
 
                                         if (angle > 15f) directionHint = "더 왼쪽으로";
                                         else if (angle < -15f) directionHint = "더 오른쪽으로";
                                         else if (dot < 0) directionHint = "반대 방향으로";
 
-                                        dialogueManager.ShowGuideMessage($"올바른 방향으로 드래그해주세요. (허용 오차: {angleTolerance}°) {directionHint}");
+                                        dialogueManager.ShowGuideMessage($"올바른 방향으로 드래그해주세요. (허용 오차: {setting.dragDirectionTolerance}°) {directionHint}");
 
                                     }
 
@@ -986,8 +998,11 @@ namespace Nursing.Managers
 
                                 }
 
-                                if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
+                                if (setting.dragDistanceLimit > 0 && dragDist > setting.dragDistanceLimit)
+                                {
                                     valid = false;
+                                }
+
 
                                 if (valid)
                                 {
@@ -996,8 +1011,10 @@ namespace Nursing.Managers
                                 }
                                 else
                                 {
-                                    Debug.LogWarning($"[MultiDrag] 손가락 {touch.fingerId} 실패 - valid = false | 방향조건: {fingerSetting.requiredDragDirection}, 거리제한: {fingerSetting.dragDistanceLimit}, 드래그 거리: {dragDist:F2}");
+                                    Debug.LogWarning($"[MultiDrag] 손가락 {fingerId} 실패 - 유효하지 않은 드래그");
                                 }
+
+                                status.isDragging = false;
                             }
                            
                         }
