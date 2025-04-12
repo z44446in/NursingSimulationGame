@@ -932,6 +932,11 @@ namespace Nursing.Managers
                     case TouchPhase.Moved:
                         if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
                         {
+                            Vector2 currentPos = touch.position;
+                            Vector2 delta = currentPos - status.startPosition;
+
+                            Debug.Log($"[Dragging] 손가락 {touch.fingerId} 이동 중, Δ: {delta.magnitude:F2}");
+
                             Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
                             status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
                         }
@@ -962,6 +967,7 @@ namespace Nursing.Managers
                             if (valid)
                             {
                                 status.isComplete = true;
+                                Debug.Log($"[MultiDrag] 손가락 {touch.fingerId} 완료됨");
                                 if (fingerSetting.deactivateObjectAfterDrag)
                                     status.draggedObject.SetActive(false);
                             }
