@@ -1023,37 +1023,7 @@ namespace Nursing.Managers
 
                 switch (touch.phase)
                 {
-<<<<<<< HEAD
                    
-=======
-                    case TouchPhase.Began:
-                        InteractionSettings.FingerDragSettings fingerSettings = settings.fingerSettings[i];
-
-                        PointerEventData eventData = new PointerEventData(EventSystem.current)
-                        {
-                            position = touch.position
-                        };
-                        List<RaycastResult> results = new List<RaycastResult>();
-                        EventSystem.current.RaycastAll(eventData, results);
-
-                        foreach (var result in results)
-                        {
-                            if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
-                            {
-
-                                status.startPosition = touch.position;
-                                status.draggedObject= result.gameObject;
-                                status.isDragging = true;
-                                
-
-                                ClearArrows();
-                                
-                            }
-                        }
-                        break;
-                        
-
->>>>>>> parent of 92ce869 (찐 멀티 드래그 문제 해결)
 
                     case TouchPhase.Moved:
                         if (status.isDragging && status.draggedObject != null && setting.followDragMovement)
@@ -1076,17 +1046,13 @@ namespace Nursing.Managers
                             {
                                 Vector2 required = setting.arrowDirection.normalized;
                                 float dot = Vector2.Dot(dragDir, required);
-<<<<<<< HEAD
                                 float minDot = Mathf.Cos(setting.dragDirectionTolerance * Mathf.Deg2Rad);
 
                                 Debug.Log($"드래그 방향: {dragDir}, 요구 방향: { setting.arrowDirection.normalized}, 각도 코사인: {dot}, 허용 오차: {setting.dragDirectionTolerance}도");
-=======
-                                float minDot = Mathf.Cos(fingerSetting.dragDirectionTolerance * Mathf.Deg2Rad);
->>>>>>> parent of 92ce869 (찐 멀티 드래그 문제 해결)
 
                                 if (dot < minDot)
+                                {
                                     valid = false;
-<<<<<<< HEAD
                                     // 시각적 피드백 - 잘못된 방향 표시
                                     if (dialogueManager != null)
                                     {
@@ -1126,26 +1092,11 @@ namespace Nursing.Managers
                                 {
                                     CreateDirectionArrows(settings.arrowStartPosition, settings.arrowDirection);
                                 }
-=======
->>>>>>> parent of 92ce869 (찐 멀티 드래그 문제 해결)
                             }
-
-                            if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
-                                valid = false;
-
-                            if (valid)
-                            {
-                                status.isComplete = true;
-                                Debug.Log($"[MultiDrag] 손가락 {touch.fingerId} 완료됨");
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"[MultiDrag] 손가락 {touch.fingerId} 실패 - valid = false | 방향조건: {fingerSetting.requiredDragDirection}, 거리제한: {fingerSetting.dragDistanceLimit}, 드래그 거리: {dragDist:F2}");
-                            }
+                           
                         }
                         break;
                 }
-                
 
             }
 
