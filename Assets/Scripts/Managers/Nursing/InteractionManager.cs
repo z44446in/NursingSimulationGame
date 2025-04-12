@@ -253,16 +253,7 @@ namespace Nursing.Managers
                 {
                     Vector2 arrowPos = fingerSetting.arrowStartPosition;
 
-                    // 화살표 시작 위치가 없으면 대상 오브젝트 대상으로 생성
-                    if (settings.arrowStartPosition == Vector2.zero)
-                    {
-                        GameObject targetObj = GameObject.FindWithTag(settings.targetObjectTag);
-                        if (targetObj != null)
-                        {
-                            arrowPos = targetObj.transform.position;
-                            settings.arrowStartPosition = arrowPos; // 위치 업데이트
-                        }
-                    }
+                    
 
                     // 화살표 생성 (각 손가락에 고유한 식별자 추가)
                     CreateDirectionArrows(arrowPos, fingerSetting.arrowDirection, i);
@@ -600,26 +591,43 @@ namespace Nursing.Managers
         {
             while (true)
             {
-                // 화살표 표시
+                // 일반 화살표 표시
                 foreach (var arrow in createdArrows)
                 {
                     if (arrow != null)
                         arrow.SetActive(true);
                 }
-                
+
+                // 손가락별 화살표 표시
+                foreach (var entry in fingerArrows)
+                {
+                    foreach (var arrow in entry.Value)
+                    {
+                        if (arrow != null)
+                            arrow.SetActive(true);
+                    }
+                }
+
                 yield return new WaitForSeconds(arrowBlinkDuration);
-                
-                // 화살표 숨김
+
+                // 일반 화살표 숨김
                 foreach (var arrow in createdArrows)
                 {
                     if (arrow != null)
                         arrow.SetActive(false);
                 }
-                
+
+                // 손가락별 화살표 숨김
+                foreach (var entry in fingerArrows)
+                {
+                    foreach (var arrow in entry.Value)
+                    {
+                        if (arrow != null)
+                            arrow.SetActive(false);
+                    }
+                }
+
                 yield return new WaitForSeconds(arrowBlinkInterval);
-                
-                // 화살표는 사용자가 올바른 오브젝트를 터치할 때까지 계속 깜빡입니다.
-                // HandleSingleFingerDrag와 HandleTwoFingerDrag에서 올바른 오브젝트 터치 시 ClearArrows()를 호출합니다.
             }
         }
 
@@ -883,7 +891,11 @@ namespace Nursing.Managers
                 // 다음 단계로 진행
                 AdvanceToNextStage();
             }
+
+
         }
+
+
 
         // 개별 손가락 드래그 처리
         private void HandleFingerDrag(Touch touch, int fingerIndex, InteractionSettings.FingerDragSettings settings)
@@ -1453,6 +1465,8 @@ namespace Nursing.Managers
                         }
                     }
                 }
+
+                else return;
             }
         }
 

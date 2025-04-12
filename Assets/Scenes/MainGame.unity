@@ -1720,7 +1720,6 @@ GameObject:
   - component: {fileID: 622407489}
   - component: {fileID: 622407491}
   - component: {fileID: 622407492}
-  - component: {fileID: 622407493}
   m_Layer: 0
   m_Name: Cart
   m_TagString: Untagged
@@ -1785,20 +1784,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &622407493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622407488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03a9256c1c5961c4b887cffd130fb101, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cartObject: {fileID: 622407488}
-  outline: {fileID: 0}
 --- !u!1 &676136536
 GameObject:
   m_ObjectHideFlags: 0
@@ -5250,27 +5235,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.11477908
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.9933911
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1155
+      value: 946
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 224
+      value: 299
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5282,7 +5267,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2905110908848853285, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -166.818
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
