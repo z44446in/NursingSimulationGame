@@ -52,6 +52,16 @@ namespace Nursing.Managers
             public GameObject draggedObject;
         }
 
+        // InteractionManager 클래스 내부에 추가:
+        private float finger0StartTime = -1f;
+        private float finger1StartTime = -1f;
+        private float finger0EndTime = -1f;
+        private float finger1EndTime = -1f;
+
+        // 동시에 눌렀는지 확인할 허용 오차 (초)
+        private const float SYNC_THRESHOLD = 0.2f;
+
+
         private void Awake()
         {
             if (penaltyManager == null)
@@ -1269,35 +1279,32 @@ namespace Nursing.Managers
         /// <summary>
         /// 두 손가락 드래그를 처리합니다.
         /// </summary>
+       
         private void HandleTwoFingerDrag(InteractionSettings settings)
         {
-            // 손가락 설정이 충분히 있는지 확인
             if (settings.fingerSettings.Count < 2)
             {
                 Debug.LogError("두 손가락 드래그에 필요한 설정이 부족합니다.");
                 return;
             }
 
-            // 첫 번째와 두 번째 손가락 설정 가져오기
             var firstFingerSetting = settings.fingerSettings[0];
             var secondFingerSetting = settings.fingerSettings[1];
 
-            // 두 손가락 터치 확인
+            float threshold = settings.multiDragSyncThreshold > 0 ? settings.multiDragSyncThreshold : 0.2f;
+
             if (Input.touchCount == 2)
             {
                 Touch touch1 = Input.GetTouch(0);
                 Touch touch2 = Input.GetTouch(1);
 
-                // 상태 관리를 위한 변수들
                 GameObject target1 = null;
                 GameObject target2 = null;
 
-                // 드래그 시작 조건
                 if (!isDragging &&
                     (touch1.phase == TouchPhase.Began || touch1.phase == TouchPhase.Moved) &&
                     (touch2.phase == TouchPhase.Began || touch2.phase == TouchPhase.Moved))
                 {
-                    // 첫 번째 손가락 대상 찾기
                     PointerEventData eventData1 = new PointerEventData(EventSystem.current);
                     eventData1.position = touch1.position;
                     List<RaycastResult> results1 = new List<RaycastResult>();
@@ -1312,7 +1319,6 @@ namespace Nursing.Managers
                         }
                     }
 
-                    // 두 번째 손가락 대상 찾기
                     PointerEventData eventData2 = new PointerEventData(EventSystem.current);
                     eventData2.position = touch2.position;
                     List<RaycastResult> results2 = new List<RaycastResult>();
@@ -1327,26 +1333,24 @@ namespace Nursing.Managers
                         }
                     }
 
-                    // 두 손가락 모두 올바른 대상에 닿아있어야 함
                     if (target1 != null && target2 != null)
                     {
                         isDragging = true;
-                        dragStartPosition = touch1.position; // 첫 번째 손가락 위치 저장
-                        secondTouchStartPosition = touch2.position; // 두 번째 손가락 위치 저장
-                        draggedObject = target1; // 첫 번째 대상 저장
-                        secondDraggedObject = target2; // 두 번째 대상 저장
+                        finger0StartTime = Time.time;
+                        finger1StartTime = Time.time;
 
-                        // 화살표 숨김
+                        dragStartPosition = touch1.position;
+                        secondTouchStartPosition = touch2.position;
+                        draggedObject = target1;
+                        secondDraggedObject = target2;
+
                         ClearArrows();
-
-                        Debug.Log("두 손가락 드래그 시작됨 - 두 손가락 모두 대상에 닿음");
+                        Debug.Log("두 손가락 동시 드래그 시작됨");
                     }
                 }
-                // 드래그 진행
                 else if (isDragging &&
                         (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved))
                 {
-                    // 첫 번째 손가락 처리
                     if (draggedObject != null && firstFingerSetting.followDragMovement)
                     {
                         ProcessFingerDrag(
@@ -1356,7 +1360,6 @@ namespace Nursing.Managers
                             firstFingerSetting);
                     }
 
-                    // 두 번째 손가락 처리
                     if (secondDraggedObject != null && secondFingerSetting.followDragMovement)
                     {
                         ProcessFingerDrag(
@@ -1366,11 +1369,16 @@ namespace Nursing.Managers
                             secondFingerSetting);
                     }
                 }
-                // 드래그 종료
                 else if (isDragging &&
                         (touch1.phase == TouchPhase.Ended || touch1.phase == TouchPhase.Canceled ||
                          touch2.phase == TouchPhase.Ended || touch2.phase == TouchPhase.Canceled))
                 {
+                    finger0EndTime = Time.time;
+                    finger1EndTime = Time.time;
+
+                    float timeDiffStart = Mathf.Abs(finger0StartTime - finger1StartTime);
+                    float timeDiffEnd = Mathf.Abs(finger0EndTime - finger1EndTime);
+
                     bool firstFingerValid = CheckFingerDragValid(
                         touch1.position,
                         dragStartPosition,
@@ -1381,21 +1389,15 @@ namespace Nursing.Managers
                         secondTouchStartPosition,
                         secondFingerSetting);
 
-                    // 두 손가락 모두 유효하면 성공
-                    if (firstFingerValid && secondFingerValid)
+                    if (firstFingerValid && secondFingerValid &&
+                        timeDiffStart <= threshold && timeDiffEnd <= threshold)
                     {
-                        // 드래그 후 오브젝트 비활성화 (설정된 경우)
                         if (draggedObject != null && firstFingerSetting.deactivateObjectAfterDrag)
-                        {
                             draggedObject.SetActive(false);
-                        }
 
                         if (secondDraggedObject != null && secondFingerSetting.deactivateObjectAfterDrag)
-                        {
                             secondDraggedObject.SetActive(false);
-                        }
 
-                        // 다음 단계로 진행
                         isDragging = false;
                         draggedObject = null;
                         secondDraggedObject = null;
@@ -1403,39 +1405,37 @@ namespace Nursing.Managers
                     }
                     else
                     {
-                        // 실패 처리
+                        if (!firstFingerValid && firstFingerSetting.OverDrag != null)
+                            ApplyPenalty(firstFingerSetting.OverDrag);
+                        if (!secondFingerValid && secondFingerSetting.OverDrag != null)
+                            ApplyPenalty(secondFingerSetting.OverDrag);
+
+                        if (timeDiffStart > threshold || timeDiffEnd > threshold)
+                        {
+                            Debug.Log("두 손가락이 동시에 드래그되지 않았습니다.");
+                            if (dialogueManager != null)
+                                dialogueManager.ShowGuideMessage("두 손가락을 동시에 드래그해야 해요!");
+                        }
+
                         isDragging = false;
                         draggedObject = null;
                         secondDraggedObject = null;
-
-                        // 패널티 적용
-                        if (!firstFingerValid && firstFingerSetting.OverDrag != null)
-                        {
-                            ApplyPenalty(firstFingerSetting.OverDrag);
-                        }
-
-                        if (!secondFingerValid && secondFingerSetting.OverDrag != null)
-                        {
-                            ApplyPenalty(secondFingerSetting.OverDrag);
-                        }
                     }
                 }
             }
-            // 손가락 수 부족
             else if (isDragging && Input.touchCount < 2)
             {
-                // 드래그 취소
                 isDragging = false;
                 draggedObject = null;
                 secondDraggedObject = null;
 
-                // 설명 메시지 표시
                 if (dialogueManager != null)
                 {
-                    dialogueManager.ShowGuideMessage("두 손가락으로 드래그해야 합니다.");
+                    dialogueManager.ShowGuideMessage("두 손가락으로 동시에 드래그해야 해요!");
                 }
             }
         }
+
 
         // 손가락 드래그 처리 메서드 (FingerDragSettings 클래스 사용)
         private void ProcessFingerDrag(GameObject targetObject, Vector2 currentPos, Vector2 startPos, InteractionSettings.FingerDragSettings fingerSetting)
