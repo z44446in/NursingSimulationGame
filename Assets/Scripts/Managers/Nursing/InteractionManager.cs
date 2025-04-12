@@ -885,7 +885,7 @@ namespace Nursing.Managers
             // 필요한 손가락 수만큼 동시 입력이 들어왔는지 확인
             if (Input.touchCount < settings.fingerSettings.Count)
             {
-               
+
 
                 return;
             }
@@ -896,6 +896,7 @@ namespace Nursing.Managers
             for (int i = 0; i < settings.fingerSettings.Count; i++)
             {
                 Touch touch = Input.GetTouch(i);
+                bool isTouching = Input.touchCount > 0;
 
 
                 // 손가락 상태 가져오기 (없으면 새로 생성)
@@ -905,90 +906,97 @@ namespace Nursing.Managers
                 var status = fingerDragStatus[i];
                 var fingerSetting = settings.fingerSettings[i];
 
+                // 드래그 시작 포인트 얻기
+                Vector2 touchPos = isTouching ? Input.GetTouch(i).position : (Vector2)Input.mousePosition;
 
-                switch (touch.phase)
+                // UI 요소 체크를 위한 레이캐스트
+                PointerEventData eventData = new PointerEventData(EventSystem.current);
+                eventData.position = touchPos;
+                List<RaycastResult> results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(eventData, results);
+
+                foreach (RaycastResult result in results)
                 {
-                    case TouchPhase.Began:
-                        PointerEventData eventData = new PointerEventData(EventSystem.current);
-                        eventData.position = touch.position;
-                        List<RaycastResult> results = new List<RaycastResult>();
-                        EventSystem.current.RaycastAll(eventData, results);
+                    // 태그가 일치하는 오브젝트인지 확인
+                    if (result.gameObject.CompareTag(settings.targetObjectTag))
+                    {
+                        isDragging = true;
+                        dragStartPosition = touchPos;
+                        draggedObject = result.gameObject;
 
-                        if (results.Count == 0)
-                        {
-                            Debug.LogWarning($"[Raycast] 손가락 {touch.fingerId} 아무것도 안 걸림!!");
-                        }
-                        else
-                        {
-                            foreach (var r in results)
+                        // 화살표 숨김
+                        ClearArrows();
+
+                        break;
+                    }
+
+                    switch (touch.phase)
+                    {
+                        case TouchPhase.Began:
+
+                            break;
+
+
+                        case TouchPhase.Moved:
+                            Debug.Log($"[Check] {touch.fingerId} | isDragging: {status.isDragging}, draggedObj: {(status.draggedObject != null ? status.draggedObject.name : "null")}, follow: {fingerSetting.followDragMovement}");
+                            if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
                             {
-                                Debug.Log($"[Raycast] {touch.fingerId}번째 손가락 hit: {r.gameObject.name}, tag: {r.gameObject.tag}");
+                                Vector2 currentPos = touch.position;
+                                Vector2 delta = currentPos - status.startPosition;
+
+                                Debug.Log($"[Dragging] 손가락 {touch.fingerId} 이동 중, Δ: {delta.magnitude:F2}");
+
+                                Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
+                                status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
                             }
-                        }
+                            break;
 
-
-                        break;
-
-
-                    case TouchPhase.Moved:
-                        Debug.Log($"[Check] {touch.fingerId} | isDragging: {status.isDragging}, draggedObj: {(status.draggedObject != null ? status.draggedObject.name : "null")}, follow: {fingerSetting.followDragMovement}");
-                        if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
-                        {
-                            Vector2 currentPos = touch.position;
-                            Vector2 delta = currentPos - status.startPosition;
-
-                            Debug.Log($"[Dragging] 손가락 {touch.fingerId} 이동 중, Δ: {delta.magnitude:F2}");
-
-                            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
-                            status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
-                        }
-                        break;
-
-                    case TouchPhase.Ended:
-                    case TouchPhase.Canceled:
-                        if (status.isDragging && status.draggedObject != null)
-                        {
-                            Vector2 endPos = touch.position;
-                            Vector2 dragDir = (endPos - status.startPosition).normalized;
-                            float dragDist = Vector2.Distance(endPos, status.startPosition);
-
-                            bool valid = true;
-                            if (fingerSetting.requiredDragDirection)
+                        case TouchPhase.Ended:
+                        case TouchPhase.Canceled:
+                            if (status.isDragging && status.draggedObject != null)
                             {
-                                Vector2 required = fingerSetting.arrowDirection.normalized;
-                                float dot = Vector2.Dot(dragDir, required);
-                                float minDot = Mathf.Cos(fingerSetting.dragDirectionTolerance * Mathf.Deg2Rad);
+                                Vector2 endPos = touch.position;
+                                Vector2 dragDir = (endPos - status.startPosition).normalized;
+                                float dragDist = Vector2.Distance(endPos, status.startPosition);
 
-                                if (dot < minDot)
+                                bool valid = true;
+                                if (fingerSetting.requiredDragDirection)
+                                {
+                                    Vector2 required = fingerSetting.arrowDirection.normalized;
+                                    float dot = Vector2.Dot(dragDir, required);
+                                    float minDot = Mathf.Cos(fingerSetting.dragDirectionTolerance * Mathf.Deg2Rad);
+
+                                    if (dot < minDot)
+                                        valid = false;
+                                }
+
+                                if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
                                     valid = false;
-                            }
 
-                            if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
-                                valid = false;
+                                if (valid)
+                                {
+                                    status.isComplete = true;
+                                    Debug.Log($"[MultiDrag] 손가락 {touch.fingerId} 완료됨");
+                                }
+                                else
+                                {
+                                    Debug.LogWarning($"[MultiDrag] 손가락 {touch.fingerId} 실패 - valid = false | 방향조건: {fingerSetting.requiredDragDirection}, 거리제한: {fingerSetting.dragDistanceLimit}, 드래그 거리: {dragDist:F2}");
+                                }
+                            }
+                            break;
+                    }
+                    Debug.Log($"[Touch] Finger {touch.fingerId} | Phase: {touch.phase} | Pos: {touch.position}");
 
-                            if (valid)
-                            {
-                                status.isComplete = true;
-                                Debug.Log($"[MultiDrag] 손가락 {touch.fingerId} 완료됨");
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"[MultiDrag] 손가락 {touch.fingerId} 실패 - valid = false | 방향조건: {fingerSetting.requiredDragDirection}, 거리제한: {fingerSetting.dragDistanceLimit}, 드래그 거리: {dragDist:F2}");
-                            }
-                        }
-                        break;
+                    // 전체 유효성 확인용
+                    if (!status.isDragging && !status.isComplete)
+                        allDragging = false;
                 }
-                Debug.Log($"[Touch] Finger {touch.fingerId} | Phase: {touch.phase} | Pos: {touch.position}");
 
-                // 전체 유효성 확인용
-                if (!status.isDragging && !status.isComplete)
-                    allDragging = false;
-            }
-
-            // 전부 유효하게 드래그 완료한 경우
-            if (allDragging && AllMultiDragCompleted(settings.fingerSettings.Count))
-            {
-                AdvanceToNextStage();
+                // 전부 유효하게 드래그 완료한 경우
+                if (allDragging && AllMultiDragCompleted(settings.fingerSettings.Count))
+                {
+                    AdvanceToNextStage();
+                }
             }
         }
 
