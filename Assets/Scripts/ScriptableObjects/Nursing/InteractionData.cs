@@ -94,6 +94,17 @@ namespace Nursing.Interaction
             public PenaltyData OverDrag;
         }
 
+        // InteractionSettings 클래스 내에 추가
+        [Header("드래그 목표 영역")]
+        public string targetZoneTag; // 드래그 목표 영역 태그
+        public bool requireReachTargetZone = false; // 목표 영역 도달 필요 여부
+        public float minOverlapPercentage = 0.5f; // 목표 영역과 겹쳐야 하는 최소 비율 (0-1)
+
+        [Header("터치 충돌 설정")]
+        public bool detectTouchCollision = false; // 터치 충돌 감지 활성화
+        public string noTouchZoneTag; // 터치 불가 영역 태그
+        public PenaltyData touchCollisionPenalty; // 터치 충돌 시 패널티
+
 
         [Header("멀티 드래그 조건")]
         [Tooltip("두 손가락이 얼마나 동시에 눌러야 인정되는지 (초 단위)")]

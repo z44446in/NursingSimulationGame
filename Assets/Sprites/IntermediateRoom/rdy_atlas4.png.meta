@@ -673,7 +673,7 @@ TextureImporter:
         serializedVersion: 2
         x: 1258
         y: 240
-        width: 572
+        width: 268
         height: 344
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -1276,6 +1276,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: rdy_atlas4_5
+      rect:
+        serializedVersion: 2
+        x: 1524
+        y: 240
+        width: 286
+        height: 344
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b38458836c35e6b4885bcd9f5207e466
+      internalID: 1245935660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -1292,6 +1313,7 @@ TextureImporter:
       rdy_atlas4_2: 516973062
       rdy_atlas4_3: 898180429
       rdy_atlas4_4: 1105922445
+      rdy_atlas4_5: 1245935660
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

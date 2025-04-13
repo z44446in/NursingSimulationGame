@@ -53,6 +53,7 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 8368500792721724306, guid: 86bdb50c968b5824ebbe5392a050f643, type: 3}
@@ -158,6 +159,7 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 0
@@ -262,6 +264,7 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 0
@@ -366,6 +369,7 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 0
@@ -470,15 +474,18 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 1
       validClickTags:
       - Trash
       invalidClickTags:
-      - Intray
+      - Bowl
       - Untagged
       - Tray
+      - Drapping
+      - FoleySet
       conditionalClickPenalties:
       - penaltyType: 1
         penaltyScore: 10
@@ -506,6 +513,21 @@ MonoBehaviour:
         speaker: 4
         penaltyMessage: "\uC7A5\uB09C\uCE58\uC9C0\uB9C8\uB77C \u3161\u3161 \uB2E4
           \uBCF4\uACE0 \uC788\uC5B4"
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uC5D0\uC6C5!! \uC65C \uAC70\uAE30\uB2E4\uAC00 \uBD80\uC5B4? "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uB3C4\uB300\uCCB4 \uAC70\uAE30\uC5D0 \uC65C \uBD93\uB294\uAC70\uC57C?
+          \uC7A5\uB09C\uCE58\uC9C0\uB9D0\uC790"
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
@@ -607,6 +629,7 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 9195287308788494162, guid: e17ec11fbe5e755499fd0f0b32aec811, type: 3}
@@ -723,15 +746,18 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 1
       validClickTags:
-      - Intray
+      - Bowl
       invalidClickTags:
       - Untagged
       - Trash
       - Tray
+      - Drapping
+      - FoleySet
       conditionalClickPenalties:
       - penaltyType: 0
         penaltyScore: 5
@@ -751,6 +777,20 @@ MonoBehaviour:
         penaltyScore: 5
         speaker: 4
         penaltyMessage: "\uD55C\uBC88 \uB354 \uC7A5\uB09C\uCE58\uBA74..."
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uADF8\uAC78 \uAC70\uAE30\uB2E4 \uC65C \uBD80\uC5B4? "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uCC9C\uC5D0\uB2E4\uAC00 \uC65C \uBD93\uB294\uAC70\uC57C?!"
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
@@ -798,8 +838,7 @@ MonoBehaviour:
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 1
-    requiredPreviousStageIds:
-    - DilutedWater_stage_5
+    requiredPreviousStageIds: []
     incorrectOrderPenalty:
       penaltyType: 0
       penaltyScore: 0
@@ -853,6 +892,7 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 6858606827676977020, guid: d337e4c62465dd64393af27c23652b0c, type: 3}
@@ -968,6 +1008,7 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
       isConditionalClick: 1

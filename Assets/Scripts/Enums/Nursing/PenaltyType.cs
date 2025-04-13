@@ -36,10 +36,12 @@ namespace Nursing.Penalty
 
         [Space(5)]
         [Tooltip("사용자에게 표시할 패널티 메시지")]
+        [TextArea(3, 5)]  // 높이 3-5줄로 설정 (숫자는 필요에 따라 조정)
         public string penaltyMessage;
 
         [Space(5)]
         [Tooltip("데이터베이스에 기록할 패널티 메시지")]
+        [TextArea(3, 5)]  // 높이 3-5줄로 설정 (숫자는 필요에 따라 조정)
         public string databaseMessage;
 
         [Header("패널티 시각 효과")]

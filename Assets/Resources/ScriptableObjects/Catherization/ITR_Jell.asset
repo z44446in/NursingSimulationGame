@@ -53,6 +53,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 6948918642296159764, guid: ce03efa0d94b43e4bb891c72ba6f9349, type: 3}
@@ -134,7 +148,7 @@ MonoBehaviour:
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 15.2
-      targetObjectTag: JellyHand
+      targetObjectTag: Hand
       deactivateObjectAfterDrag: 1
       followDragMovement: 0
       dragDistanceLimit: 0
@@ -157,6 +171,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 6948918642296159764, guid: ce03efa0d94b43e4bb891c72ba6f9349, type: 3}
@@ -261,6 +289,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
@@ -365,6 +407,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
@@ -373,8 +429,10 @@ MonoBehaviour:
       - Trash
       invalidClickTags:
       - Untagged
-      - Intray
+      - Bowl
       - Tray
+      - Drapping
+      - FoleySet
       conditionalClickPenalties:
       - penaltyType: 0
         penaltyScore: 5
@@ -386,23 +444,40 @@ MonoBehaviour:
       - penaltyType: 0
         penaltyScore: 5
         speaker: 0
-        penaltyMessage: "\uC5E5? \uAC70\uAE30 \uC704\uC5D0\uB2E4\uAC00 \uC9DC\uBA74
-          \uC5B4\uB5A1\uD574! \uC5D0\uC6C5.. "
+        penaltyMessage: "\uAC70\uAE30\uB2E4\uAC00 \uC724\uD65C\uC81C\uB97C \uC9DC\uBA74,
+          \uD0C8\uC9C0\uBA74 \uBCFC\uC774 \uD3EC\uBE44\uB3C8 \uBCFC\uC774\uB791 \uBA78\uADE0\uC99D\uB958\uC218\uB294
+          \uADF8\uB0E5 \uD2B8\uB808\uC774\uC5D0 \uB2F4\uC544\uC11C \uAC00\uAC8C?"
         databaseMessage: 
         flashRedScreen: 0
         flashCount: 0
       - penaltyType: 2
         penaltyScore: 20
         speaker: 0
-        penaltyMessage: "\uBA78\uADE0\uC744 \uC720\uC9C0\uD558\uAE30 \uC704\uD574\uC11C\uB294,
-          \uAF2D \uC758\uB8CC\uD3D0\uAE30\uBB3C\uD1B5\uC5D0 \uC870\uAE08 \uC9E0 \uB4A4\uC5D0
-          \uD2B8\uB808\uC774 \uC548\uC5D0\uB2E4\uAC00 \uC9DC\uC57C \uD574. \uC717\uBD80\uBD84\uC740
-          \uC624\uC5FC\uB418\uC5B4\uC788\uC744 \uC218 \uC788\uAC70\uB4E0! "
+        penaltyMessage: "\uC7A0\uAE50! \uBA78\uADE0\uC744 \uC720\uC9C0\uD558\uAE30
+          \uC704\uD574\uC11C\uB294, \uAF2D \uC758\uB8CC\uD3D0\uAE30\uBB3C\uD1B5\uC5D0
+          \uC870\uAE08 \uC9E0 \uB4A4\uC5D0 \uD2B8\uB808\uC774 \uC548\uC5D0\uB2E4\uAC00
+          \uC9DC\uC57C \uD574. \uC717\uBD80\uBD84\uC740 \uC624\uC5FC\uB418\uC5B4\uC788\uC744
+          \uC218 \uC788\uAC70\uB4E0!  \uC798 \uC54C\uC544\uB450\uC790 \u314E\u314E "
         databaseMessage: "\uC724\uD65C\uC81C\uB97C \uD2B8\uB808\uC774 \uC548\uC5D0
           \uC9DC\uAE30 \uC804\uC5D0, \uC758\uB8CC\uD3D0\uAE30\uBB3C\uD1B5\uC5D0 \uBA3C\uC800
           \uC9DC\uC57C\uD569\uB2C8\uB2E4. "
         flashRedScreen: 1
         flashCount: 3
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uAC70\uAE30\uB2E4\uAC00 \uC9DC\uBA74.. \uACF5\uD3EC\uAC00
+          \uB048\uC801\uB048\uC801\uD574\uC9C0\uC796\uC544. \uC7A5\uB09C \uCE58\uC9C0\uB9C8! "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uD2B8\uB808\uC774 \uC548\uC5D0\uB2E4\uAC00 \uC9DC\uC57C\uC9C0~"
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -500,6 +575,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 1423824034302344488, guid: dd9152e75cace6548ac68f3c6ec98894, type: 3}
@@ -631,6 +720,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 5126152430873115641, guid: 9c4ef230bfdc09e4fae06ddf56d467c3, type: 3}
@@ -639,8 +742,10 @@ MonoBehaviour:
       - Tray
       invalidClickTags:
       - Untagged
-      - Intray
+      - Drapping
       - Trash
+      - Bowl
+      - FoleySet
       conditionalClickPenalties:
       - penaltyType: 0
         penaltyScore: 5
@@ -661,6 +766,24 @@ MonoBehaviour:
         penaltyScore: 5
         speaker: 0
         penaltyMessage: "\uD55C\uBC88 \uC9F0\uC73C\uBA74 \uB410\uC5B4! "
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uAC70\uAE30\uB2E4\uAC00 \uC724\uD65C\uC81C\uB97C \uC9DC\uBA74,
+          \uD0C8\uC9C0\uBA74 \uBCFC\uC774 \uD3EC\uBE44\uB3C8 \uBCFC\uC774\uB791 \uBA78\uADE0\uC99D\uB958\uC218\uB294
+          \uADF8\uB0E5 \uD2B8\uB808\uC774\uC5D0 \uB2F4\uC544\uC11C \uAC00\uAC8C?"
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 4
+        penaltyMessage: "\uC65C \uAC70\uAE30\uB2E4\uAC00 \uC9DC\uB294\uAC78\uAE4C?
+          \uC7A5\uB09C\uCE58\uB294\uAC78\uAE4C? \uC81C\uB300\uB85C \uD2B8\uB808\uC774
+          \uC548\uC5D0 \uC9DC\uC790"
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
@@ -761,6 +884,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 5794344015829654679, guid: 21e0a5b35fd96a245aea21bb95ec9541, type: 3}
@@ -891,6 +1028,20 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
+      multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 5794344015829654679, guid: 21e0a5b35fd96a245aea21bb95ec9541, type: 3}
@@ -945,7 +1096,7 @@ MonoBehaviour:
       sustainedClickTargetTag: 
       deleteObject: 1
       objectToDeleteTag:
-      - JellyHand
+      - Hand
       moveObject: 0
       objectToMoveTag: 
       moveDirection: {x: 0, y: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5017489576500536892}
   m_Layer: 0
   m_Name: VynlOpenHand
-  m_TagString: SmallVynl
+  m_TagString: Hand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 134993519475212106}
   m_Layer: 0
   m_Name: BeforeOpenSmallVynyl
-  m_TagString: SmallVynl
+  m_TagString: Vynl
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

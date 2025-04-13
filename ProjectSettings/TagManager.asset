@@ -6,16 +6,17 @@ TagManager:
   tags:
   - Bottle
   - Hand
-  - Intray
   - Trash
   - Tape
   - FoleySet
   - Tray
-  - JellyHand
   - Belly
-  - SmallVynl
-  - BigVynl
-  - OpenSyringe
+  - Vynl
+  - Bowl
+  - Drapping
+  - Water
+  - NoCheck
+  - Min
   layers:
   - Default
   - TransparentFX

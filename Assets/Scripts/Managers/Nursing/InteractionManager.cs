@@ -1121,7 +1121,54 @@ namespace Nursing.Managers
                             return;
                         }
                     }
-                    
+
+                    //최소 드래그 영역 설정 
+                    if (settings.requireReachTargetZone && !string.IsNullOrEmpty(settings.targetZoneTag))
+                    {
+                        // 현재 터치/마우스 위치
+                        Vector2 touchPos = isTouching ? Input.GetTouch(0).position : (Vector2)Input.mousePosition;
+
+                        // 터치 위치가 목표 영역 안에 있는지 확인
+                        bool reachedTarget = IsPointInTargetZone(touchPos, settings.targetZoneTag);
+
+                        if (!reachedTarget)
+                        { 
+
+                            if (dialogueManager != null)
+                            {
+                                dialogueManager.ShowGuideMessage("실제 술기를 수행하는 것 처럼 드래그하세요");
+                            }
+
+                            // 드래그 상태 리셋
+                            isDragging = false;
+                            draggedObject = null;
+                            return;
+                        }
+                    }
+
+                    //충돌 불가 영역 설정 
+                    // 현재 터치/마우스 위치
+                    Vector2 currentTouchPos = isTouching ? Input.GetTouch(0).position : (Vector2)Input.mousePosition;
+
+                    // 터치 위치가 금지 영역과 충돌하는지 확인
+                    bool isTouchingNoTouchZone = IsPointInZone(currentTouchPos, settings.noTouchZoneTag);
+
+                    if (isTouchingNoTouchZone)
+                    {
+                        // 터치 금지 영역과 충돌
+                        if (settings.touchCollisionPenalty != null)
+                        {
+                            ApplyPenalty(settings.touchCollisionPenalty);
+                        }
+
+
+                        // 드래그 상태 리셋
+                        isDragging = false;
+                        draggedObject = null;
+                        return;
+                    }
+
+
                     // 드래그 거리 제한 확인
                     float dragDistance = Vector2.Distance(dragEndPosition, dragStartPosition);
                     if (settings.dragDistanceLimit > 0 && dragDistance > settings.dragDistanceLimit)
@@ -1239,7 +1286,63 @@ namespace Nursing.Managers
             }
         }
 
-        
+        private bool IsPointInTargetZone(Vector2 screenPoint, string targetZoneTag)
+        {
+            // UI 요소 체크를 위한 레이캐스트
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = screenPoint;
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            foreach (RaycastResult result in results)
+            {
+                // 목표 영역 태그 확인
+                if (result.gameObject.CompareTag(targetZoneTag))
+                {
+                    return true;
+                }
+            }
+
+            // 월드 공간 객체에 대한 체크 (필요한 경우)
+            Ray ray = Camera.main.ScreenPointToRay(screenPoint);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+            if (hit.collider != null && hit.collider.CompareTag(targetZoneTag))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsPointInZone(Vector2 screenPoint, string zoneTag)
+        {
+            // UI 요소 체크를 위한 레이캐스트
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = screenPoint;
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            foreach (RaycastResult result in results)
+            {
+                // 지정된 태그 확인
+                if (result.gameObject.CompareTag(zoneTag))
+                {
+                    return true;
+                }
+            }
+
+            // 월드 공간 객체에 대한 체크 (필요한 경우)
+            Ray ray = Camera.main.ScreenPointToRay(screenPoint);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+            if (hit.collider != null && hit.collider.CompareTag(zoneTag))
+            {
+                return true;
+            }
+
+            return false;
+        }
 
 
         /// <summary>

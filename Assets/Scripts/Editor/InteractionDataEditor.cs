@@ -283,14 +283,21 @@ namespace Nursing.Editor
         private void DrawSingleDragInteractionSettings(SerializedProperty settingsProp)
         {
             SerializedProperty isDragInteractionProp = settingsProp.FindPropertyRelative("isDragInteraction");
+
             SerializedProperty showDirectionArrowsProp = settingsProp.FindPropertyRelative("showDirectionArrows");
             SerializedProperty arrowStartPositionProp = settingsProp.FindPropertyRelative("arrowStartPosition");
             SerializedProperty arrowDirectionProp = settingsProp.FindPropertyRelative("arrowDirection");
+
             SerializedProperty requireTwoFingerDragProp = settingsProp.FindPropertyRelative("requireTwoFingerDrag");
+
             SerializedProperty requiredDragDirectionProp = settingsProp.FindPropertyRelative("requiredDragDirection");
+
             SerializedProperty dragDirectionToleranceProp = settingsProp.FindPropertyRelative("dragDirectionTolerance");
+
             SerializedProperty targetObjectTagProp = settingsProp.FindPropertyRelative("targetObjectTag");
+
             SerializedProperty followDragMovementProp = settingsProp.FindPropertyRelative("followDragMovement");
+
             SerializedProperty dragDistanceLimitProp = settingsProp.FindPropertyRelative("dragDistanceLimit");
             SerializedProperty boundaryObjectTagProp = settingsProp.FindPropertyRelative("boundaryObjectTag");
             SerializedProperty collisionZoneTagProp = settingsProp.FindPropertyRelative("collisionZoneTag");
@@ -419,22 +426,69 @@ namespace Nursing.Editor
             EditorGUILayout.Space();
 
 
-            // 이동 설정
-            EditorGUILayout.LabelField("이동 설정", subheaderStyle);
-            EditorGUILayout.PropertyField(followDragMovementProp, new GUIContent("드래그 따라 이동", "드래그 위치를 따라 오브젝트가 이동하는지 여부"));
+            EditorGUILayout.LabelField("목표 영역 설정", subheaderStyle);
 
+            SerializedProperty requireReachTargetZoneProp = settingsProp.FindPropertyRelative("requireReachTargetZone");
+            SerializedProperty targetZoneTagProp = settingsProp.FindPropertyRelative("targetZoneTag");
+           
 
-            EditorGUILayout.PropertyField(dragDistanceLimitProp, new GUIContent("드래그 거리 제한", "최대 드래그 거리 (0 = 제한 없음)"));
-            EditorGUILayout.PropertyField(boundaryObjectTagProp, new GUIContent("경계 오브젝트 태그", "오브젝트가 넘어가면 안 되는 경계의 태그"));
-            EditorGUILayout.PropertyField(collisionZoneTagProp, new GUIContent("충돌 영역 태그", "오브젝트가 충돌하면 안 되는 영역의 태그"));
+            // 목표 영역 도달 필요 여부
+            EditorGUILayout.PropertyField(requireReachTargetZoneProp, new GUIContent("목표 영역 도달 필요", "드래그 종료 시 터치 지점이 지정한 목표 영역 내에 있어야 하는지 여부"));
 
+            if (requireReachTargetZoneProp.boolValue)
+            {
+                // 목표 영역 태그
+                EditorGUILayout.PropertyField(targetZoneTagProp, new GUIContent("목표 영역 태그", "드래그 목표 영역의 태그"));
 
+                
+            }
+
+            //충돌불가 영역 설정 
             EditorGUILayout.Space();
 
-            // 패널티 설정
-            EditorGUILayout.LabelField("패널티 설정", subheaderStyle);
-            EditorGUILayout.PropertyField(OverDragProp, new GUIContent("과도한 드래그 패널티", "드래그 제한을 초과하거나 경계를 벗어날 때 적용할 패널티"));
-            EditorGUILayout.PropertyField(CollideDragProp, new GUIContent("충돌 드래그 패널티", "드래그 충돌 시 패널티"));
+           
+
+            SerializedProperty detectTouchCollisionProp = settingsProp.FindPropertyRelative("detectTouchCollision");
+            SerializedProperty noTouchZoneTagProp = settingsProp.FindPropertyRelative("noTouchZoneTag");
+            SerializedProperty touchCollisionPenaltyProp = settingsProp.FindPropertyRelative("touchCollisionPenalty");
+
+            // 터치 충돌 감지 활성화
+            EditorGUILayout.PropertyField(detectTouchCollisionProp, new GUIContent("터치 충돌 감지", "드래그 중 터치 지점이 불가 영역과 충돌하는지 감지"));
+
+            if (detectTouchCollisionProp.boolValue)
+            {
+                // 터치 불가 영역 태그
+                EditorGUILayout.PropertyField(noTouchZoneTagProp, new GUIContent("터치 불가 영역 태그", "터치하면 안 되는 영역의 태그"));
+
+                // 터치 충돌 시 패널티
+                EditorGUILayout.PropertyField(touchCollisionPenaltyProp, new GUIContent("터치 충돌 패널티", "터치 불가 영역과 충돌했을 때 적용할 패널티"));
+            }
+
+            EditorGUILayout.Space();
+            // 이동 설정
+            EditorGUILayout.LabelField("이동 설정", subheaderStyle);
+
+            EditorGUILayout.PropertyField(followDragMovementProp, new GUIContent("드래그 따라 이동", "드래그 위치를 따라 오브젝트가 이동하는지 여부"));
+            if(followDragMovementProp.boolValue)
+            {
+                //CollideDrag
+                EditorGUILayout.PropertyField(dragDistanceLimitProp, new GUIContent("드래그 거리 제한", "최대 드래그 거리 (0 = 제한 없음)"));
+                EditorGUILayout.PropertyField(boundaryObjectTagProp, new GUIContent("경계 오브젝트 태그", "오브젝트가 넘어가면 안 되는 경계의 태그"));
+                EditorGUILayout.PropertyField(collisionZoneTagProp, new GUIContent("충돌 영역 태그", "오브젝트가 충돌하면 안 되는 영역의 태그"));
+
+                EditorGUILayout.Space();
+
+                // 패널티 설정
+                EditorGUILayout.LabelField("패널티 설정", subheaderStyle);
+                EditorGUILayout.PropertyField(OverDragProp, new GUIContent("과도한 드래그 패널티", "드래그 제한을 초과하거나 경계를 벗어날 때 적용할 패널티"));
+                EditorGUILayout.PropertyField(CollideDragProp, new GUIContent("충돌 드래그 패널티", "드래그 충돌 시 패널티"));
+
+
+            }
+
+           
+
+            
 
             //CollideDrag
         }
