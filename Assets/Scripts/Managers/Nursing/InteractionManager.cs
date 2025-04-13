@@ -1371,8 +1371,9 @@ namespace Nursing.Managers
                 // Default 레이어 인덱스 가져오기
                
                 string clickedTag = null;
-                
-                
+                GameObject clickedObject = null;
+
+
                 foreach (RaycastResult result in results)
                 {
                     GameObject hitObject = result.gameObject;
@@ -1385,14 +1386,20 @@ namespace Nursing.Managers
 
                     
                         clickedTag = hitObject.tag;
+                         clickedObject = hitObject;
 
-                    
 
-                    // 유효한 클릭 태그인지 확인
+
                     if (settings.validClickTags.Contains(clickedTag))
+                    {
+                        // 옵션이 켜져 있는 경우에만 오브젝트 파괴
+                        if (settings.destroyValidClickedObject && clickedObject != null)
                         {
-                            // 유효한 클릭, 다음 단계로 진행
-                            AdvanceToNextStage();
+                            Destroy(clickedObject);
+                        }
+
+                        // 유효한 클릭, 다음 단계로 진행
+                        AdvanceToNextStage();
                             return;
                         }
 

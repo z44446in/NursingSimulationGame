@@ -651,10 +651,13 @@ namespace Nursing.Editor
             SerializedProperty validClickTagsProp = settingsProp.FindPropertyRelative("validClickTags");
             SerializedProperty invalidClickTagsProp = settingsProp.FindPropertyRelative("invalidClickTags");
             SerializedProperty conditionalClickPenaltiesProp = settingsProp.FindPropertyRelative("conditionalClickPenalties");
-            
+            SerializedProperty isdestroyValidClickedObjectProp = settingsProp.FindPropertyRelative("destroyValidClickedObject");
+
             // 이 인터랙션 타입을 활성화하기 위한 플래그
             isConditionalClickProp.boolValue = true;
-            
+           
+            EditorGUILayout.PropertyField(isdestroyValidClickedObjectProp, new GUIContent("선택한 오브젝트 삭제", "유효한 태그일 때 선택하면 삭제되는 기능"));
+
             // 기본 설정
             EditorGUILayout.PropertyField(validClickTagsProp, new GUIContent("유효한 클릭 태그", "클릭해도 되는 오브젝트의 태그 목록"));
             EditorGUILayout.PropertyField(invalidClickTagsProp, new GUIContent("유효하지 않은 클릭 태그", "클릭하면 안 되는 오브젝트의 태그 목록"));

@@ -120,7 +120,9 @@ namespace Nursing.Interaction
         public List<string> validClickTags;
         public List<string> invalidClickTags;
         public List<PenaltyData> conditionalClickPenalties;
-        
+        public bool destroyValidClickedObject = false;
+
+
         [Header("지속 클릭")]
         public bool isSustainedClick;
         public float sustainedClickDuration;

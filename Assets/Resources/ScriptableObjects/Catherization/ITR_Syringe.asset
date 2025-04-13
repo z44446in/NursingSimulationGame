@@ -53,6 +53,19 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
@@ -61,6 +74,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -201,6 +215,19 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
@@ -209,6 +236,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -348,6 +376,19 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
@@ -356,6 +397,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -378,7 +420,6 @@ MonoBehaviour:
       deleteObject: 1
       objectToDeleteTag:
       - Vynl
-      - Hand
       moveObject: 0
       objectToMoveTag: 
       moveDirection: {x: 0, y: 0}
@@ -497,6 +538,19 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
@@ -505,6 +559,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -645,6 +700,19 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
@@ -679,6 +747,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -819,6 +888,19 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
@@ -846,6 +928,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -986,6 +1069,19 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
@@ -1013,6 +1109,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
