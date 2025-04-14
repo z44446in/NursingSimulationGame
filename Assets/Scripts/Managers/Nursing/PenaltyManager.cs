@@ -41,6 +41,7 @@ namespace Nursing.Managers
             if (penaltyData == null)
                 return false;
             
+            
             // 패널티 시각효과 표시
             if (penaltyData.flashRedScreen && redScreenFlash != null)
             {
@@ -66,6 +67,7 @@ namespace Nursing.Managers
             }
 
             return true;
+
         }
         
         /// <summary>

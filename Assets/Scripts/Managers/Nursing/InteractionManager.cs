@@ -478,13 +478,16 @@ namespace Nursing.Managers
 
             // 퀴즈 결과 이벤트 구독
             quizController.OnQuizComplete += (bool isCorrect) => {
-                if (!isCorrect && settings.imageQuizWrongAnswer != null)
+                if (!isCorrect && settings.textQuizWrongAnswer != null)
                 {
-                    ApplyPenalty(settings.imageQuizWrongAnswer);
+                    ApplyPenalty(settings.textQuizWrongAnswer);
                 }
-
-                // 퀴즈 완료 후 다음 단계로 진행
-                AdvanceToNextStage();
+                
+                else
+                    // 퀴즈 완료 후 다음 단계로 진행
+                    AdvanceToNextStage();
+                
+                
             };
 
             // 퀴즈가 표시되면 인터랙션 완료를 기다립니다.

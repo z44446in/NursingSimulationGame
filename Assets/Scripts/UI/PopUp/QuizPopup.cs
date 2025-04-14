@@ -42,7 +42,7 @@ namespace Nursing.UI
         private CanvasGroup canvasGroup;
 
         public event Action<bool> OnQuizComplete;
-        public event Action OnDestroyed;
+       
 
         private void Awake()
         {
@@ -365,7 +365,8 @@ namespace Nursing.UI
                 }
 
                 FadeOut(() => {
-                    OnDestroyed?.Invoke();
+                    
+
                     Destroy(gameObject);
                 });
             }
