@@ -267,11 +267,17 @@ namespace Nursing.Editor
                 case InteractionType.ObjectMovement:
                     DrawObjectMovementSettings(settingsProp);
                     break;
-                    
-                case InteractionType.QuizPopup:
-                    DrawQuizPopupSettings(settingsProp);
+
+                // 새로운 퀴즈 타입 케이스 추가
+                case InteractionType.TextQuizPopup:
+                    DrawTextQuizPopupSettings(settingsProp);
                     break;
-                    
+
+                case InteractionType.ImageQuizPopup:
+                    DrawImageQuizPopupSettings(settingsProp);
+                    break;
+
+
                 case InteractionType.MiniGame:
                     DrawMiniGameSettings(settingsProp);
                     break;
@@ -752,31 +758,31 @@ namespace Nursing.Editor
                 EditorGUILayout.PropertyField(moveDirectionProp, new GUIContent("이동 방향", "오브젝트가 이동할 방향"));
             }
         }
-        
-        private void DrawQuizPopupSettings(SerializedProperty settingsProp)
+
+        // 기존 DrawQuizPopupSettings 메서드 대신 아래 두 메서드를 추가
+        private void DrawTextQuizPopupSettings(SerializedProperty settingsProp)
         {
-            SerializedProperty showQuizPopupProp = settingsProp.FindPropertyRelative("showQuizPopup");
-            SerializedProperty questionTextProp = settingsProp.FindPropertyRelative("questionText");
-            SerializedProperty quizOptionsProp = settingsProp.FindPropertyRelative("quizOptions");
-            SerializedProperty correctAnswerIndexProp = settingsProp.FindPropertyRelative("correctAnswerIndex");
-            SerializedProperty optionImagesProp = settingsProp.FindPropertyRelative("optionImages");
-            SerializedProperty timeLimitProp = settingsProp.FindPropertyRelative("timeLimit");
-            SerializedProperty WrongAnswerProp = settingsProp.FindPropertyRelative("WrongAnswer");
-            
+            SerializedProperty showTextQuizPopupProp = settingsProp.FindPropertyRelative("showTextQuizPopup");
+            SerializedProperty questionTextProp = settingsProp.FindPropertyRelative("textQuizQuestionText");
+            SerializedProperty quizOptionsProp = settingsProp.FindPropertyRelative("textQuizOptions");
+            SerializedProperty correctAnswerIndexProp = settingsProp.FindPropertyRelative("textQuizCorrectAnswerIndex");
+            SerializedProperty timeLimitProp = settingsProp.FindPropertyRelative("textQuizTimeLimit");
+            SerializedProperty WrongAnswerProp = settingsProp.FindPropertyRelative("textQuizWrongAnswer");
+
             // 이 인터랙션 타입을 활성화하기 위한 플래그
-            showQuizPopupProp.boolValue = true;
-            
+            showTextQuizPopupProp.boolValue = true;
+
             // 기본 설정
             EditorGUILayout.PropertyField(questionTextProp, new GUIContent("질문 텍스트", "퀴즈 질문 내용"));
             EditorGUILayout.PropertyField(quizOptionsProp, new GUIContent("퀴즈 옵션", "선택 가능한 답변 목록"));
-            
+
             // 옵션이 있는 경우에만 정답 인덱스 설정 표시
             if (quizOptionsProp.arraySize > 0)
             {
                 // 정답 인덱스 값 검증
                 int maxIndex = quizOptionsProp.arraySize - 1;
                 correctAnswerIndexProp.intValue = Mathf.Clamp(correctAnswerIndexProp.intValue, 0, maxIndex);
-                
+
                 // 드롭다운으로 정답 선택
                 string[] options = new string[quizOptionsProp.arraySize];
                 for (int i = 0; i < options.Length; i++)
@@ -784,7 +790,7 @@ namespace Nursing.Editor
                     SerializedProperty option = quizOptionsProp.GetArrayElementAtIndex(i);
                     options[i] = option.stringValue;
                 }
-                
+
                 int selectedIndex = EditorGUILayout.Popup("정답", correctAnswerIndexProp.intValue, options);
                 correctAnswerIndexProp.intValue = selectedIndex;
             }
@@ -792,15 +798,72 @@ namespace Nursing.Editor
             {
                 EditorGUILayout.PropertyField(correctAnswerIndexProp, new GUIContent("정답 인덱스", "정답 옵션의 인덱스"));
             }
-            
+
             // 추가 설정
-            EditorGUILayout.PropertyField(optionImagesProp, new GUIContent("옵션 이미지", "각 답변 옵션의 이미지"));
             EditorGUILayout.PropertyField(timeLimitProp, new GUIContent("시간 제한", "퀴즈 응답 시간 제한 (초, 0 = 제한 없음)"));
-            
+
             // 패널티 설정
             EditorGUILayout.PropertyField(WrongAnswerProp, new GUIContent("오답 패널티", "잘못된 답변을 선택했을 때 적용할 패널티"));
         }
-        
+
+        private void DrawImageQuizPopupSettings(SerializedProperty settingsProp)
+        {
+            SerializedProperty showImageQuizPopupProp = settingsProp.FindPropertyRelative("showImageQuizPopup");
+            SerializedProperty questionTextProp = settingsProp.FindPropertyRelative("imageQuizQuestionText");
+            SerializedProperty optionImagesProp = settingsProp.FindPropertyRelative("imageQuizOptions");
+            SerializedProperty correctAnswerIndexProp = settingsProp.FindPropertyRelative("imageQuizCorrectAnswerIndex");
+            SerializedProperty timeLimitProp = settingsProp.FindPropertyRelative("imageQuizTimeLimit");
+            SerializedProperty WrongAnswerProp = settingsProp.FindPropertyRelative("imageQuizWrongAnswer");
+
+            // 이 인터랙션 타입을 활성화하기 위한 플래그
+            showImageQuizPopupProp.boolValue = true;
+
+            // 기본 설정
+            EditorGUILayout.PropertyField(questionTextProp, new GUIContent("질문 텍스트", "퀴즈 질문 내용"));
+            EditorGUILayout.PropertyField(optionImagesProp, new GUIContent("이미지 옵션", "선택 가능한 이미지 옵션 목록"));
+
+            // 이미지 옵션이 있는 경우에만 정답 인덱스 설정 표시
+            if (optionImagesProp.arraySize > 0)
+            {
+                // 정답 인덱스 값 검증
+                int maxIndex = optionImagesProp.arraySize - 1;
+                correctAnswerIndexProp.intValue = Mathf.Clamp(correctAnswerIndexProp.intValue, 0, maxIndex);
+
+                // 정답 인덱스 설정 (드롭다운으로 표시할 수 없어서 슬라이더로 대체)
+                correctAnswerIndexProp.intValue = EditorGUILayout.IntSlider(
+                    new GUIContent("정답 이미지 인덱스", "정답 이미지의 인덱스"),
+                    correctAnswerIndexProp.intValue,
+                    0,
+                    maxIndex
+                );
+
+                // 선택된 이미지 미리보기 (옵션)
+                if (correctAnswerIndexProp.intValue >= 0 && correctAnswerIndexProp.intValue < optionImagesProp.arraySize)
+                {
+                    SerializedProperty selectedImageProp = optionImagesProp.GetArrayElementAtIndex(correctAnswerIndexProp.intValue);
+                    Object selectedImage = selectedImageProp.objectReferenceValue;
+
+                    if (selectedImage != null)
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.PrefixLabel("선택된 정답 이미지");
+                        GUILayout.Box(AssetPreview.GetAssetPreview(selectedImage), GUILayout.Width(64), GUILayout.Height(64));
+                        EditorGUILayout.EndHorizontal();
+                    }
+                }
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(correctAnswerIndexProp, new GUIContent("정답 인덱스", "정답 이미지의 인덱스"));
+            }
+
+            // 추가 설정
+            EditorGUILayout.PropertyField(timeLimitProp, new GUIContent("시간 제한", "퀴즈 응답 시간 제한 (초, 0 = 제한 없음)"));
+
+            // 패널티 설정
+            EditorGUILayout.PropertyField(WrongAnswerProp, new GUIContent("오답 패널티", "잘못된 답변을 선택했을 때 적용할 패널티"));
+        }
+
         private void DrawMiniGameSettings(SerializedProperty settingsProp)
         {
             SerializedProperty startMiniGameProp = settingsProp.FindPropertyRelative("startMiniGame");

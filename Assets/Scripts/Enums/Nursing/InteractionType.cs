@@ -31,8 +31,11 @@ namespace Nursing.Interaction
         ObjectMovement,
         
         [Tooltip("퀴즈 팝업 - 퀴즈를 표시하는 상호작용")]
-        QuizPopup,
-        
+        TextQuizPopup,
+
+        [Tooltip("퀴즈 팝업 - 퀴즈를 표시하는 상호작용")]
+        ImageQuizPopup,
+
         [Tooltip("미니게임 - 미니게임을 실행하는 상호작용")]
         MiniGame
     }

@@ -140,15 +140,26 @@ namespace Nursing.Interaction
         public Vector2 moveDirection;
         public float moveSpeed;
         public Vector2[] movePath;
-        
-        [Header("퀴즈 팝업")]
-        public bool showQuizPopup;
-        public string questionText;
-        public List<string> quizOptions;
-        public int correctAnswerIndex;
-        public Sprite[] optionImages;
-        public float timeLimit;
-        public PenaltyData WrongAnswer;//틀린 답을 골랐을 때 발생 
+
+        // 새로운 텍스트 퀴즈 설정 추가
+        [Header("텍스트 퀴즈 팝업")]
+        public bool showTextQuizPopup;
+        public string textQuizQuestionText;
+        public List<string> textQuizOptions;
+        public int textQuizCorrectAnswerIndex;
+        public float textQuizTimeLimit;
+        public PenaltyData textQuizWrongAnswer;
+
+        // 새로운 이미지 퀴즈 설정 추가
+        [Header("이미지 퀴즈 팝업")]
+        public bool showImageQuizPopup;
+        public string imageQuizQuestionText;
+        public Sprite[] imageQuizOptions;
+        public int imageQuizCorrectAnswerIndex;
+        public float imageQuizTimeLimit;
+        public PenaltyData imageQuizWrongAnswer;
+
+
 
         [Header("미니게임")]
         public bool startMiniGame;

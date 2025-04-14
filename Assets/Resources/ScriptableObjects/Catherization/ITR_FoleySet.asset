@@ -74,6 +74,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -100,20 +101,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -192,6 +205,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -218,20 +232,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -310,6 +336,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -337,20 +364,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -432,6 +471,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -459,20 +499,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -551,6 +603,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -578,31 +631,45 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 1
-      questionText: "\uB2E4\uC74C \uC911 \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4 \uB54C
-        \uC633\uC740 \uAC83\uC744 \uD130\uCE58\uD558\uC138\uC694."
-      quizOptions:
-      - "\uC544\uC9C1 \uBA78\uADE0\uC744 \uC9C0\uD0A4\uC9C0 \uC54A\uC544\uB3C4 \uB41C\uB2E4. "
-      - "\uBA78\uADE0\uC744 \uC9C0\uCF1C\uC57C \uD558\uC9C0\uB9CC, \uBAB8\uC774 \uCC9C\uACFC
-        \uB2FF\uB294 \uAC83 \uC815\uB3C4\uB294 \uB41C\uB2E4. "
-      - "\uBA78\uADE0\uC744 \uC9C0\uCF1C\uC57C \uD558\uAE30\uB54C\uBB38\uC5D0, \uBAB8\uC774
-        \uCC9C\uC5D0 \uB2FF\uC9C0\uC54A\uAC8C \uC870\uC2EC\uD574\uC57C \uD55C\uB2E4."
+      showTextQuizPopup: 1
+      textQuizQuestionText: "\uB2E4\uC74C \uC911 \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4
+        \uB54C \uC633\uC740 \uAC83\uC740? "
+      textQuizOptions:
+      - "\uC544\uC9C1 \uBA78\uADE0\uC5D0 \uC2E0\uACBD\uC4F0\uC9C0 \uC54A\uC544\uB3C4
+        \uB41C\uB2E4 "
+      - "\uBA78\uADE0\uC744 \uC2E0\uACBD\uC368\uC57C \uD558\uB098, \uC138\uD2B8\uC758
+        \uC548\uCABD \uBA74\uC774 \uBAB8\uACFC \uB2FF\uC544\uB3C4 \uB41C\uB2E4."
+      - "\uBA78\uADE0\uC744 \uC9C0\uCF1C\uC57C \uD558\uACE0, \uC138\uD2B8\uC758 \uC548\uCABD
+        \uBA74\uACFC \uBAB8\uC774 \uB2FF\uC9C0 \uC54A\uB3C4\uB85D \uC870\uC2EC\uD558\uBA70
+        \uC5F4\uC5B4\uC57C \uD55C\uB2E4."
       - "\uBAA8\uB974\uACA0\uB2E4."
-      correctAnswerIndex: 2
-      optionImages: []
-      timeLimit: 20
-      WrongAnswer:
-        penaltyType: 1
-        penaltyScore: 10
+      textQuizCorrectAnswerIndex: 2
+      textQuizTimeLimit: 10
+      textQuizWrongAnswer:
+        penaltyType: 2
+        penaltyScore: 100
         speaker: 0
-        penaltyMessage: "\uC808\uB300 \uC808\uB300 \uCC9C\uC774 \uBAB8\uC5D0 \uB2FF\uC73C\uBA74
-          \uC548\uB3FC! \uADF8\uB7FC \uBC14\uB85C \uBA78\uADE0\uC774 \uAE68\uC838\uBC84\uB824.
-          \uADF8\uB9AC\uACE0 \uD3F4\uB9AC\uC138\uD2B8\uB97C \uAC10\uC2F8\uACE0 \uC788\uB294
-          \uCC9C\uC778\uB370 \uB2F9\uC5F0\uD788 \uBA78\uADE0\uC744 \uC9C0\uCF1C\uC57C
-          \uD558\uC9C0 \uC54A\uACA0\uC5B4? "
+        penaltyMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4 \uB54C\uB3C4 \uBA78\uADE0\uC744
+          \uC2E0\uACBD\uC368\uC57C \uD574! 2019-2020 KONIS \uC911\uD658\uC790\uC2E4
+          \uACB0\uACFC\uBCF4\uACE0\uC5D0 \uB530\uB974\uBA74, \uC694\uB85C\uAC10\uC5FC
+          \uC911 97%\uAC00 \uC720\uCE58\uB3C4\uB1E8\uAD00 \uAD00\uB828 \uC694\uB85C\uAC10\uC5FC\uC774\uC5C8\uC744
+          \uC815\uB3C4\uB2C8\uAE4C!"
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 3
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -681,6 +748,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -708,20 +776,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -803,6 +883,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -830,20 +911,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -922,6 +1015,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -949,20 +1043,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -1044,6 +1150,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -1071,20 +1178,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -1163,6 +1282,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -1190,20 +1310,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -1289,6 +1421,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -1316,20 +1449,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0
@@ -1408,6 +1553,7 @@ MonoBehaviour:
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -1435,20 +1581,32 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
     requireSpecificOrder: 0

@@ -14,7 +14,7 @@ namespace Nursing.Managers
         [Header("참조")]
         [SerializeField] private PenaltyManager penaltyManager;
         [SerializeField] private DialogueManager dialogueManager;
-        [SerializeField] private GameObject quizPopupPrefab;
+        
         [SerializeField] private Canvas mainCanvas; // UI 생성을 위한 캔버스 참조
         
         [Header("화살표 가이드")]
@@ -41,6 +41,11 @@ namespace Nursing.Managers
 
         private Dictionary<int, List<GameObject>> fingerArrows = new Dictionary<int, List<GameObject>>();
         private Dictionary<int, FingerDragStatus> fingerDragStatus = new Dictionary<int, FingerDragStatus>();
+
+
+        [Header("퀴즈 프리팹")]
+        [SerializeField] private GameObject textQuizPopupPrefab;  // 텍스트 퀴즈용 프리팹
+        [SerializeField] private GameObject imageQuizPopupPrefab; // 이미지 퀴즈용 프리팹
 
         private class FingerDragStatus
         {
@@ -178,11 +183,16 @@ namespace Nursing.Managers
                 case InteractionType.ObjectMovement:
                     SetupObjectMovement();
                     break;
-                    
-                case InteractionType.QuizPopup:
-                    SetupQuizPopup();
+
+                // 기존 QuizPopup 케이스 대신 새로운 케이스 추가
+                case InteractionType.TextQuizPopup:
+                    SetupTextQuizPopup();
                     break;
-                    
+
+                case InteractionType.ImageQuizPopup:
+                    SetupImageQuizPopup();
+                    break;
+
                 case InteractionType.MiniGame:
                     SetupMiniGame();
                     break;
@@ -434,22 +444,20 @@ namespace Nursing.Managers
             // 이동 코루틴이 완료되면 AdvanceToNextStage를 호출합니다.
         }
 
-        /// <summary>
-        /// 퀴즈 팝업 인터랙션을 설정합니다.
-        /// </summary>
-        private void SetupQuizPopup()
+        // 텍스트 퀴즈 팝업 설정 메서드 추가
+        private void SetupTextQuizPopup()
         {
             var settings = currentStage.settings;
 
-            if (settings == null || quizPopupPrefab == null)
+            if (settings == null || textQuizPopupPrefab == null)
             {
-                Debug.LogError("퀴즈 팝업 설정이 없거나 퀴즈 팝업 프리팹이 없습니다.");
+                Debug.LogError("텍스트 퀴즈 팝업 설정이 없거나 퀴즈 팝업 프리팹이 없습니다.");
                 AdvanceToNextStage();
                 return;
             }
 
-            // 퀴즈 팝업 생성
-            var quizPopup = Instantiate(quizPopupPrefab, mainCanvas.transform);
+            // 텍스트 퀴즈 팝업 생성 - 텍스트 퀴즈 전용 프리팹 사용
+            var quizPopup = Instantiate(textQuizPopupPrefab, mainCanvas.transform);
             var quizController = quizPopup.GetComponent<Nursing.UI.QuizPopup>();
 
             if (quizController == null)
@@ -460,31 +468,80 @@ namespace Nursing.Managers
                 return;
             }
 
-            // 퀴즈 설정
-            quizController.SetupQuiz(
-                settings.questionText,
-                settings.quizOptions,
-                settings.correctAnswerIndex,
-                settings.optionImages,
-                settings.timeLimit
+            // 텍스트 퀴즈 설정
+            quizController.SetupTextQuiz(
+                settings.textQuizQuestionText,
+                settings.textQuizOptions,
+                settings.textQuizCorrectAnswerIndex,
+                settings.textQuizTimeLimit
             );
 
             // 퀴즈 결과 이벤트 구독
             quizController.OnQuizComplete += (bool isCorrect) => {
-                if (!isCorrect && settings.WrongAnswer != null)
+                if (!isCorrect && settings.imageQuizWrongAnswer != null)
                 {
-                    ApplyPenalty(settings.WrongAnswer);
+                    ApplyPenalty(settings.imageQuizWrongAnswer);
                 }
-                else
-                {
-                    // 퀴즈 완료 후 다음 단계로 진행
-                    AdvanceToNextStage();
-                }
+
+                // 퀴즈 완료 후 다음 단계로 진행
+                AdvanceToNextStage();
             };
 
             // 퀴즈가 표시되면 인터랙션 완료를 기다립니다.
             interactionInProgress = true;
+
+
         }
+
+        // 이미지 퀴즈 팝업 설정 메서드 추가
+        private void SetupImageQuizPopup()
+        {
+            var settings = currentStage.settings;
+
+            if (settings == null || imageQuizPopupPrefab == null)
+            {
+                Debug.LogError("이미지 퀴즈 팝업 설정이 없거나 퀴즈 팝업 프리팹이 없습니다.");
+                AdvanceToNextStage();
+                return;
+            }
+
+            // 이미지 퀴즈 팝업 생성 - 이미지 퀴즈 전용 프리팹 사용
+            var quizPopup = Instantiate(imageQuizPopupPrefab, mainCanvas.transform);
+            var quizController = quizPopup.GetComponent<Nursing.UI.QuizPopup>();
+
+            if (quizController == null)
+            {
+                Debug.LogError("퀴즈 팝업 프리팹에 QuizPopup 컴포넌트가 없습니다.");
+                Destroy(quizPopup);
+                AdvanceToNextStage();
+                return;
+            }
+
+            // 이미지 퀴즈 설정
+            quizController.SetupImageQuiz(
+                settings.imageQuizQuestionText,
+                settings.imageQuizOptions,
+                settings.imageQuizCorrectAnswerIndex,
+                settings.imageQuizTimeLimit
+            );
+
+            // 퀴즈 결과 이벤트 구독
+            quizController.OnQuizComplete += (bool isCorrect) => {
+                if (!isCorrect && settings.imageQuizWrongAnswer != null)
+                {
+                    ApplyPenalty(settings.imageQuizWrongAnswer);
+                }
+
+                // 퀴즈 완료 후 다음 단계로 진행
+                AdvanceToNextStage();
+
+            };
+
+            // 퀴즈가 표시되면 인터랙션 완료를 기다립니다.
+            interactionInProgress = true;
+            
+        }
+        
 
         /// <summary>
         /// 미니게임 인터랙션을 설정합니다.
@@ -514,11 +571,7 @@ namespace Nursing.Managers
             
             // 미니게임 결과 이벤트 구독
             miniGameController.OnGameComplete += (bool success) => {
-                if (!success && settings.WrongAnswer != null)
-                {
-                    ApplyPenalty(settings.WrongAnswer);
-                }
-                else
+                
                 {
                     // 미니게임 완료 후 다음 단계로 진행
                     AdvanceToNextStage();
@@ -1317,6 +1370,13 @@ namespace Nursing.Managers
 
         private bool IsPointInZone(Vector2 screenPoint, string zoneTag)
         {
+            // 태그가 비어있거나 null인 경우 체크
+            if (string.IsNullOrEmpty(zoneTag))
+            {
+                Debug.LogWarning("Zone tag is null or empty");
+                return false;
+            }
+
             // UI 요소 체크를 위한 레이캐스트
             PointerEventData eventData = new PointerEventData(EventSystem.current);
             eventData.position = screenPoint;
