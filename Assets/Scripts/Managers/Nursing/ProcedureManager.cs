@@ -14,12 +14,21 @@ namespace Nursing.Managers
         [SerializeField] private InteractionManager interactionManager;
         [SerializeField] private PenaltyManager penaltyManager;
         [SerializeField] private DialogueManager dialogueManager;
-        
+
+        public PenaltyData[] previousStepPenalties; // 배열로 변경
+
         [Header("액션 버튼 설정")]
         [SerializeField] private GameObject actionPopupPrefab;
 
-        [Header("프로시저 타입 참조")]
-        [SerializeField] private ProcedureType[] availableProcedureTypes;
+        
+
+        [Header("다음 스텝 제한")]
+        public bool restrictNextSteps; // 다음 스텝 제한 여부
+        public List<string> allowedNextStepIds; // 허용된 다음 스텝 ID 목록
+        public PenaltyData invalidNextStepPenalty; // 허용되지 않은 다음 스텝 시도 시 패널티
+
+        [Header("생략 설정")]
+        public bool canBeSkipped; // 이 스텝이 생략 가능한지 여부
 
         private ProcedureType currentProcedureType;
         private ProcedureData currentProcedure;
@@ -68,17 +77,21 @@ namespace Nursing.Managers
 
         private ProcedureType FindMatchingProcedureType(ProcedureTypeEnum type, ProcedureVersionType version, ProcedurePlayType playType)
         {
-            foreach (var procedure in availableProcedureTypes)
+            ProcedureType[] allType = Resources.LoadAll<ProcedureType>("");
+
+            foreach (ProcedureType Type in allType)
             {
-                if (procedure.ProcdureTypeName == type &&
-                    procedure.versionType == version &&
-                    procedure.procedurePlayType == playType)
+                if (Type.ProcdureTypeName == type &&
+                    Type.versionType == version &&
+                    Type.procedurePlayType == playType)
                 {
-                    return procedure;
+                    return Type;
                 }
             }
             return null;
         }
+
+        
         /// <summary>
         /// 프로시저를 시작합니다.
         /// </summary>
@@ -260,6 +273,28 @@ namespace Nursing.Managers
                     CompleteStep(step);
                     break;
             }
+            if (step.restrictNextSteps)
+            {
+                // 다음 허용된 스텝에 대한 가이드나 힌트를 제공하는 코드 추가 가능
+                string allowedStepsMessage = "다음 수행 가능한 단계: ";
+                for (int i = 0; i < step.allowedNextStepIds.Count; i++)
+                {
+                    string nextStepId = step.allowedNextStepIds[i];
+                    ProcedureStep nextStep = currentProcedure.steps.Find(s => s.id == nextStepId);
+                    if (nextStep != null)
+                    {
+                        allowedStepsMessage += nextStep.name;
+                        if (i < step.allowedNextStepIds.Count - 1)
+                            allowedStepsMessage += ", ";
+                    }
+                }
+
+                // 가이드 메시지 표시
+                if (dialogueManager != null)
+                {
+                    dialogueManager.ShowGuideMessage(allowedStepsMessage);
+                }
+            }
         }
 
         // 스텝 완료
@@ -281,7 +316,19 @@ namespace Nursing.Managers
         // 프로시저 완료 체크
         private void CheckProcedureCompletion()
         {
-            if (completedStepIds.Count >= currentProcedure.steps.Count)
+            bool allRequiredStepsCompleted = true;
+
+            foreach (var step in currentProcedure.steps)
+            {
+                // 생략 불가능한 스텝이 완료되지 않았는지 확인
+                if (!step.canBeSkipped && !completedStepIds.Contains(step.id))
+                {
+                    allRequiredStepsCompleted = false;
+                    break;
+                }
+            }
+
+            if (allRequiredStepsCompleted)
             {
                 CompleteProcedure();
             }
@@ -383,29 +430,59 @@ namespace Nursing.Managers
 
                         if (!validOrder)
                         {
-                            // 중요: 동작 실행 전에 undoAction 설정
-                            if (step.incorrectOrderPenalty != null)
+                            if (!step.requireSpecificOrder || step.requiredPreviousStepIds.Count == 0)
+                                return true;
+
+                            for (int i = 0; i < step.requiredPreviousStepIds.Count; i++)
                             {
-                                // 현재 아이템 상태 미리 저장
-                                Item itemReference = FindItemById(itemId);
-
-                                step.incorrectOrderPenalty.undoAction = () => {
-                                    Debug.Log("순서 오류 동작 취소: " + itemId);
-                                    // 아이템 상태 복원 로직
-                                    if (itemReference != null && cartUI != null)
+                                string requiredStepId = step.requiredPreviousStepIds[i];
+                                if (!completedStepIds.Contains(requiredStepId))
+                                {
+                                    // 해당 인덱스에 패널티가 설정되어 있으면 적용
+                                    if (i < step.previousStepPenalties.Length && step.previousStepPenalties[i] != null)
                                     {
-                                        // 이미 사라진 경우 다시 추가
-                                        cartUI.AddItemToCart(itemReference);
+                                        ApplyPenalty(step.previousStepPenalties[i]);
                                     }
-                                };
-
-                                // 패널티 적용
-                                ApplyPenalty(step.incorrectOrderPenalty);
+                                    else if (step.previousStepPenalties[0] != null)
+                                    {
+                                        // 기본 패널티 적용
+                                        ApplyPenalty(step.previousStepPenalties[0]);
+                                    }
+                                    return false;
+                                }
                             }
+
                             return true;
                         }
                     }
-                    
+
+                    // 이 스텝이 완료되었고 다음 스텝을 제한하는 경우
+                    if (completedStepIds.Contains(step.id) && step.restrictNextSteps)
+                    {
+                       
+
+                        // 모든 스텝을 확인하여 시도하려는 스텝이 허용되는지 확인
+                        foreach (var nextStep in currentProcedure.steps)
+                        {
+                            if (nextStep.stepType == ProcedureStepType.ItemClick &&
+                                nextStep.settings.isItemClick &&
+                                nextStep.settings.itemId == itemId &&
+                                !completedStepIds.Contains(nextStep.id))
+                            {
+                                // 이 스텝이 시도하려는 스텝인 경우
+                                if (!step.allowedNextStepIds.Contains(nextStep.id))
+                                {
+                                    // 허용되지 않은 다음 스텝을 시도하는 경우
+                                    if (step.invalidNextStepPenalty != null)
+                                    {
+                                        ApplyPenalty(step.invalidNextStepPenalty);
+                                    }
+                                    return false; // 스텝 진행 불가
+                                }
+                            }
+                        }
+                    }
+
                     // 가용 스텝 목록에 있는지 확인
                     if (availableSteps.Contains(step))
                     {
@@ -456,6 +533,8 @@ namespace Nursing.Managers
                     }
                     return true;
                 }
+                
+
             }
 
             // 매칭되는 스텝을 찾지 못한 경우
@@ -541,14 +620,27 @@ namespace Nursing.Managers
 
                         if (!validOrder)
                         {
-                            // 여기서 패널티 적용
-                            if (step.incorrectOrderPenalty != null)
+                            if (!step.requireSpecificOrder || step.requiredPreviousStepIds.Count == 0)
+                                return true;
+
+                            for (int i = 0; i < step.requiredPreviousStepIds.Count; i++)
                             {
-                                string missingStepsText = string.Join(", ", missingStepIds);
-                                Debug.Log($"잘못된 순서 패널티 적용: {step.id}에 대한 선행 스텝 누락 - {missingStepsText}");
-                                ApplyPenalty(step.incorrectOrderPenalty);
+                                string requiredStepId = step.requiredPreviousStepIds[i];
+                                if (!completedStepIds.Contains(requiredStepId))
+                                {
+                                    // 해당 인덱스에 패널티가 설정되어 있으면 적용
+                                    if (i < step.previousStepPenalties.Length && step.previousStepPenalties[i] != null)
+                                    {
+                                        ApplyPenalty(step.previousStepPenalties[i]);
+                                    }
+                                    else if (step.previousStepPenalties[0] != null)
+                                    {
+                                        // 기본 패널티 적용
+                                        ApplyPenalty(step.previousStepPenalties[0]);
+                                    }
+                                    return false;
+                                }
                             }
-                            return true; // 패널티는 적용했지만 스텝은 완료하지 않음
                         }
                     }
 
@@ -567,6 +659,27 @@ namespace Nursing.Managers
                     }
                     return true;
                 }
+
+                if (completedStepIds.Contains(step.id) && step.restrictNextSteps)
+                {
+                    foreach (var nextStep in currentProcedure.steps)
+                    {
+                        if (nextStep.stepType == ProcedureStepType.PlayerInteraction &&
+                            nextStep.settings.isPlayerInteraction &&
+                            nextStep.settings.validInteractionTags.Contains(interactionTag) &&
+                            !completedStepIds.Contains(nextStep.id))
+                        {
+                            if (!step.allowedNextStepIds.Contains(nextStep.id))
+                            {
+                                if (step.invalidNextStepPenalty != null)
+                                {
+                                    ApplyPenalty(step.invalidNextStepPenalty);
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                }
             }
 
             // 유효하지 않은 상호작용에 대한 패널티 처리
@@ -574,6 +687,7 @@ namespace Nursing.Managers
             return false;
         }
 
+       
         /// <summary>
         /// 현재 스텝을 완료합니다.
         /// </summary>
@@ -691,7 +805,7 @@ namespace Nursing.Managers
                 OnActionComplete?.Invoke(isSuccess);
             }
         }
-        
+      
         /// <summary>
         /// 액션이 성공했는지 확인합니다.
         /// </summary>
