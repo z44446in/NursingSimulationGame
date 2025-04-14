@@ -37,6 +37,9 @@ namespace Nursing.Interaction
         ImageQuizPopup,
 
         [Tooltip("미니게임 - 미니게임을 실행하는 상호작용")]
-        MiniGame
+        MiniGame,
+
+     [Tooltip("다양한 선택 - 플레이어가 다른 인터랙션으로 분기할 수 있는 선택")]
+        VariousChoice
     }
 }

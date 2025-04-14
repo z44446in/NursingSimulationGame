@@ -105,16 +105,17 @@ MonoBehaviour:
     requiredPreviousStepIds:
     - Catheterization_Clinical_0
     previousStepPenalties: []
-    restrictNextSteps: 0
-    allowedNextStepIds: []
+    restrictNextSteps: 1
+    allowedNextStepIds:
+    - Catheterization_Clinical_1
     invalidNextStepPenalty:
       penaltyType: 0
-      penaltyScore: 0
+      penaltyScore: 1
       speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
+      penaltyMessage: d
+      databaseMessage: d
       flashRedScreen: 1
-      flashCount: 2
+      flashCount: 1
     canBeSkipped: 0
     incorrectActionPenalty:
       penaltyType: 0

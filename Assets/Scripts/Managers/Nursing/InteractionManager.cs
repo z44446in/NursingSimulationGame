@@ -34,7 +34,7 @@ namespace Nursing.Managers
         private Coroutine arrowBlinkCoroutine;
         private List<Coroutine> activeCoroutines = new List<Coroutine>();
 
-       
+        public event System.Action OnInteractionStarted;
 
         // 인터랙션 완료 이벤트
         public event System.Action<bool> OnInteractionComplete;
@@ -46,6 +46,9 @@ namespace Nursing.Managers
         [Header("퀴즈 프리팹")]
         [SerializeField] private GameObject textQuizPopupPrefab;  // 텍스트 퀴즈용 프리팹
         [SerializeField] private GameObject imageQuizPopupPrefab; // 이미지 퀴즈용 프리팹
+
+        [Header("UI Prefabs")]
+        [SerializeField] private GameObject confirmationPopupPrefab;
 
         private class FingerDragStatus
         {
@@ -90,10 +93,12 @@ namespace Nursing.Managers
             
             currentInteraction = interactionData;
             currentStageIndex = -1;
+
+            // 이벤트 호출
+            OnInteractionStarted?.Invoke();
             
-            // 가이드 메시지 표시
-            
-            
+
+
             // 첫 스테이지로 진행
             AdvanceToNextStage();
         }
@@ -196,7 +201,11 @@ namespace Nursing.Managers
                 case InteractionType.MiniGame:
                     SetupMiniGame();
                     break;
-                    
+
+                case InteractionType.VariousChoice:
+                    SetupVariousChoice();
+                    break;
+
                 default:
                     Debug.LogWarning("지원하지 않는 인터랙션 타입입니다: " + currentStage.interactionType);
                     AdvanceToNextStage(); // 지원하지 않는 타입은 건너뜁니다.
@@ -205,10 +214,87 @@ namespace Nursing.Managers
         }
 
         #region 인터랙션 타입별 설정 메서드
+
+        /// <summary>
+        /// 다양한 선택 인터랙션을 설정합니다.
+        /// </summary>
+        private void SetupVariousChoice()
+        {
+            var settings = currentStage.settings;
+
+            if (settings == null)
+            {
+                Debug.LogError("다양한 선택 인터랙션 설정이 없습니다.");
+                AdvanceToNextStage();
+                return;
+            }
+
+            // confirmationPopupPrefab 필요
+            if (confirmationPopupPrefab == null)
+            {
+                Debug.LogError("확인 팝업 프리팹이 설정되지 않았습니다.");
+                AdvanceToNextStage();
+                return;
+            }
+
+            // 팝업 생성
+            GameObject popupObj = Instantiate(confirmationPopupPrefab, mainCanvas.transform);
+            ConfirmationPopup popup = popupObj.GetComponent<ConfirmationPopup>();
+
+            if (popup == null)
+            {
+                Debug.LogError("확인 팝업 프리팹에 ConfirmationPopup 컴포넌트가 없습니다.");
+                Destroy(popupObj);
+                AdvanceToNextStage();
+                return;
+            }
+
+            // 질문 텍스트 설정
+            string questionText = !string.IsNullOrEmpty(settings.choiceQuestionText)
+                ? settings.choiceQuestionText
+                : "다른 방법으로 진행하시겠습니까?";
+
+            // VariousChoice 전용 설정 메서드 사용
+            popup.SetupForVariousChoice(
+                questionText,
+                () => OnVariousChoiceConfirm(settings.alternativeInteraction),
+                () => OnVariousChoiceCancel()
+            );
+
+            // 인터랙션 진행 중 표시
+            interactionInProgress = true;
+        }
+
+        /// <summary>
+        /// 다양한 선택에서 '예' 버튼 클릭 처리
+        /// </summary>
+        private void OnVariousChoiceConfirm(InteractionData alternativeInteraction)
+        {
+            if (alternativeInteraction != null)
+            {
+                // 현재 인터랙션은 완료 상태로
+                CompleteInteraction();
+
+                // 대체 인터랙션 시작
+                StartInteraction(alternativeInteraction);
+            }
+            else
+            {
+                Debug.LogWarning("대체 인터랙션이 설정되지 않았습니다.");
+                AdvanceToNextStage();
+            }
+        }
+
+        /// <summary>
+        /// 다양한 선택에서 '아니오' 버튼 클릭 처리
+        /// </summary>
+        private void OnVariousChoiceCancel()
+        {
+            AdvanceToNextStage();
+        }
         /// <summary>
         /// 드래그 인터랙션을 설정합니다.
         /// </summary>
-
         private void SetupSingleDragInteraction()
         {
             // 기존 SetupDragInteraction() 메서드의 내용을 옮김

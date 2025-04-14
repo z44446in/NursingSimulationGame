@@ -164,6 +164,11 @@ namespace Nursing.Interaction
         [Header("미니게임")]
         public bool startMiniGame;
         public GameObject miniGamePrefab;
+
+        [Header("다양한 선택")]
+        public bool isVariousChoice;
+        public string choiceQuestionText;
+        public InteractionData alternativeInteraction; // 'Yes' 버튼 클릭 시 실행할 대체 인터랙션
     }
 
 

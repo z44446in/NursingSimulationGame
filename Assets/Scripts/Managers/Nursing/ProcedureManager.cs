@@ -14,6 +14,7 @@ namespace Nursing.Managers
         [SerializeField] private InteractionManager interactionManager;
         [SerializeField] private PenaltyManager penaltyManager;
         [SerializeField] private DialogueManager dialogueManager;
+        [SerializeField] private CentralOutlineManager outlineManager;
 
         public PenaltyData[] previousStepPenalties; // 배열로 변경
 
@@ -36,9 +37,9 @@ namespace Nursing.Managers
        
         private List<string> completedStepIds = new List<string>();
         private List<ProcedureStep> availableSteps = new List<ProcedureStep>();
-        private bool procedureInProgress = false;
+        public bool procedureInProgress = false;
+        private bool lastState = true;
 
-        
 
         [SerializeField] private CartUI cartUI; // CartUI 참조 추가
 
@@ -74,6 +75,26 @@ namespace Nursing.Managers
                 Debug.LogError("선택한 조건에 맞는 프로시저를 찾을 수 없습니다!");
             }
         }
+
+        void Update()
+        {
+            if (procedureInProgress != lastState)
+            {
+                if (!procedureInProgress)
+                {
+                    outlineManager.StartBlinking();
+                }
+                else
+                {
+                    outlineManager.StopBlinking();
+                }
+
+                lastState = procedureInProgress;
+            }
+        }
+
+     
+       
 
         private ProcedureType FindMatchingProcedureType(ProcedureTypeEnum type, ProcedureVersionType version, ProcedurePlayType playType)
         {

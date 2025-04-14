@@ -281,10 +281,72 @@ namespace Nursing.Editor
                 case InteractionType.MiniGame:
                     DrawMiniGameSettings(settingsProp);
                     break;
+
+
+                case InteractionType.VariousChoice:
+                    DrawVariousChoiceSettings(settingsProp);
+                    break;
             }
         }
 
         #region 인터랙션 타입별 설정 드로잉 메서드
+
+        // VariousChoice 설정을 위한 메서드 추가
+        private void DrawVariousChoiceSettings(SerializedProperty settingsProp)
+        {
+            SerializedProperty isVariousChoiceProp = settingsProp.FindPropertyRelative("isVariousChoice");
+            SerializedProperty choiceQuestionTextProp = settingsProp.FindPropertyRelative("choiceQuestionText");
+            SerializedProperty alternativeInteractionProp = settingsProp.FindPropertyRelative("alternativeInteraction");
+
+            // 이 인터랙션 타입을 활성화하기 위한 플래그
+            isVariousChoiceProp.boolValue = true;
+
+            // 기본 설정
+            EditorGUILayout.LabelField("다양한 선택 설정", subheaderStyle);
+            EditorGUILayout.PropertyField(choiceQuestionTextProp, new GUIContent("질문 텍스트", "선택 팝업에 표시될 질문 텍스트"));
+
+            // 대체 인터랙션 설정
+            EditorGUILayout.PropertyField(alternativeInteractionProp, new GUIContent("대체 인터랙션", "'예' 버튼 클릭 시 실행할 인터랙션"));
+
+            // 인터랙션 데이터 찾기 버튼
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("인터랙션 데이터 찾기", GUILayout.Width(150)))
+            {
+                string[] guids = AssetDatabase.FindAssets("t:InteractionData");
+                if (guids.Length > 0)
+                {
+                    GenericMenu menu = new GenericMenu();
+
+                    foreach (string guid in guids)
+                    {
+                        string path = AssetDatabase.GUIDToAssetPath(guid);
+                        InteractionData data = AssetDatabase.LoadAssetAtPath<InteractionData>(path);
+
+                        // 현재 편집 중인 인터랙션 데이터는 제외 (순환 참조 방지)
+                        if (data != null && data != target)
+                        {
+                            menu.AddItem(
+                                new GUIContent(data.displayName + " (" + data.id + ")"),
+                                alternativeInteractionProp.objectReferenceValue == data,
+                                () => {
+                                    serializedObject.Update();
+                                    alternativeInteractionProp.objectReferenceValue = data;
+                                    serializedObject.ApplyModifiedProperties();
+                                });
+                        }
+                    }
+
+                    menu.ShowAsContext();
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("인터랙션 데이터 없음", "프로젝트에 인터랙션 데이터가 없습니다.", "확인");
+                }
+            }
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+        }
 
         private void DrawSingleDragInteractionSettings(SerializedProperty settingsProp)
         {

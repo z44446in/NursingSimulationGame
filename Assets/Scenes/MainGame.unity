@@ -2823,6 +2823,7 @@ GameObject:
   - component: {fileID: 622407489}
   - component: {fileID: 622407491}
   - component: {fileID: 622407492}
+  - component: {fileID: 622407493}
   m_Layer: 0
   m_Name: Cart
   m_TagString: Untagged
@@ -2887,6 +2888,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &622407493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622407488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3a565be7eaffbb47b1318904156a99a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMaterial: {fileID: 2100000, guid: 0a557e648cca1a542b448e57d048e347, type: 2}
 --- !u!1001 &648055040
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7703,11 +7717,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   penaltyManager: {fileID: 239613458}
   dialogueManager: {fileID: 1658917774}
-  quizPopupPrefab: {fileID: 7935081556244621157, guid: a948a8de877c05041a000d817611aeea, type: 3}
   mainCanvas: {fileID: 749101234}
   arrowPrefab: {fileID: 1748511864297521040, guid: 1fa57053fb802f843a1e914779e854ce, type: 3}
   arrowBlinkDuration: 0.5
   arrowBlinkInterval: 0.3
+  textQuizPopupPrefab: {fileID: 7935081556244621157, guid: a948a8de877c05041a000d817611aeea, type: 3}
+  imageQuizPopupPrefab: {fileID: 7935081556244621157, guid: e751507371240bd43af56c28125e8041, type: 3}
+  confirmationPopupPrefab: {fileID: 0}
 --- !u!4 &1358095406
 Transform:
   m_ObjectHideFlags: 0
@@ -9475,9 +9491,17 @@ PrefabInstance:
       value: FoleySet5
       objectReference: {fileID: 0}
     - target: {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
+      propertyPath: m_Layer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5967294904831375640, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: 78ca3579c448ed84fba61b3f1d543e90, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9898,6 +9922,52 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1852681570874512727, guid: 87d5e1477ef83cf449971c2357dfdcb4, type: 3}
   m_PrefabInstance: {fileID: 1585402970}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1825235036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1825235038}
+  - component: {fileID: 1825235039}
+  m_Layer: 0
+  m_Name: 'CentralOutlineManager '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1825235038
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825235036}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1235.6862, y: 624.94495, z: 1.331964}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1825235039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825235036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 503e5f99f03838641b59ae021d21d876, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMat: {fileID: 2100000, guid: 0a557e648cca1a542b448e57d048e347, type: 2}
+  blinkInterval: 0.5
 --- !u!1 &1835424647
 GameObject:
   m_ObjectHideFlags: 0
@@ -9930,9 +10000,21 @@ MonoBehaviour:
   interactionManager: {fileID: 1358095405}
   penaltyManager: {fileID: 239613458}
   dialogueManager: {fileID: 1658917774}
+  outlineManager: {fileID: 1825235039}
+  previousStepPenalties: []
   actionPopupPrefab: {fileID: 583369615469730027, guid: f3b9edb7bb0aaf14190b64bc632f9933, type: 3}
-  availableProcedureTypes:
-  - {fileID: 11400000, guid: 4fa2027e72ed10e41a97f6672b9ce5eb, type: 2}
+  restrictNextSteps: 0
+  allowedNextStepIds: []
+  invalidNextStepPenalty:
+    penaltyType: 0
+    penaltyScore: 0
+    speaker: 0
+    penaltyMessage: 
+    databaseMessage: 
+    flashRedScreen: 1
+    flashCount: 2
+  canBeSkipped: 0
+  procedureInProgress: 0
   cartUI: {fileID: 1356348985}
 --- !u!4 &1835424649
 Transform:
@@ -11911,7 +11993,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1199565409181193370}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -12165,7 +12247,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 5359100351219707682}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -12435,7 +12517,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 7021983806487557619}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -12816,7 +12898,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1555390377149469625}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -12973,6 +13055,7 @@ SceneRoots:
   - {fileID: 1358095406}
   - {fileID: 1835424649}
   - {fileID: 239613459}
+  - {fileID: 1825235038}
   - {fileID: 331557525}
   - {fileID: 1206459471}
   - {fileID: 4505583406191994556}
