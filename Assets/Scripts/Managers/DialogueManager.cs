@@ -14,9 +14,9 @@ namespace Nursing.Managers
         public enum Speaker
         {
             Character,   // 캐릭터
-            Patient,     // 환자 
+            PatientSad,     // 환자 
             Guardian,    // 보호자
-            Player,      // 플레이어
+            PatientBasic,      // 플레이어
             HeadNurse,   // 수간호사
            
         }

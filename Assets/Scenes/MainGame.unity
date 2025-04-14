@@ -2823,7 +2823,6 @@ GameObject:
   - component: {fileID: 622407489}
   - component: {fileID: 622407491}
   - component: {fileID: 622407492}
-  - component: {fileID: 622407493}
   m_Layer: 0
   m_Name: Cart
   m_TagString: Untagged
@@ -2888,19 +2887,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &622407493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622407488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3a565be7eaffbb47b1318904156a99a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 2100000, guid: 0a557e648cca1a542b448e57d048e347, type: 2}
 --- !u!1001 &648055040
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9386,12 +9372,12 @@ MonoBehaviour:
   speakerData:
   - displayName: "\uC5D0\uC639\uC774 "
     speakerSprite: {fileID: -1145200584, guid: 553baef90f4d1224aae04f6c7903f579, type: 3}
-  - displayName: "\uD658\uC790"
+  - displayName: "\uC2AC\uD508\uD658\uC790"
     speakerSprite: {fileID: 1635157895, guid: 553baef90f4d1224aae04f6c7903f579, type: 3}
   - displayName: "\uBCF4\uD638\uC790"
     speakerSprite: {fileID: -1702582798, guid: 553baef90f4d1224aae04f6c7903f579, type: 3}
-  - displayName: "\uB098"
-    speakerSprite: {fileID: 21300000, guid: f8d5085e254a20b4f9bfc93d0ebbc17d, type: 3}
+  - displayName: "\uAE30\uBCF8\uD658\uC790"
+    speakerSprite: {fileID: -456835376, guid: 27c50048b8f3fac40a900926b4f80ad8, type: 3}
   - displayName: "\uC218\uAC04\uD638\uC0AC"
     speakerSprite: {fileID: 1252761364, guid: 553baef90f4d1224aae04f6c7903f579, type: 3}
   fadeInDuration: 0.3
@@ -9492,7 +9478,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
       propertyPath: m_Layer
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
       propertyPath: m_IsActive
@@ -10015,6 +10001,7 @@ MonoBehaviour:
     flashCount: 2
   canBeSkipped: 0
   procedureInProgress: 0
+  Instep: 0
   cartUI: {fileID: 1356348985}
 --- !u!4 &1835424649
 Transform:

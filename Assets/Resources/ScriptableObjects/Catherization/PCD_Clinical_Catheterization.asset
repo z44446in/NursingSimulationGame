@@ -33,7 +33,7 @@ MonoBehaviour:
     requireSpecificOrder: 0
     requiredPreviousStepIds: []
     previousStepPenalties: []
-    restrictNextSteps: 1
+    restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
       penaltyType: 0

@@ -38,7 +38,8 @@ namespace Nursing.Managers
         private List<string> completedStepIds = new List<string>();
         private List<ProcedureStep> availableSteps = new List<ProcedureStep>();
         public bool procedureInProgress = false;
-        private bool lastState = true;
+        public bool Instep = false;
+      
 
 
         [SerializeField] private CartUI cartUI; // CartUI 참조 추가
@@ -78,9 +79,8 @@ namespace Nursing.Managers
 
         void Update()
         {
-            if (procedureInProgress != lastState)
-            {
-                if (!procedureInProgress)
+          
+                if (!Instep)
                 {
                     outlineManager.StartBlinking();
                 }
@@ -89,8 +89,8 @@ namespace Nursing.Managers
                     outlineManager.StopBlinking();
                 }
 
-                lastState = procedureInProgress;
-            }
+           
+            
         }
 
      
@@ -189,7 +189,7 @@ namespace Nursing.Managers
         {
             if (!procedureInProgress || availableSteps.Count == 0)
                 return false;
-
+           
             // 현재 가용 스텝 중에서 일치하는 스텝 찾기
             foreach (var step in availableSteps)
             {
@@ -214,7 +214,9 @@ namespace Nursing.Managers
                 if (isMatch)
                 {
                     // 스텝 처리 및 완료
+                   
                     ProcessStep(step);
+                    
                     return true;
                 }
             }
@@ -226,6 +228,7 @@ namespace Nursing.Managers
         // 스텝 처리 및 완료
         private void ProcessStep(ProcedureStep step)
         {
+          
             // 가이드 메시지 표시
             if (!string.IsNullOrEmpty(step.guideMessage) && dialogueManager != null)
             {
@@ -332,6 +335,8 @@ namespace Nursing.Managers
 
             // 모든 스텝 완료 체크
             CheckProcedureCompletion();
+
+            Instep = false;
         }
 
         // 프로시저 완료 체크
@@ -363,6 +368,7 @@ namespace Nursing.Managers
         /// </summary>
         private void SetupActionButtonClick(ProcedureStep step)
         {
+            Instep = true;
             if (actionPopupPrefab == null)
             {
                 Debug.LogError("액션 팝업 프리팹이 없습니다.");
@@ -421,7 +427,7 @@ namespace Nursing.Managers
         {
             if (!procedureInProgress)
                 return false;
-
+            Instep = true;
             // ❗❗ 현재 시도하려는 step 먼저 찾기
             ProcedureStep stepCandidate = currentProcedure.steps.Find(s =>
                 s.stepType == ProcedureStepType.ItemClick &&
@@ -642,7 +648,7 @@ namespace Nursing.Managers
         {
             if (!procedureInProgress)
                 return false;
-
+            Instep = true;
             // ❗❗ 현재 시도하려는 step 먼저 찾기
             ProcedureStep stepCandidate = currentProcedure.steps.Find(s =>
                 s.stepType == ProcedureStepType.PlayerInteraction &&
