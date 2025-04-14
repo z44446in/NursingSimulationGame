@@ -401,6 +401,38 @@ namespace Nursing.Managers
             if (!procedureInProgress)
                 return false;
 
+            // ❗❗ 현재 시도하려는 step 먼저 찾기
+            ProcedureStep stepCandidate = currentProcedure.steps.Find(s =>
+                s.stepType == ProcedureStepType.ItemClick &&
+                s.settings != null &&
+                s.settings.isItemClick &&
+                s.settings.itemId == itemId);
+
+            // ❗❗ 없는 경우 early return
+            if (stepCandidate == null)
+            {
+                Debug.Log($"일치하는 아이템 스텝 없음: {itemId}");
+                return false;
+            }
+
+            // ✅ ✅ 새로운 검사 추가: 이전 완료된 스텝 중 restrictNextSteps == true인 애들 기준으로 검사
+            foreach (var completedId in completedStepIds)
+            {
+                ProcedureStep completedStep = currentProcedure.steps.Find(s => s.id == completedId);
+                if (completedStep != null && completedStep.restrictNextSteps)
+                {
+                    if (!completedStep.allowedNextStepIds.Contains(stepCandidate.id))
+                    {
+                        if (completedStep.invalidNextStepPenalty != null)
+                        {
+                            ApplyPenalty(completedStep.invalidNextStepPenalty);
+                            Debug.LogWarning($"[제한 위반] 스텝 '{stepCandidate.id}'는 스텝 '{completedStep.id}' 이후 허용되지 않은 스텝입니다.");
+                            return false;
+                        }
+                    }
+                }
+            }
+
             // 모든 스텝을 확인 (가용 스텝에 없는 스텝도 확인)
             foreach (var step in currentProcedure.steps)
             {
@@ -590,6 +622,37 @@ namespace Nursing.Managers
             if (!procedureInProgress)
                 return false;
 
+            // ❗❗ 현재 시도하려는 step 먼저 찾기
+            ProcedureStep stepCandidate = currentProcedure.steps.Find(s =>
+                s.stepType == ProcedureStepType.PlayerInteraction &&
+                s.settings != null &&
+                s.settings.isPlayerInteraction &&
+                s.settings.validInteractionTags != null &&
+                s.settings.validInteractionTags.Contains(interactionTag));
+
+            if (stepCandidate == null)
+            {
+                Debug.Log($"일치하는 플레이어 상호작용 스텝 없음: {interactionTag}");
+                return false;
+            }
+
+            // ✅ 새로운 검사: 이전 완료된 스텝 기준으로 허용되지 않은 스텝일 경우
+            foreach (var completedId in completedStepIds)
+            {
+                ProcedureStep completedStep = currentProcedure.steps.Find(s => s.id == completedId);
+                if (completedStep != null && completedStep.restrictNextSteps)
+                {
+                    if (!completedStep.allowedNextStepIds.Contains(stepCandidate.id))
+                    {
+                        if (completedStep.invalidNextStepPenalty != null)
+                        {
+                            ApplyPenalty(completedStep.invalidNextStepPenalty);
+                            Debug.LogWarning($"[제한 위반] 스텝 '{stepCandidate.id}'는 스텝 '{completedStep.id}' 이후 허용되지 않은 스텝입니다.");
+                            return false;
+                        }
+                    }
+                }
+            }
             // 모든 스텝을 확인 (가용 스텝에 없는 스텝도 확인)
             foreach (var step in currentProcedure.steps)
             {
