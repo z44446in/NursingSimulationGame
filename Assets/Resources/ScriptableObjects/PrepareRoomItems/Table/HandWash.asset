@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79453d67e95704405b087e1a66acb953, type: 3}
   m_Name: HandWash
   m_EditorClassIdentifier: 
-  itemId: 
-  itemName: 
-  itemSprite: {fileID: 0}
+  itemId: Hand Wash
+  itemName: "\uC190\uC18C\uB3C5\uC81C"
+  itemSprite: {fileID: -1517051752, guid: ac93d4373766d41bfbceab17be5d3b4c, type: 3}
   description: 
   functionalGroupId: 

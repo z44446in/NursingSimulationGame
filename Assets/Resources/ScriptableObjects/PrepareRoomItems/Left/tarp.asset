@@ -12,19 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79453d67e95704405b087e1a66acb953, type: 3}
   m_Name: tarp
   m_EditorClassIdentifier: 
-  itemId: tarp
-  itemName: "\uBC29\uC218\uD3EC "
-  itemSprite: {fileID: 21300000, guid: 3e0f4a7cd7a35a149b82788e7cb53661, type: 3}
+  itemId: Tarp_one
+  itemName: "\uC77C\uD68C\uC6A9 \uBC29\uC218\uD3EC"
+  itemSprite: {fileID: -700769985, guid: ac93d4373766d41bfbceab17be5d3b4c, type: 3}
   description: "\uC18C\uBCC0\uC774 \uD639\uC2DC\uB098 \uC0C8\uBA74 \uCE68\uB300\uAC00
     \uC816\uC744 \uC218\uB3C4 \uC788\uC796\uC544! \uADF8\uB798\uC11C \uC774\uAC8C
     \uD544\uC694\uD574."
-  interactionType: 3
-  guideText: "\uBC29\uC218\uD3EC\uB97C \uB194\uB458 \uACF3\uC744 \uD130\uCE58\uD558\uC2DC\uC624."
-  guideImage: {fileID: 0}
-  handSprite: {fileID: 0}
-  miniGamePrefab: {fileID: 3869702114177789251, guid: 94461042f20faaf40871ead3ca43ebdc, type: 3}
-  requiresTwoFingers: 1
-  timeLimit: 10
-  successThreshold: 0.7
-  tutorialAnimation: {fileID: 0}
-  tutorialDuration: 5
+  functionalGroupId: 

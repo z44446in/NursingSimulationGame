@@ -98,14 +98,18 @@ public class IntermediateManager : MonoBehaviour
             cartUI?.ClearCart();
             
         
-            //prepareromm에 있던 거 그대로 가져옴 
-            foreach (var item in currentCartItems)
+            // 중간화면에서 표시하지 않을 아이템 목록 가져오기
+        List<Item> hiddenItems = procedureManager.GetHiddenInIntermediateItems();
+        
+        //prepareromm에 있던 거 그대로 가져옴 (숨길 아이템 제외)
+        foreach (var item in currentCartItems)
+        {
+            // 숨겨야 할 아이템이 아닌 경우만 표시
+            if (!hiddenItems.Any(hiddenItem => hiddenItem.itemId == item.itemId))
             {
-               
-                    cartUI?.AddItemToCart(item);
-                
+                cartUI?.AddItemToCart(item);
             }
-            
+        }
             // 카트 열기
             cartUI.OpenCart();
         }

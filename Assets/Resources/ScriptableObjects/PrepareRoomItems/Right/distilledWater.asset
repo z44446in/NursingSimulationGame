@@ -12,14 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79453d67e95704405b087e1a66acb953, type: 3}
   m_Name: distilledWater
   m_EditorClassIdentifier: 
-  itemId: distilledWater
+  itemId: DistilledWater
   itemName: "\uBA78\uADE0 \uC99D\uB958\uC218 "
-  itemSprite: {fileID: 21300000, guid: fd039c799efa3fd42bd359b59706c21d, type: 3}
+  itemSprite: {fileID: -527388143, guid: ac93d4373766d41bfbceab17be5d3b4c, type: 3}
   description: "\uBC8C\uB8E8\uB2DD\uC744 \uD558\uAE30 \uC704\uD574 \uD544\uC694\uD558\uACA0\uC9C0?
     \uC0DD\uB9AC\uC2DD\uC5FC\uC218\uAC00 \uC544\uB2C8\uB77C \uC774\uAC70\uB97C \uCC59\uACA8\uC57C
     \uD574. \uC0DD\uB9AC \uC2DD\uC5FC\uC218\uB85C \uBC8C\uB8E8\uB2DD\uC744 \uD558\uBA74,
     \uC5FC\uBD84 \uC131\uBD84\uB584\uBB38\uC5D0 \uBC8C\uB8E8\uB2DD\uD55C \uACF3\uC5D0
     \uACB0\uC11D\uC774 \uC0DD\uAE38 \uC218 \uC788\uAC70\uB4E0. \uADF8\uB7FC \uBC8C\uB8E8\uB2DD\uC774
     \uD6A8\uACFC\uC801\uC73C\uB85C \uC548\uB418\uACA0\uC9C0?"
-  handSprite:
-  - {fileID: 83288435, guid: a8e106c8a9f7841b6a5b0cc4cee300ad, type: 3}
+  functionalGroupId: 

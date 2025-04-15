@@ -137,17 +137,7 @@ public class PreparationManager : MonoBehaviour
 
         var items = GetItemsForArea(area);
         
-        // ProcedureManager를 통해 현재 procedure에 맞는 제외 아이템 목록 적용
-        if (procedureManager != null)
-        {
-            List<Item> excludedItems = procedureManager.GetExcludedItemsForArea(area);
-            
-            // 제외 아이템 필터링
-            if (excludedItems.Count > 0)
-            {
-                items = items.Where(item => !excludedItems.Any(excluded => excluded.itemId == item.itemId)).ToList();
-            }
-        }
+        
         
         if (items == null || items.Count == 0)
         {
@@ -323,21 +313,43 @@ public class PreparationManager : MonoBehaviour
         
         string message = "지금 부족한 물건은 다음과 같아.\n\n";
         for (int i = 0; i < missingItems.Count; i++)
-        {
-            message += $"{i + 1}) ? : {missingItems[i].item.description}\n";
-        }
+    {
+        // 필요한 이유 메시지 사용
+        string reason = !string.IsNullOrEmpty(missingItems[i].needReason) 
+            ? missingItems[i].needReason 
+            : missingItems[i].item.description;
+            
+        message += $"{i + 1}) {"[  ?   ]"} : {reason}\n\n";
+    }
         DialogueManager.Instance.ShowLargeDialogue(message);
        
     }
 
     private void ShowExtraItemsDialogue(List<Item> extraItems)
     {
-        string message = "다음 물건은 필요없어.\n\n";
-        for (int i = 0; i < extraItems.Count; i++)
+        ProcedureData procedureData = procedureManager?.GetCurrentProcedureData();
+    string message = "다음 물건은 필요없어.\n\n";
+    
+    for (int i = 0; i < extraItems.Count; i++)
+    {
+        // 기본 이유 메시지
+        string reason = extraItems[i].description;
+        
+        // 불필요 아이템 목록에서 이유 찾기
+        if (procedureData != null && procedureData.unnecessaryItems != null)
         {
-            message += $"{i + 1}) {extraItems[i].itemName} : {extraItems[i].description}\n";
+            var unnecessaryItem = procedureData.unnecessaryItems
+                .FirstOrDefault(u => u.item != null && u.item.itemId == extraItems[i].itemId);
+                
+            if (unnecessaryItem != null && !string.IsNullOrEmpty(unnecessaryItem.unnecessaryReason))
+            {
+                reason = unnecessaryItem.unnecessaryReason;
+            }
         }
-        DialogueManager.Instance.ShowLargeDialogue(message);
+        
+        message += $"{i + 1}) {extraItems[i].itemName} : {reason}\n";
+    }
+     DialogueManager.Instance.ShowLargeDialogue(message);
     }
 
     private bool isProcessingDialogue = false;
@@ -373,16 +385,62 @@ public class PreparationManager : MonoBehaviour
         InPopup = false;
     }
     private List<RequiredItem> GetMissingItems()
-    {
-        if (procedureManager == null) return new List<RequiredItem>();
+{
+    if (procedureManager == null) return new List<RequiredItem>();
 
-        List<RequiredItem> requiredItems = procedureManager.GetRequiredItems();
-        
-        return requiredItems
-            .Where(required => !required.isOptional &&
-                   !selectedItems.Any(selected => selected.itemId == required.item.itemId))
-            .ToList();
+    List<RequiredItem> requiredItems = procedureManager.GetRequiredItems();
+    List<RequiredItem> missingItems = new List<RequiredItem>();
+    
+    // 1. 먼저 기본 필수 아이템 체크 (isOptional이 false인 것들)
+    foreach (var required in requiredItems)
+    {
+        if (!required.isOptional && !selectedItems.Any(selected => selected.itemId == required.item.itemId))
+        {
+            missingItems.Add(required);
+        }
     }
+    
+    // 2. functionalGroup 체크 로직 추가
+    // 모든 functionalGroup ID 수집
+    HashSet<string> functionalGroups = new HashSet<string>();
+    foreach (var required in requiredItems)
+    {
+        
+        if (!string.IsNullOrEmpty(required.item.functionalGroupId))
+            functionalGroups.Add(required.item.functionalGroupId);
+    }
+    
+    foreach (var groupId in functionalGroups)
+{
+    var groupRequiredItems = requiredItems.Where(ri => ri.item.functionalGroupId == groupId).ToList();
+    bool hasGroupItem = selectedItems.Any(selected => 
+        !string.IsNullOrEmpty(selected.functionalGroupId) && 
+        selected.functionalGroupId == groupId);
+
+    if (!hasGroupItem)
+    {
+        var firstRequiredInGroup = groupRequiredItems.FirstOrDefault();
+
+        if (firstRequiredInGroup != null && !missingItems.Contains(firstRequiredInGroup))
+        {
+            // 필수 아이템 포함 여부 판단
+            if (groupRequiredItems.Any(ri => !ri.isOptional))
+            {
+                Debug.Log("❗필수 아이템 누락 경고");
+            }
+            else
+            {
+                Debug.Log("ℹ️ 선택 아이템도 선택 안 됨 (필수는 아님)");
+            }
+
+            missingItems.Add(firstRequiredInGroup);
+        }
+    }
+}
+
+    
+    return missingItems;
+}
 
     private List<Item> GetExtraItems()
     {

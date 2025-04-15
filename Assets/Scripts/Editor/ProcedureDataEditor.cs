@@ -16,10 +16,15 @@ namespace Nursing.Editor
         private SerializedProperty guideMessageProperty;
         private SerializedProperty requiredItemsProperty;
         private SerializedProperty intermediateRequiredItemsProperty;
+        private SerializedProperty hiddenInIntermediateItemsProperty;
         private SerializedProperty excludedAreaItemsProperty;
+
 
         private Dictionary<int, bool> stepFoldouts = new Dictionary<int, bool>();
         private Dictionary<int, bool> settingsFoldouts = new Dictionary<int, bool>();
+
+        // 프로퍼티 추가
+        private SerializedProperty unnecessaryItemsProperty;
 
         private GUIStyle headerStyle;
         private GUIStyle subheaderStyle;
@@ -33,7 +38,8 @@ namespace Nursing.Editor
             requiredItemsProperty = serializedObject.FindProperty("requiredItems");
             intermediateRequiredItemsProperty = serializedObject.FindProperty("intermediateRequiredItems");
             excludedAreaItemsProperty = serializedObject.FindProperty("excludedAreaItems");
-
+            unnecessaryItemsProperty = serializedObject.FindProperty("unnecessaryItems");
+            hiddenInIntermediateItemsProperty = serializedObject.FindProperty("hiddenInIntermediateItems");
             // 스타일 초기화는 OnInspectorGUI에서 수행
         }
 
@@ -62,6 +68,26 @@ namespace Nursing.Editor
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
             
+            // 준비실 불필요 아이템 섹션
+            EditorGUILayout.LabelField("준비실 불필요 아이템", headerStyle);
+            EditorGUI.indentLevel++;
+
+            // 기존 불필요 아이템 표시
+            EditorGUILayout.PropertyField(unnecessaryItemsProperty, true);
+
+            // 불필요 아이템 자동 추가 버튼
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("모든 불필요 아이템 불러오기", GUILayout.Width(200), GUILayout.Height(30)))
+            {
+                PopulateUnnecessaryItems();
+            }
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUI.indentLevel--;
+            EditorGUILayout.Space();
+
             // 중간 단계 필수 아이템 섹션
             EditorGUILayout.LabelField("중간 단계 필수 아이템", headerStyle);
             EditorGUI.indentLevel++;
@@ -69,12 +95,21 @@ namespace Nursing.Editor
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
             
+             // 중간화면 미표시 아이템 섹션
+    EditorGUILayout.LabelField("중간화면 미표시 아이템", headerStyle);
+    EditorGUI.indentLevel++;
+    EditorGUILayout.PropertyField(hiddenInIntermediateItemsProperty, true);
+    EditorGUI.indentLevel--;
+    EditorGUILayout.Space();
+    
             // 준비실 제외 아이템 섹션
             EditorGUILayout.LabelField("준비실 제외 아이템", headerStyle);
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(excludedAreaItemsProperty, true);
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
+
+            
 
             // 프로시저 스텝 섹션
             EditorGUILayout.LabelField("프로시저 스텝", headerStyle);
@@ -99,6 +134,67 @@ namespace Nursing.Editor
 
             serializedObject.ApplyModifiedProperties();
         }
+
+
+        private void PopulateUnnecessaryItems()
+{
+    ProcedureData procedureData = target as ProcedureData;
+    
+    // 모든 Item 에셋 로드
+    List<Item> allItems = new List<Item>();
+    string[] guids = AssetDatabase.FindAssets("t:Item");
+    
+    foreach (string guid in guids)
+    {
+        string path = AssetDatabase.GUIDToAssetPath(guid);
+        Item item = AssetDatabase.LoadAssetAtPath<Item>(path);
+        if (item != null)
+        {
+            allItems.Add(item);
+        }
+    }
+    
+    // 현재 필수 아이템 ID 목록
+    HashSet<string> requiredItemIds = new HashSet<string>();
+    foreach (var requiredItem in procedureData.requiredItems)
+    {
+        if (requiredItem.item != null)
+            requiredItemIds.Add(requiredItem.item.itemId);
+    }
+    
+    // 현재 불필요 아이템 ID 목록
+    HashSet<string> unnecessaryItemIds = new HashSet<string>();
+    if (procedureData.unnecessaryItems == null)
+        procedureData.unnecessaryItems = new List<UnnecessaryItem>();
+        
+    foreach (var unnecessaryItem in procedureData.unnecessaryItems)
+    {
+        if (unnecessaryItem.item != null)
+            unnecessaryItemIds.Add(unnecessaryItem.item.itemId);
+    }
+    
+    // 필요하지 않고 아직 불필요 목록에 없는 아이템 추가
+    int addedCount = 0;
+    foreach (var item in allItems)
+    {
+        if (!requiredItemIds.Contains(item.itemId) && !unnecessaryItemIds.Contains(item.itemId))
+        {
+            procedureData.unnecessaryItems.Add(new UnnecessaryItem 
+            { 
+                item = item,
+                unnecessaryReason = "이 술기에서는 필요하지 않습니다." // 기본 메시지
+            });
+            addedCount++;
+        }
+    }
+    
+    // 변경사항 저장
+    EditorUtility.SetDirty(procedureData);
+    AssetDatabase.SaveAssets();
+    
+    EditorUtility.DisplayDialog("불필요 아이템 추가 완료", 
+        $"{addedCount}개의 불필요 아이템이 추가되었습니다.", "확인");
+}
 
         private void InitializeStyles()
         {

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79453d67e95704405b087e1a66acb953, type: 3}
   m_Name: Forcep_Reuse
   m_EditorClassIdentifier: 
-  itemId: 
-  itemName: 
-  itemSprite: {fileID: 0}
+  itemId: Forcep_Reuse
+  itemName: "\uC774\uB3D9\uACB8\uC790"
+  itemSprite: {fileID: -787485945, guid: ac93d4373766d41bfbceab17be5d3b4c, type: 3}
   description: 
-  functionalGroupId: 
+  functionalGroupId: Forcep

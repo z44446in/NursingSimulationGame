@@ -848,6 +848,18 @@ namespace Nursing.Managers
         }
         
         /// <summary>
+/// 중간화면에서 표시하지 않을 아이템 목록을 반환합니다.
+/// </summary>
+public List<Item> GetHiddenInIntermediateItems()
+{
+    if (currentProcedure != null)
+    {
+        return currentProcedure.hiddenInIntermediateItems;
+    }
+    return new List<Item>();
+}
+
+        /// <summary>
         /// 중간 단계 필수 아이템 목록을 반환합니다.
         /// </summary>
         public List<RequiredItem> GetIntermediateRequiredItems()

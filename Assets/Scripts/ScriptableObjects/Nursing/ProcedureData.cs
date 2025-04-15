@@ -5,6 +5,16 @@ using Nursing.Penalty;
 
 namespace Nursing.Procedure
 {
+    // UnnecessaryItem 클래스 추가
+[Serializable]
+public class UnnecessaryItem
+{
+    public Item item;
+    [TextArea(2, 4)] public string unnecessaryReason; // 이 아이템이 불필요한 이유
+}
+
+    
+    
     [System.Serializable]
     public class AreaExcludedItems
     {
@@ -22,13 +32,18 @@ namespace Nursing.Procedure
         [Header("프로시저 스텝")]
         public List<ProcedureStep> steps = new List<ProcedureStep>();
         
-        [Header("준비실 필수 아이템")]
+       // [Header("준비실 필수 아이템")]
         public List<RequiredItem> requiredItems = new List<RequiredItem>();
         
-        [Header("중간 단계 필수 아이템")]
+       // [Header("준비실 불필요 아이템")]
+public List<UnnecessaryItem> unnecessaryItems = new List<UnnecessaryItem>();
+
+       // [Header("중간 단계 필수 아이템")]
         public List<RequiredItem> intermediateRequiredItems = new List<RequiredItem>();
         
-        [Header("준비실 제외 아이템")]
+        [Header("중간화면 미표시 아이템")]
+public List<Item> hiddenInIntermediateItems = new List<Item>();
+      //  [Header("준비실 제외 아이템")]
         public List<AreaExcludedItems> excludedAreaItems = new List<AreaExcludedItems>();
     }
 
@@ -103,4 +118,6 @@ namespace Nursing.Procedure
         [Tooltip("플레이어 직접 상호작용")]
         PlayerInteraction
     }
+
+    
 }
