@@ -89,6 +89,9 @@ namespace Nursing.Managers
         )
         {
             Button dialogueButton;
+            // 팝업이 열릴 때 InPopup 값을 true로 설정
+        if (PreparationManager.Instance != null)
+            PreparationManager.Instance.InPopup = true;
 
             if (currentSmallDialogue == null)
             {
@@ -172,6 +175,9 @@ namespace Nursing.Managers
                     .SetEase(fadeOutEase)
                     .OnComplete(() => {
                         currentSmallDialogue.SetActive(false);
+                        // 팝업이 닫힐 때 InPopup 값을 false로 설정
+                    if (PreparationManager.Instance != null)
+                        PreparationManager.Instance.InPopup = false;
                         onDialogueClosed?.Invoke();
             // 여기서 파괴하지 말고, 애니메이션 완료 후 파괴
         });
@@ -201,7 +207,8 @@ namespace Nursing.Managers
         public void ShowLargeDialogue(string message, Action onDialogueClosed = null)
         {
             Button dialogueButton;
-
+            if (PreparationManager.Instance != null)
+            PreparationManager.Instance.InPopup = true;
             if (currentLargeDialogue == null)
             {
                 currentLargeDialogue = Instantiate(largeDialoguePrefab, dialogueParent);
@@ -232,6 +239,8 @@ namespace Nursing.Managers
                 {
                     onDialogueClosed?.Invoke();
                     CloseLargeDialogue();
+                    if (PreparationManager.Instance != null)
+                    PreparationManager.Instance.InPopup = false;
                 });
             }
 

@@ -18,5 +18,4 @@ MonoBehaviour:
   description: "\uC774\uAC83\uB3C4 \uB418\uAE34\uD558\uC9C0! \uADFC\uB370 \uC694\uC998\uC5D4
     'multieFixer'\uB4F1 \uCE74\uD14C\uD130\uB97C \uACE0\uC815\uD558\uAE30 \uC88B\uC740
     \uC81C\uD488\uB4E4\uC774 \uB9CE\uC774 \uB098\uC654\uC5B4. \uCC38\uACE0\uD574\uB46C! "
-  isReusable: 0
-  requiresConfirmation: 1
+  functionalGroupId: tape_multieFixer

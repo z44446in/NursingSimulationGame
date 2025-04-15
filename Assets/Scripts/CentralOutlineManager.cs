@@ -9,6 +9,7 @@ public class CentralOutlineManager : MonoBehaviour
     public float blinkInterval = 0.5f;
     private List<Image> targetImages = new();
     private Coroutine blinkingCoroutine;
+    private bool isStaticOutlineActive = false;
 
     void Start()
     {
@@ -41,7 +42,26 @@ public class CentralOutlineManager : MonoBehaviour
                 img.material = null;
         }
     }
+    public void StartOutline()
+    {
+        foreach (var img in targetImages)
+            img.material = outlineMat;
+            
+        isStaticOutlineActive = true;
 
+        
+    }
+
+    public void StopOutline()
+    {
+        if (isStaticOutlineActive)
+        {
+            foreach (var img in targetImages)
+                img.material = null;
+                
+            isStaticOutlineActive = false;
+        }
+    }
     private IEnumerator BlinkRoutine()
     {
         bool on = true;

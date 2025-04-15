@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9, type: 3}
+  m_Name: PCT_Catheterization_Clinical_Pratice
+  m_EditorClassIdentifier: 
+  id: Catheterization_Clinical_Practice
+  displayName: "\uC720\uCE58\uB3C4\uB1E8_\uC784\uC0C1_\uC5F0\uC2B5"
+  description: "\uC720\uCE58\uB3C4\uB1E8 \uC784\uC0C1 \uC5F0\uC2B5\uAC9C"
+  versionType: 1
+  procedurePlayType: 1
+  procedureData: {fileID: 11400000, guid: d83ac3e980e9a684d93eea20379f9e17, type: 2}

@@ -79,16 +79,17 @@ namespace Nursing.Managers
 
         void Update()
         {
-          
-                if (!Instep)
-                {
-                    outlineManager.StartBlinking();
-                }
-                else
-                {
-                    outlineManager.StopBlinking();
-                }
-
+          if (outlineManager != null)  // null 체크 추가
+    {
+        if (!Instep)
+        {
+            outlineManager.StartBlinking();
+        }
+        else
+        {
+            outlineManager.StopBlinking();
+        }
+    }
            
             
         }

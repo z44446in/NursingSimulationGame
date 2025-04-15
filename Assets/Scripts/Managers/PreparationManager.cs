@@ -24,6 +24,7 @@ public class PreparationManager : MonoBehaviour
     [SerializeField] private GameObject confirmationPopupPrefab;
     [SerializeField] private CartUI cartUI;
     [SerializeField] private DialogueManager dialogueManager;
+    [SerializeField] private CentralOutlineManager outlineManager;
 
     [Header("Screen References")]
     [SerializeField] private GameObject prepareScreen;
@@ -52,6 +53,8 @@ public class PreparationManager : MonoBehaviour
    
     // ItemSelectionPopup 참조
     private ItemSelectionPopup currentPopup;
+
+    public bool InPopup { get; set; } = false;
 
     private void Awake()
     {
@@ -83,6 +86,25 @@ public class PreparationManager : MonoBehaviour
         
     }
 
+     void Update()
+        {
+          if (outlineManager != null)  // null 체크 추가
+            {
+                if (!InPopup)
+                {
+                    outlineManager.StartOutline();
+                }
+                else
+                {
+                    outlineManager.StopOutline();
+                }
+
+                Debug.Log(InPopup);
+            }
+           
+            
+        }
+
     private void InitializeUI()
     {
         if (prepareCompleteButton != null)
@@ -101,12 +123,14 @@ public class PreparationManager : MonoBehaviour
     }
 
     public void OnAreaClicked(PreparationAreaType area)
-    {
+    {   
         ShowItemSelectionPopup(area);
     }
 
     private void ShowItemSelectionPopup(PreparationAreaType area)
     {
+        
+        
         if (currentPopup != null)
         {
             Destroy(currentPopup.gameObject);
@@ -118,19 +142,23 @@ public class PreparationManager : MonoBehaviour
             DialogueManager.Instance.ShowSmallDialogue("이 구역에는 사용 가능한 아이템이 없습니다.");
             return;
         }
-
+        
         var popup = InstantiatePopup<ItemSelectionPopup>(itemSelectionPopupPrefab, popupParent);
         if (popup != null)
         {
+            
             currentPopup = popup;
             popup.Initialize(area, items, OnItemSelected);
         }
+
+        
     }
 
     private void OnItemSelected(Item item)
     {
         if (item == null) return;
-
+        
+      
         // 이미 카트에 있는 아이템인지 확인
         if (selectedItems.Any(selectedItem => selectedItem.itemId == item.itemId))
         {
@@ -149,22 +177,48 @@ public class PreparationManager : MonoBehaviour
                 () => Destroy(popup.gameObject)
             );
         }
+
+        
     }
 
     private void AddItemToCart(Item item)
     {
-        if (item == null ) return;
+        if (item == null) return;
+    
+    // 중복 기능 아이템 체크
+        Item duplicateFunctionalItem = null;
+    
+        // functionalGroupId가 있고 비어있지 않은 경우에만 체크
+        if (!string.IsNullOrEmpty(item.functionalGroupId))
+        {
+            Debug.Log("중복이 인지는 됐어욤");
+            duplicateFunctionalItem = selectedItems.Find(i => 
+                !string.IsNullOrEmpty(i.functionalGroupId) && 
+                i.functionalGroupId == item.functionalGroupId && 
+                i.itemId != item.itemId); // 같은 아이템이 아니면서 같은 기능 그룹
+        }
 
- 
-            selectedItems.Add(item);
-            cartUI?.AddItemToCart(item);
-            cartUI?.UpdateCartDisplay();
+        if (duplicateFunctionalItem != null)
+        {
+            Debug.Log("중복 아이템 찾는 것도 함");
+            // 중복 기능 아이템이 있는 경우 경고 메시지
+            string message = $"중복되는 기능을 하는 {duplicateFunctionalItem.itemName}이 카트에 있어! " + 
+                            $"{item.itemName}를 담고싶다면 카트에 있는 {duplicateFunctionalItem.itemName}을 제거한 뒤에 다시 담아줘!";
             
+            DialogueManager.Instance.ShowSmallDialogue(message, false);
+            return; // 아이템 추가하지 않고 리턴
+                
 
-    }
+        }
+        selectedItems.Add(item);
+        cartUI?.AddItemToCart(item);
+        cartUI?.UpdateCartDisplay();
+       
 
+     }
     public void RemoveItemFromCart(Item item)
     {
+        
         if (item == null) return;
 
         
@@ -179,11 +233,13 @@ public class PreparationManager : MonoBehaviour
             
              cartUI?.UpdateCartDisplay();
         
+        
     }
 
 
     private void ProcessOptionalItems(List<RequiredItem> optionalItems)
     {
+        
 
         if (optionalItems.Count > 0)
         {
@@ -197,16 +253,22 @@ public class PreparationManager : MonoBehaviour
         }
         else
         {
+           
             DialogueManager.Instance.ShowSmallDialogue("준비 잘했어!", false, () =>
             {
                 GoToIntermediateScreen();
             });
+            
         }
+
+       
     }
     private void ShowNextOptionalItemDialogue()
     {
+        InPopup = true;
         if (optionalItemsToExplain.Count > 0)
         {
+            
             var item = optionalItemsToExplain.Dequeue();
 
             // 중요: 여기서 클릭 이벤트 핸들러를 직접 등록하여 다음 대화창을 표시하도록 함
@@ -215,6 +277,7 @@ public class PreparationManager : MonoBehaviour
                 // 잠시 지연 후 다음 대화상자 표시
                 StartCoroutine(DelayNextDialogue());
             });
+           
         }
         else
         {
@@ -223,6 +286,8 @@ public class PreparationManager : MonoBehaviour
                 GoToIntermediateScreen();
             });
         }
+
+        InPopup = false;
     }
 
     // 다음 대화창 표시를 위한 지연 코루틴
@@ -253,6 +318,7 @@ public class PreparationManager : MonoBehaviour
             message += $"{i + 1}) ? : {missingItems[i].item.description}\n";
         }
         DialogueManager.Instance.ShowLargeDialogue(message);
+       
     }
 
     private void ShowExtraItemsDialogue(List<Item> extraItems)
@@ -269,8 +335,10 @@ public class PreparationManager : MonoBehaviour
 
     public void CheckPrepareComplete()
     {
-        if (isProcessingDialogue) return;  // 이미 대화창 처리 중이면 리턴
         
+        if (isProcessingDialogue) return;  // 이미 대화창 처리 중이면 리턴
+        InPopup = true;
+
         List<RequiredItem> missingItems = GetMissingItems();
         List<Item> extraItems = GetExtraItems();
         List<RequiredItem> optionalItems = GetOptionalItems();
@@ -293,6 +361,7 @@ public class PreparationManager : MonoBehaviour
         }
 
         ProcessOptionalItems(optionalItems);
+        InPopup = false;
     }
     private List<RequiredItem> GetMissingItems()
     {

@@ -1,0 +1,945 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7, type: 3}
+  m_Name: ITR_Forcep
+  m_EditorClassIdentifier: 
+  id: PutForcep
+  displayName: "\uD3EC\uC149 \uC7A1\uC544\uB4E4\uAE30"
+  description: 
+  stages:
+  - id: PutForcep_stage_0
+    name: "\uBE44\uB2D0 \uC7A1\uC740 \uC190 \uC0DD\uC131"
+    StageNum: 0
+    guideMessage: 
+    interactionType: 2
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 0
+      dragDirectionTolerance: 0
+      targetObjectTag: 
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      multiDragSyncThreshold: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 2596647878209449058, guid: 714a5e77b53433e49851e02a192fdf78, type: 3}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      destroyValidClickedObject: 0
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutForcep_stage_1
+    name: "\uB4DC\uB798\uADF8\uB85C \uBE44\uB2D0\uC5F4\uAE30"
+    StageNum: 1
+    guideMessage: "\uC591\uCABD\uC73C\uB85C \uB4DC\uB798\uADF8\uD558\uC5EC \uBE44\uB2D0\uC744
+      \uC5F4\uC5B4\uC8FC\uC138\uC694"
+    interactionType: 1
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 0
+      dragDirectionTolerance: 0
+      targetObjectTag: 
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      fingerSettings:
+      - name: "\uC190\uAC00\uB77D 1"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 709, y: 293}
+        arrowDirection: {x: -1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 23.2
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      - name: "\uC190\uAC00\uB77D 2"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 930, y: 293}
+        arrowDirection: {x: 1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 24.3
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      multiDragSyncThreshold: 0
+      createObject: 0
+      objectToCreate: []
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      destroyValidClickedObject: 0
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 0
+      objectToDeleteTag: []
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutForcep_stage_1
+    name: "\uB4DC\uB798\uADF8 \uBE44\uB2D0 \uC190 \uC0AD\uC81C"
+    StageNum: 2
+    guideMessage: 
+    interactionType: 5
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 0
+      dragDirectionTolerance: 0
+      targetObjectTag: 
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      fingerSettings:
+      - name: "\uC190\uAC00\uB77D 1"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 709, y: 293}
+        arrowDirection: {x: -1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 23.2
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      - name: "\uC190\uAC00\uB77D 2"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 930, y: 293}
+        arrowDirection: {x: 1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 24.3
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      multiDragSyncThreshold: 0
+      createObject: 0
+      objectToCreate: []
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      destroyValidClickedObject: 0
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Vynl
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutForcep_stage_3
+    name: "\uD3EC\uC149 \uB72F\uC73C\uB824\uB294 \uC190 \uB4F1\uC7A5"
+    StageNum: 3
+    guideMessage: 
+    interactionType: 2
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 0
+      haveDirection: 0
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0, y: 0}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 0
+      dragDirectionTolerance: 0
+      targetObjectTag: 
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      fingerSettings:
+      - name: "\uC190\uAC00\uB77D 1"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 709, y: 293}
+        arrowDirection: {x: -1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 23.2
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      - name: "\uC190\uAC00\uB77D 2"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 930, y: 293}
+        arrowDirection: {x: 1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 24.3
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      multiDragSyncThreshold: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 4133283037544999781, guid: 2b8e43d79526dba4983e07f5413d0740, type: 3}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      destroyValidClickedObject: 0
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Vynl
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutForcep_stage_4
+    name: "\uD3EC\uC149 \uBF51\uAE30 "
+    StageNum: 4
+    guideMessage: 
+    interactionType: 0
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0.98852986, y: -0.1510254}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 13.6
+      targetObjectTag: min
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      fingerSettings:
+      - name: "\uC190\uAC00\uB77D 1"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 709, y: 293}
+        arrowDirection: {x: -1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 23.2
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      - name: "\uC190\uAC00\uB77D 2"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 930, y: 293}
+        arrowDirection: {x: 1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 24.3
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      multiDragSyncThreshold: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 4133283037544999781, guid: 2b8e43d79526dba4983e07f5413d0740, type: 3}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      destroyValidClickedObject: 0
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Vynl
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: PutForcep_stage_5
+    name: "\uD3EC\uC149\uB4E4\uACE0 \uC788\uB294 \uC190 \uB4F1\uC7A5"
+    StageNum: 5
+    guideMessage: 
+    interactionType: 2
+    settings:
+      isDragInteraction: 1
+      showDirectionArrows: 1
+      haveDirection: 1
+      arrowStartPosition: {x: 0, y: 0}
+      arrowDirection: {x: 0.98852986, y: -0.1510254}
+      requireTwoFingerDrag: 0
+      requiredDragDirection: 1
+      dragDirectionTolerance: 13.6
+      targetObjectTag: min
+      deactivateObjectAfterDrag: 0
+      followDragMovement: 0
+      dragDistanceLimit: 0
+      boundaryObjectTag: 
+      collisionZoneTag: 
+      OverDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      CollideDrag:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      fingerSettings:
+      - name: "\uC190\uAC00\uB77D 1"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 709, y: 293}
+        arrowDirection: {x: -1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 23.2
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      - name: "\uC190\uAC00\uB77D 2"
+        showDirectionArrows: 1
+        haveDirection: 1
+        arrowStartPosition: {x: 930, y: 293}
+        arrowDirection: {x: 1, y: 0}
+        requiredDragDirection: 1
+        dragDirectionTolerance: 24.3
+        targetObjectTag: Vynl
+        deactivateObjectAfterDrag: 0
+        followDragMovement: 0
+        dragDistanceLimit: 0
+        boundaryObjectTag: 
+        collisionZoneTag: 
+        OverDrag:
+          penaltyType: 0
+          penaltyScore: 0
+          speaker: 0
+          penaltyMessage: 
+          databaseMessage: 
+          flashRedScreen: 0
+          flashCount: 0
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      multiDragSyncThreshold: 0
+      createObject: 1
+      objectToCreate:
+      - {fileID: 7202987690266728653, guid: beae513770d42834b942e943097172aa, type: 3}
+      isConditionalClick: 0
+      validClickTags: []
+      invalidClickTags: []
+      conditionalClickPenalties: []
+      destroyValidClickedObject: 0
+      isSustainedClick: 0
+      sustainedClickDuration: 0
+      earlyReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      lateReleasePenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      sustainedClickTargetTag: 
+      deleteObject: 1
+      objectToDeleteTag:
+      - Vynl
+      moveObject: 0
+      objectToMoveTag: 
+      moveDirection: {x: 0, y: 0}
+      moveSpeed: 0
+      movePath: []
+      showQuizPopup: 0
+      questionText: 
+      quizOptions: []
+      correctAnswerIndex: 0
+      optionImages: []
+      timeLimit: 0
+      WrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 0
+        flashCount: 0
+      startMiniGame: 0
+      miniGamePrefab: {fileID: 0}
+    requireSpecificOrder: 0
+    requiredPreviousStageIds: []
+    incorrectOrderPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    incorrectInteractionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0

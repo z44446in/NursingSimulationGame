@@ -9,7 +9,9 @@ public class Item : ScriptableObject
     public string itemName;
     public Sprite itemSprite;
     public string description;
-    public Sprite[] handSprite; // 손 스프라이트 (아이템을 들고 있을 때)
+
+    public string functionalGroupId;
+   
     
 
     
