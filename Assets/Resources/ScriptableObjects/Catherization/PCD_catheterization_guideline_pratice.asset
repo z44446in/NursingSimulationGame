@@ -12,7 +12,187 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8, type: 3}
   m_Name: PCD_catheterization_guideline_pratice
   m_EditorClassIdentifier: 
-  id: 
-  displayName: 
+  id: Catheterization_guideline_pratice
+  displayName: "\uC720\uCE58\uB3C4\uB1E8_\uC9C0\uCE68\uC11C_\uC5F0\uC2B5 "
   description: 
-  steps: []
+  steps:
+  - id: Catheterization_guideline_pratice_step_0
+    name: "\uBA78\uADE0\uC99D\uB958\uC218 \uBD93\uAE30"
+    guideMessage: 
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: distilledWater
+      interactionDataId: DilutedWaterInteraction
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: Catheterization_guideline_pratice_step_1
+    name: "\uC724\uD65C\uC81C \uC9DC\uAE30"
+    guideMessage: 
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: jelly
+      interactionDataId: PutJell
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: Catheterization_guideline_pratice_step_2
+    name: "\uD3F4\uB9AC\uC138\uD2B8 \uC5F4\uAE30"
+    guideMessage: 
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: foleySet
+      interactionDataId: foleySetOpen
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: Catheterization_guideline_pratice_step_3
+    name: "\uC8FC\uC0AC\uAE30 \uB72F\uC5B4\uC11C \uB123\uAE30"
+    guideMessage: 
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: syringe10
+      interactionDataId: ITR_Syringe
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: Catheterization_guideline_pratice_step_4
+    name: "\u3147\u3141"
+    guideMessage: 
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: 
+      interactionDataId: 
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  requiredItems:
+  - item: {fileID: 0}
+    isOptional: 0
+  intermediateRequiredItems: []
+  excludedAreaItems: []

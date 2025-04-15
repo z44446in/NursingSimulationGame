@@ -5,6 +5,12 @@ using Nursing.Penalty;
 
 namespace Nursing.Procedure
 {
+    [System.Serializable]
+    public class AreaExcludedItems
+    {
+        public PreparationAreaType area;
+        public List<Item> excludedItems = new List<Item>();
+    }
     [CreateAssetMenu(fileName = "New Procedure", menuName = "Nursing/Procedure Data", order = 2)]
     public class ProcedureData : ScriptableObject
     {
@@ -16,7 +22,14 @@ namespace Nursing.Procedure
         [Header("프로시저 스텝")]
         public List<ProcedureStep> steps = new List<ProcedureStep>();
         
-      
+        [Header("준비실 필수 아이템")]
+        public List<RequiredItem> requiredItems = new List<RequiredItem>();
+        
+        [Header("중간 단계 필수 아이템")]
+        public List<RequiredItem> intermediateRequiredItems = new List<RequiredItem>();
+        
+        [Header("준비실 제외 아이템")]
+        public List<AreaExcludedItems> excludedAreaItems = new List<AreaExcludedItems>();
     }
 
     [Serializable]

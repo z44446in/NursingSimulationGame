@@ -22,15 +22,10 @@ public class IntermediateManager : MonoBehaviour
     [SerializeField] private Transform popupParent;  // Popup의 부모 Transform
     [SerializeField] private GameObject smallDialoguePrefab;  // SmallDialogue prefab
     [SerializeField] private Transform dialogueParent;  // Dialogue의 부모 Transform
-    [SerializeField] private Image handImage;
-    [SerializeField] private List<Sprite> handSprites;
+   
 
 
-    [Header("Required Items")]
-[SerializeField] public IntermediateRequiredItems requiredItems; // 기존 코드
-
-[Header("Debug about Required Items")]
-[SerializeField] private ProcedureRequiredItems procedureRequiredItems; // 추가: 프로시저 필수 아이템
+    [Header("Procedure Manager")]
 
     private Item currentHeldItem;
     private GameObject currentSmallDialogue;
@@ -43,8 +38,7 @@ public class IntermediateManager : MonoBehaviour
 
     public List<Item> requiredPickedItems = new List<Item>();  // 이미 꺼낸 필수 아이s템들
 
-    [Header("Cart Item Filter")]
-    [SerializeField] private List<Item> itemsToExclude; // 인스펙터에서 제외할 아이템 설정
+    // 제외할 아이템은 이제 ProcedureData에서 관리됨
 
 
     [SerializeField] private ProcedureManager procedureManager;
@@ -67,11 +61,9 @@ public class IntermediateManager : MonoBehaviour
 
     private void Start()
     {
-        if (handImage != null)
-    {
-        handImage.gameObject.SetActive(false); // 초기에는 손 이미지 숨김
+    
     }
-    }
+    
 
     [SerializeField] private CartUI cartUI; // CartUI 참조 추가
 
@@ -100,20 +92,20 @@ public class IntermediateManager : MonoBehaviour
         if (newState == GameManager.GameScreen.INTERMEDIATE)
         {
             // 현재 카트의 아이템들을 가져옴
-            List<Item> currentCartItems = cartUI ? .GetCartItems();
+            List<Item> currentCartItems = cartUI?.GetCartItems();
 
             // 카트 초기화
             cartUI?.ClearCart();
-
-            // 제외할 아이템을 제외하고 다시 카트에 추가
+            
+        
+            //prepareromm에 있던 거 그대로 가져옴 
             foreach (var item in currentCartItems)
             {
-                if (!itemsToExclude.Contains(item))
-                {
+               
                     cartUI?.AddItemToCart(item);
-                }
+                
             }
-
+            
             // 카트 열기
             cartUI.OpenCart();
         }
@@ -147,14 +139,22 @@ public class IntermediateManager : MonoBehaviour
     // 이 메서드를 수정하여 모든 필수 아이템이 선택되었는지 확인
     public bool AreAllRequiredItemsPicked()
     {
-        return requiredItems.requiredItems.Where(ri => !ri.isOptional)
+        if (procedureManager == null) return false;
+        
+        var intermediateRequiredItems = procedureManager.GetIntermediateRequiredItems();
+        
+        return intermediateRequiredItems.Where(ri => !ri.isOptional)
             .All(ri => requiredPickedItems.Any(picked => picked.itemId == ri.item.itemId));
     }
 
     // 인터미디어트 매니저에 아이템이 필요한지 확인하는 메서드 추가
     public bool IsRequiredItem(Item item)
     {
-        return requiredItems.requiredItems.Any(ri => ri.item == item);
+        if (procedureManager == null) return false;
+        
+        var intermediateRequiredItems = procedureManager.GetIntermediateRequiredItems();
+        
+        return intermediateRequiredItems.Any(ri => ri.item.itemId == item.itemId);
     }
 
    
@@ -208,38 +208,13 @@ public class IntermediateManager : MonoBehaviour
 public void PickupItem(Item item)
 {
     if (item == null) return;
-    
 
-    currentHeldItem = item;
-
-        // 손 이미지 업데이트
-       // UpdateHandImageInIntermediateScreen(currentHeldItem);
-
-        //아이템별 상호작용 메서드 (작성 필요함)
         
         procedureManager.HandleItemClick(currentHeldItem.itemId);
 
     }
 
-// 손 이미지 업데이트 메서드
-/*private void UpdateHandImageInIntermediateScreen(Item item)
-{
-    if (handImage != null)
-    {
-            // 아이템에 핸드 스프라이트가 설정되어 있고, 배열이 비어있지 않은지 확인
-            if (item.handSprite != null && item.handSprite.Length > 0)
-            {
-                handImage.sprite = item.handSprite[0];
-                handImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                // 손 이미지를 숨김
-                handImage.gameObject.SetActive(false);
-            }
-        }
-}
-*/
+
     
 
 

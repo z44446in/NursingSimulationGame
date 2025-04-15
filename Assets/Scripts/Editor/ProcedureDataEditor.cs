@@ -14,6 +14,9 @@ namespace Nursing.Editor
         private SerializedProperty descriptionProperty;
         private SerializedProperty stepsProperty;
         private SerializedProperty guideMessageProperty;
+        private SerializedProperty requiredItemsProperty;
+        private SerializedProperty intermediateRequiredItemsProperty;
+        private SerializedProperty excludedAreaItemsProperty;
 
         private Dictionary<int, bool> stepFoldouts = new Dictionary<int, bool>();
         private Dictionary<int, bool> settingsFoldouts = new Dictionary<int, bool>();
@@ -27,7 +30,9 @@ namespace Nursing.Editor
             displayNameProperty = serializedObject.FindProperty("displayName");
             descriptionProperty = serializedObject.FindProperty("description");
             stepsProperty = serializedObject.FindProperty("steps");
-
+            requiredItemsProperty = serializedObject.FindProperty("requiredItems");
+            intermediateRequiredItemsProperty = serializedObject.FindProperty("intermediateRequiredItems");
+            excludedAreaItemsProperty = serializedObject.FindProperty("excludedAreaItems");
 
             // 스타일 초기화는 OnInspectorGUI에서 수행
         }
@@ -47,7 +52,27 @@ namespace Nursing.Editor
             EditorGUILayout.PropertyField(displayNameProperty, new GUIContent("표시 이름", "프로시저의 화면에 표시될 이름"));
             EditorGUILayout.PropertyField(descriptionProperty, new GUIContent("설명", "프로시저에 대한 설명"));
 
-
+            EditorGUI.indentLevel--;
+            EditorGUILayout.Space();
+            
+            // 준비실 필수 아이템 섹션
+            EditorGUILayout.LabelField("준비실 필수 아이템", headerStyle);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(requiredItemsProperty, true);
+            EditorGUI.indentLevel--;
+            EditorGUILayout.Space();
+            
+            // 중간 단계 필수 아이템 섹션
+            EditorGUILayout.LabelField("중간 단계 필수 아이템", headerStyle);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(intermediateRequiredItemsProperty, true);
+            EditorGUI.indentLevel--;
+            EditorGUILayout.Space();
+            
+            // 준비실 제외 아이템 섹션
+            EditorGUILayout.LabelField("준비실 제외 아이템", headerStyle);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(excludedAreaItemsProperty, true);
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
 

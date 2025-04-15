@@ -8,10 +8,11 @@ public class DebugManager : MonoBehaviour
     [Header("Procedure Data")]
     [SerializeField] private ProcedureType procedureType;
     [SerializeField] private Button startGameButton;
-    [SerializeField] private MonoBehaviour targetScript; // ¸®¼ÂÇÒ ½ºÅ©¸³Æ®
+    [SerializeField] private MonoBehaviour targetScript; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®
 
-    [Header("Áß°£È­¸é µğ¹ö±ë¹öÆ° ")]
+    [Header("ì¤‘ê°„í™”ë©´ ë””ë²„ê·¸ë²„íŠ¼")]
     [SerializeField] private IntermediateManager intermediateManager;
+    [SerializeField] private Nursing.Managers.ProcedureManager procedureManager;
     [SerializeField] private Button debugAddAllRequiredItemsButton;
 
     private void Start()
@@ -19,7 +20,7 @@ public class DebugManager : MonoBehaviour
         if (startGameButton != null)
             startGameButton.onClick.AddListener(StartGame);
 
-        // ¹öÆ° ÀÌº¥Æ® µî·Ï
+        // ï¿½ï¿½Æ° ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½
         if (debugAddAllRequiredItemsButton != null)
         {
             debugAddAllRequiredItemsButton.onClick.AddListener(DebugAddAllRequiredItems);
@@ -30,18 +31,18 @@ public class DebugManager : MonoBehaviour
     {
         if (GameManager.Instance != null && procedureType != null)
         {
-            // ProcedureType Á¤º¸¸¦ GameManager¿¡ ¼³Á¤
+            // ProcedureType ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GameManagerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             GameManager.Instance.SetCurrentProcedureType(procedureType.ProcdureTypeName);
             GameManager.Instance.SetProcedureVersionType(procedureType.versionType);
             GameManager.Instance.SetProcedurePlayType(procedureType.procedurePlayType);
 
-            // °ÔÀÓ ½ÃÀÛ
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             GameManager.Instance.StartGameScene();
             ResetScript();
         }
         else
         {
-            Debug.LogError("GameManager ¶Ç´Â ProcedureTypeÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("GameManager ï¿½Ç´ï¿½ ProcedureTypeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½!");
         }
     }
 
@@ -50,7 +51,7 @@ public class DebugManager : MonoBehaviour
         if (startGameButton != null)
             startGameButton.onClick.RemoveAllListeners();
 
-        // ¹öÆ° ÀÌº¥Æ® Á¦°Å
+        // ï¿½ï¿½Æ° ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         if (debugAddAllRequiredItemsButton != null)
         {
             debugAddAllRequiredItemsButton.onClick.RemoveListener(DebugAddAllRequiredItems);
@@ -61,12 +62,12 @@ public class DebugManager : MonoBehaviour
     {
         if (targetScript != null)
         {
-            // ½ºÅ©¸³Æ® ºñÈ°¼ºÈ­ ÈÄ ´Ù½Ã È°¼ºÈ­
+            // ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Ù½ï¿½ È°ï¿½ï¿½È­
             targetScript.enabled = false;
             targetScript.enabled = true;
 
 
-            // °­Á¦·Î Start ¸Ş¼­µå¸¦ È£ÃâÇÏ°í ½Í´Ù¸é ¾Æ·¡ ÄÚµå¸¦ Ãß°¡
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Start ï¿½Ş¼ï¿½ï¿½å¸¦ È£ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½ ï¿½Æ·ï¿½ ï¿½Úµå¸¦ ï¿½ß°ï¿½
             StartCoroutine(CallStartMethodNextFrame());
         }
     }
@@ -74,9 +75,9 @@ public class DebugManager : MonoBehaviour
 
     private IEnumerator CallStartMethodNextFrame()
     {
-        yield return null; // ´ÙÀ½ ÇÁ·¹ÀÓ±îÁö ´ë±â
+        yield return null; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 
-        // ReflectionÀ» »ç¿ëÇÏ¿© Start ¸Ş¼­µå È£Ãâ (ºñ°ø°³ ¸Ş¼­µåµµ È£Ãâ °¡´É)
+        // Reflectionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Start ï¿½Ş¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş¼ï¿½ï¿½åµµ È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         System.Reflection.MethodInfo startMethod = targetScript.GetType().GetMethod("Start",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
@@ -88,7 +89,7 @@ public class DebugManager : MonoBehaviour
     }
 
     /// <summary>
-    /// µğ¹ö±ë¿ë - ÀÎÅÍ¹Ìµğ¾îÆ® È­¸é¿¡¼­ ¸ğµç ÇÊ¼ö ¾ÆÀÌÅÛÀ» ÇÑ ¹ø¿¡ Ãß°¡
+    /// ë””ë²„ê·¸ - ì¸í„°ë¯¸ë””ì–´íŠ¸ í™”ë©´ì—ì„œ ëª¨ë“  í•„ìˆ˜ ì•„ì´í…œì„ í•œ ë²ˆì— ì¶”ê°€
     /// </summary>
     public void DebugAddAllRequiredItems()
     {
@@ -98,30 +99,38 @@ public class DebugManager : MonoBehaviour
             return;
         }
 
-        // ¸ğµç ÇÊ¼ö ¾ÆÀÌÅÛ °¡Á®¿À±â
-        if (intermediateManager.requiredItems != null)
+        if (procedureManager == null)
         {
-            foreach (var requiredItem in intermediateManager.requiredItems.requiredItems)
+            Debug.LogError("ProcedureManager reference is missing!");
+            return;
+        }
+
+        // ProcedureManagerì—ì„œ ì¤‘ê°„ ë‹¨ê³„ í•„ìˆ˜ ì•„ì´í…œ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°
+        var intermediateRequiredItems = procedureManager.GetIntermediateRequiredItems();
+
+        // ëª¨ë“  í•„ìˆ˜ ì•„ì´í…œ ì¶”ê°€í•˜ê¸°
+        if (intermediateRequiredItems != null && intermediateRequiredItems.Count > 0)
+        {
+            foreach (var requiredItem in intermediateRequiredItems)
             {
-                if (!requiredItem.isOptional)  // ÇÊ¼ö ¾ÆÀÌÅÛ¸¸ Ãß°¡
+                if (!requiredItem.isOptional)  // í•„ìˆ˜ ì•„ì´í…œë§Œ ì¶”ê°€
                 {
-                    // ÀÌ¹Ì Ãß°¡µÇÁö ¾ÊÀº °æ¿ì¿¡¸¸ Ãß°¡
+                    // ì´ë¯¸ ì¶”ê°€ë˜ì§€ ì•Šì€ ê²½ìš°ì—ë§Œ ì¶”ê°€
                     if (!intermediateManager.requiredPickedItems.Contains(requiredItem.item))
                     {
                         intermediateManager.AddPickedItem(requiredItem.item);
-                       
                     }
                 }
             }
 
-            // Ä«Æ® UI °»½Å ¿äÃ»
+            // ì¹´íŠ¸ UI ê°±ì‹  ìš”ì²­
             intermediateManager.RefreshCartItems();
 
-            Debug.Log("[DEBUG] All required items have been added");
+            Debug.Log("[DEBUG] All required items have been added from ProcedureData");
         }
         else
         {
-            Debug.LogError("Required items list is null!");
+            Debug.LogError("No intermediate required items found in ProcedureData!");
         }
     }
 

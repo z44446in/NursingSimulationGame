@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9, type: 3}
   m_Name: PCT_Cathetherization_guidline_pratice
   m_EditorClassIdentifier: 
-  id: 
-  displayName: 
+  id: Catheterization_Guideline_Practice
+  displayName: "\uC720\uCE58\uB3C4\uB1E8_\uC9C0\uCE68\uC11C_\uC5F0\uC2B5"
   description: 
   ProcdureTypeName: 0
   versionType: 0
-  procedurePlayType: 0
-  procedureData: {fileID: 0}
+  procedurePlayType: 1
+  procedureData: {fileID: 11400000, guid: a52ca62bd29ff45dbae01d8200b10672, type: 2}

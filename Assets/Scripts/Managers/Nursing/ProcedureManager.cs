@@ -826,6 +826,54 @@ namespace Nursing.Managers
             
             penaltyManager.ApplyPenalty(penaltyData);
         }
+        
+        /// <summary>
+        /// 현재 프로시저 데이터를 반환합니다.
+        /// </summary>
+        public ProcedureData GetCurrentProcedureData()
+        {
+            return currentProcedure;
+        }
+        
+        /// <summary>
+        /// 준비실 필수 아이템 목록을 반환합니다.
+        /// </summary>
+        public List<RequiredItem> GetRequiredItems()
+        {
+            if (currentProcedure != null)
+            {
+                return currentProcedure.requiredItems;
+            }
+            return new List<RequiredItem>();
+        }
+        
+        /// <summary>
+        /// 중간 단계 필수 아이템 목록을 반환합니다.
+        /// </summary>
+        public List<RequiredItem> GetIntermediateRequiredItems()
+        {
+            if (currentProcedure != null)
+            {
+                return currentProcedure.intermediateRequiredItems;
+            }
+            return new List<RequiredItem>();
+        }
+        
+        /// <summary>
+        /// 특정 구역에서 제외할 아이템 목록을 반환합니다.
+        /// </summary>
+        public List<Item> GetExcludedItemsForArea(PreparationAreaType areaType)
+        {
+            if (currentProcedure != null)
+            {
+                var areaExcluded = currentProcedure.excludedAreaItems.Find(x => x.area == areaType);
+                if (areaExcluded != null)
+                {
+                    return areaExcluded.excludedItems;
+                }
+            }
+            return new List<Item>();
+        }
     }
     
     /// <summary>

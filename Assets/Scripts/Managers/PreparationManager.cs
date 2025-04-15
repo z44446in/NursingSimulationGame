@@ -41,8 +41,7 @@ public class PreparationManager : MonoBehaviour
     [SerializeField] private List<AreaItems> areaItems;
 
     [Header("Required Items")]
-    [SerializeField] private ProcedureRequiredItems currentProcedureItems;
-    [SerializeField] private List<ProcedureRequiredItems> ItemListForEachProcedure;
+    [SerializeField] private Nursing.Managers.ProcedureManager procedureManager; // ProcedureManager 참조 추가
     private Queue<Item> optionalItemsToExplain = new Queue<Item>();
     // 이 변수는 추후 옵셔널 아이템 설명 기능에서 사용될 예정이므로 속성으로 변경
     public bool IsShowingOptionalItems { get; private set; } = false;
@@ -88,6 +87,7 @@ public class PreparationManager : MonoBehaviour
 
      void Update()
         {
+            /*
           if (outlineManager != null)  // null 체크 추가
             {
                 if (!InPopup)
@@ -102,6 +102,7 @@ public class PreparationManager : MonoBehaviour
                 Debug.Log(InPopup);
             }
            
+           */
             
         }
 
@@ -129,14 +130,25 @@ public class PreparationManager : MonoBehaviour
 
     private void ShowItemSelectionPopup(PreparationAreaType area)
     {
-        
-        
         if (currentPopup != null)
         {
             Destroy(currentPopup.gameObject);
         }
 
         var items = GetItemsForArea(area);
+        
+        // ProcedureManager를 통해 현재 procedure에 맞는 제외 아이템 목록 적용
+        if (procedureManager != null)
+        {
+            List<Item> excludedItems = procedureManager.GetExcludedItemsForArea(area);
+            
+            // 제외 아이템 필터링
+            if (excludedItems.Count > 0)
+            {
+                items = items.Where(item => !excludedItems.Any(excluded => excluded.itemId == item.itemId)).ToList();
+            }
+        }
+        
         if (items == null || items.Count == 0)
         {
             DialogueManager.Instance.ShowSmallDialogue("이 구역에는 사용 가능한 아이템이 없습니다.");
@@ -146,12 +158,9 @@ public class PreparationManager : MonoBehaviour
         var popup = InstantiatePopup<ItemSelectionPopup>(itemSelectionPopupPrefab, popupParent);
         if (popup != null)
         {
-            
             currentPopup = popup;
             popup.Initialize(area, items, OnItemSelected);
         }
-
-        
     }
 
     private void OnItemSelected(Item item)
@@ -365,9 +374,11 @@ public class PreparationManager : MonoBehaviour
     }
     private List<RequiredItem> GetMissingItems()
     {
-        if (currentProcedureItems == null) return new List<RequiredItem>();
+        if (procedureManager == null) return new List<RequiredItem>();
 
-        return currentProcedureItems.requiredItems
+        List<RequiredItem> requiredItems = procedureManager.GetRequiredItems();
+        
+        return requiredItems
             .Where(required => !required.isOptional &&
                    !selectedItems.Any(selected => selected.itemId == required.item.itemId))
             .ToList();
@@ -375,32 +386,30 @@ public class PreparationManager : MonoBehaviour
 
     private List<Item> GetExtraItems()
     {
-        if (currentProcedureItems == null) return new List<Item>();
+        if (procedureManager == null) return new List<Item>();
 
+        List<RequiredItem> requiredItems = procedureManager.GetRequiredItems();
+        
         return selectedItems
-            .Where(selected => !currentProcedureItems.requiredItems
+            .Where(selected => !requiredItems
                 .Any(required => required.item.itemId == selected.itemId))
             .ToList();
     }
 
     private List<RequiredItem> GetOptionalItems()
     {
-        if (currentProcedureItems == null) return new List<RequiredItem>();
+        if (procedureManager == null) return new List<RequiredItem>();
 
-        return currentProcedureItems.requiredItems
+        List<RequiredItem> requiredItems = procedureManager.GetRequiredItems();
+        
+        return requiredItems
             .Where(required => required.isOptional &&
                    selectedItems.Any(selected => selected.itemId == required.item.itemId))
             .ToList();
     }
 
-    public void SetCurrentProcedure(Nursing.Procedure.ProcedureTypeEnum procedureType)
-    {
-        currentProcedureItems = ItemListForEachProcedure.Find(x => x.procedureType == procedureType);
-        if (currentProcedureItems == null)
-        {
-            Debug.LogError($"No procedure items found for {procedureType}");
-        }
-    }
+    // ProcedureManager에서 현재 프로시저를 가져오므로 이 메서드는 필요 없음
+    // SetCurrentProcedure는 ProcedureManager에서 처리함
 
     private List<Item> GetItemsForArea(PreparationAreaType area)
     {
@@ -417,10 +426,14 @@ public class PreparationManager : MonoBehaviour
 
     }
 
-// 현재 설정된 ProcedureRequiredItems를 반환하는 메서드
-public ProcedureRequiredItems GetCurrentProcedureItems()
+// ProcedureData를 통해 필요한 아이템을 반환하는 메서드
+public List<RequiredItem> GetCurrentRequiredItems()
 {
-    return currentProcedureItems;
+    if (procedureManager != null)
+    {
+        return procedureManager.GetRequiredItems();
+    }
+    return new List<RequiredItem>();
 }
 
 
@@ -486,9 +499,17 @@ public ProcedureRequiredItems GetCurrentProcedureItems()
     // 디버그용 - 모든 필수 아이템을 한 번에 추가하는 기능
     public void DEBUG_AddAllRequiredItems()
     {
-        if (currentProcedureItems == null)
+        if (procedureManager == null)
         {
-            Debug.LogWarning("No procedure items set!");
+            Debug.LogWarning("No procedure manager set!");
+            return;
+        }
+
+        List<RequiredItem> requiredItems = procedureManager.GetRequiredItems();
+        
+        if (requiredItems.Count == 0)
+        {
+            Debug.LogWarning("No required items found in procedure data!");
             return;
         }
 
@@ -496,17 +517,13 @@ public ProcedureRequiredItems GetCurrentProcedureItems()
         cartUI?.ClearCart();
         selectedItems.Clear();
         
-
         // 모든 필수 아이템 추가
-        foreach (var requiredItem in currentProcedureItems.requiredItems)
+        foreach (var requiredItem in requiredItems)
         {
             if (!requiredItem.isOptional)  // 필수 아이템만 추가
             {
-               
-                    selectedItems.Add(requiredItem.item);
-                    cartUI?.AddItemToCart(requiredItem.item);
-
-
+                selectedItems.Add(requiredItem.item);
+                cartUI?.AddItemToCart(requiredItem.item);
             }
         }
 
