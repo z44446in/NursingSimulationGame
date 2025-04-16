@@ -1036,6 +1036,7 @@ namespace Nursing.Managers
 
             // 동시 터치가 2개 미만이면 처리하지 않음
             if (Input.touchCount < 2)
+               
                 return;
 
             // 터치를 X좌표 기준으로 정렬
@@ -1096,7 +1097,6 @@ namespace Nursing.Managers
                         break;
 
                     case TouchPhase.Ended:
-                    case TouchPhase.Canceled:
                         if (status.isDragging && status.draggedObject != null)
                         {
                             Vector2 endPos = touch.position;
@@ -1119,6 +1119,7 @@ namespace Nursing.Managers
                                     
                                 }
                             }
+                            Debug.Log(valid);
 
                             // 드래그 거리 제한 확인
                             if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
@@ -1145,6 +1146,9 @@ namespace Nursing.Managers
                             status.isDragging = false;
                             status.draggedObject = null;
                         }
+                        break;
+                    case TouchPhase.Canceled:
+                        Debug.Log("먹힌다고?");
                         break;
                 }
             }
