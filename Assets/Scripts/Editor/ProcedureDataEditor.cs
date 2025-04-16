@@ -254,6 +254,7 @@ namespace Nursing.Editor
             SerializedProperty invalidNextStepPenaltyProp = stepProperty.FindPropertyRelative("invalidNextStepPenalty");
             SerializedProperty canBeSkippedProp = stepProperty.FindPropertyRelative("canBeSkipped");
 
+            SerializedProperty isRepeatableProp = stepProperty.FindPropertyRelative("isRepeatable");
             // 기존 폴드아웃 관련 코드...
             if (!stepFoldouts.ContainsKey(index))
             {
@@ -387,6 +388,13 @@ namespace Nursing.Editor
                 
                 EditorGUILayout.PropertyField(canBeSkippedProp, new GUIContent("생략 가능", "이 스텝이 완료되지 않아도 전체 프로시저가 완료될 수 있는지 여부"));
 
+                EditorGUILayout.Space();
+
+        
+                // 반복 설정 섹션 추가
+                EditorGUILayout.LabelField("반복 설정", subheaderStyle);
+                EditorGUILayout.PropertyField(isRepeatableProp, new GUIContent("반복 가능", "이 스텝이 반복적으로 수행될 수 있는지 여부"));
+                
                 EditorGUILayout.Space();
 
                 // 패널티 설정

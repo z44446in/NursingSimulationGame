@@ -213,8 +213,12 @@ public void PickupItem(Item item)
 {
     if (item == null) return;
 
-        
-        procedureManager.HandleItemClick(currentHeldItem.itemId);
+         // currentHeldItem 대신 파라미터로 받은 item 사용
+    currentHeldItem = item; // 이 라인 추가
+    
+    if (procedureManager != null) {
+        procedureManager.HandleItemClick(item.itemId);
+    }
 
     }
 

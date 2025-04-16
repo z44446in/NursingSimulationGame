@@ -328,7 +328,11 @@ namespace Nursing.Managers
         {
             if (step != null && !string.IsNullOrEmpty(step.id))
             {
-                completedStepIds.Add(step.id);
+                 // 반복 가능한 스텝이 아닌 경우에만 완료 목록에 추가
+        if (!step.isRepeatable)
+        {
+            completedStepIds.Add(step.id);
+        }
             }
 
             // 가용 스텝 업데이트

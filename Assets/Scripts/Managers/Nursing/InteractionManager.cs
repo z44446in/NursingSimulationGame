@@ -1278,7 +1278,7 @@ namespace Nursing.Managers
 
                             if (dialogueManager != null)
                             {
-                                dialogueManager.ShowGuideMessage("실제 술기를 수행하는 것 처럼 드래그하세요");
+                                dialogueManager.ShowGuideMessage("실제 술기처럼, 좀 더 드래그하세요");
                             }
 
                             // 드래그 상태 리셋

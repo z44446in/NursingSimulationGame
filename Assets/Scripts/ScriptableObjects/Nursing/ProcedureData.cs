@@ -74,6 +74,9 @@ public List<Item> hiddenInIntermediateItems = new List<Item>();
         [Header("생략 설정")]
         public bool canBeSkipped; // 새로 추가: 이 스텝이 생략 가능한지 여부
 
+        [Header("반복 설정")]
+public bool isRepeatable; // 이 스텝이 반복 가능한지 여부
+
         [Header("패널티 설정")]
         
         public PenaltyData incorrectActionPenalty;

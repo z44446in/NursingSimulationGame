@@ -43,6 +43,7 @@ MonoBehaviour:
       flashRedScreen: 0
       flashCount: 0
     canBeSkipped: 0
+    isRepeatable: 0
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0
@@ -78,6 +79,7 @@ MonoBehaviour:
       flashRedScreen: 0
       flashCount: 0
     canBeSkipped: 0
+    isRepeatable: 0
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0
@@ -113,6 +115,7 @@ MonoBehaviour:
       flashRedScreen: 0
       flashCount: 0
     canBeSkipped: 0
+    isRepeatable: 0
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0
@@ -148,6 +151,7 @@ MonoBehaviour:
       flashRedScreen: 0
       flashCount: 0
     canBeSkipped: 0
+    isRepeatable: 0
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0
@@ -157,13 +161,13 @@ MonoBehaviour:
       flashRedScreen: 0
       flashCount: 0
   - id: Catheterization_guideline_pratice_step_4
-    name: "\u3147\u3141"
+    name: "\uD14C\uC2A4\uD2B8\uC6A9 "
     guideMessage: 
     stepType: 0
     settings:
       isItemClick: 1
-      itemId: 
-      interactionDataId: 
+      itemId: Forcep_Reuse
+      interactionDataId: ITR_ForcepReuse_Foley
       isActionButtonClick: 0
       correctButtonIds: []
       requireAllButtons: 0
@@ -183,6 +187,7 @@ MonoBehaviour:
       flashRedScreen: 0
       flashCount: 0
     canBeSkipped: 0
+    isRepeatable: 0
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0
@@ -351,6 +356,10 @@ MonoBehaviour:
     needReason: 
     optionalReason: 
   - item: {fileID: 11400000, guid: b505b7e9e4589b54ca23a18e1c748100, type: 2}
+    isOptional: 0
+    needReason: 
+    optionalReason: 
+  - item: {fileID: 11400000, guid: 9eecedcf46dd8254d905429723ace602, type: 2}
     isOptional: 0
     needReason: 
     optionalReason: 
