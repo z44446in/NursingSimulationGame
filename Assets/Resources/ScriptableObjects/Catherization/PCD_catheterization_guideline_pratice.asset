@@ -22,7 +22,7 @@ MonoBehaviour:
     stepType: 0
     settings:
       isItemClick: 1
-      itemId: distilledWater
+      itemId: DistilledWater
       interactionDataId: DilutedWaterInteraction
       isActionButtonClick: 0
       correctButtonIds: []
@@ -58,7 +58,7 @@ MonoBehaviour:
     stepType: 0
     settings:
       isItemClick: 1
-      itemId: jelly
+      itemId: Jelly
       interactionDataId: PutJell
       isActionButtonClick: 0
       correctButtonIds: []
@@ -130,7 +130,7 @@ MonoBehaviour:
     stepType: 0
     settings:
       isItemClick: 1
-      itemId: syringe10
+      itemId: Syringe10
       interactionDataId: ITR_Syringe
       isActionButtonClick: 0
       correctButtonIds: []
@@ -238,8 +238,8 @@ MonoBehaviour:
     stepType: 0
     settings:
       isItemClick: 1
-      itemId: Syringe1
-      interactionDataId: ITR_Syringe
+      itemId: Hand Wash
+      interactionDataId: ITR_HandWash
       isActionButtonClick: 0
       correctButtonIds: []
       requireAllButtons: 0
@@ -423,15 +423,11 @@ MonoBehaviour:
     isOptional: 0
     needReason: 
     optionalReason: 
-  - item: {fileID: 11400000, guid: 4becd3e8d390f404e8564f0c41d705de, type: 2}
+  - item: {fileID: 11400000, guid: 078ac6581b54a49a483bdda7c0285802, type: 2}
     isOptional: 0
     needReason: 
     optionalReason: 
   - item: {fileID: 11400000, guid: b505b7e9e4589b54ca23a18e1c748100, type: 2}
-    isOptional: 0
-    needReason: 
-    optionalReason: 
-  - item: {fileID: 11400000, guid: 9eecedcf46dd8254d905429723ace602, type: 2}
     isOptional: 0
     needReason: 
     optionalReason: 

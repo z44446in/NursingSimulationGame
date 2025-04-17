@@ -241,7 +241,7 @@ namespace Nursing.Managers
     interactionInProgress = true;
 
     // ⏱ 2초 딜레이 후 팝업 생성
-    DOVirtual.DelayedCall(2f, () =>
+    DOVirtual.DelayedCall(1f, () =>
     {
         GameObject popupObj = Instantiate(confirmationPopupPrefab, mainCanvas.transform);
         ConfirmationPopup popup = popupObj.GetComponent<ConfirmationPopup>();
@@ -259,12 +259,16 @@ namespace Nursing.Managers
             ? settings.choiceQuestionText
             : "다른 방법으로 진행하시겠습니까?";
 
-        // 설정
-        popup.SetupForVariousChoice(
-            questionText,
-            () => OnVariousChoiceConfirm(settings.alternativeInteraction),
-            () => OnVariousChoiceCancel()
-        );
+        // VariousChoice 전용 설정 메서드 사용 (이미지 전달)
+    popup.SetupForVariousChoice(
+        questionText,
+        settings.choicePopupImage, // 이미지 전달
+        () => OnVariousChoiceConfirm(settings.alternativeInteraction),
+        () => OnVariousChoiceCancel()
+    );
+
+
+        
 
         // 💫 부드러운 페이드 인 (캔버스 그룹 필요)
         CanvasGroup cg = popupObj.GetComponent<CanvasGroup>();
@@ -661,7 +665,7 @@ namespace Nursing.Managers
             }
             
             // 미니게임 생성
-            var miniGame = Instantiate(settings.miniGamePrefab, transform);
+            var miniGame = Instantiate(settings.miniGamePrefab, mainCanvas.transform);
             var miniGameController = miniGame.GetComponent<MiniGameController>();
             
             if (miniGameController == null)

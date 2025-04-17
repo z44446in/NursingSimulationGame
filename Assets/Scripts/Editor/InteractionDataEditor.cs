@@ -295,18 +295,22 @@ namespace Nursing.Editor
         private void DrawVariousChoiceSettings(SerializedProperty settingsProp)
         {
             SerializedProperty isVariousChoiceProp = settingsProp.FindPropertyRelative("isVariousChoice");
-            SerializedProperty choiceQuestionTextProp = settingsProp.FindPropertyRelative("choiceQuestionText");
-            SerializedProperty alternativeInteractionProp = settingsProp.FindPropertyRelative("alternativeInteraction");
+    SerializedProperty choiceQuestionTextProp = settingsProp.FindPropertyRelative("choiceQuestionText");
+    SerializedProperty choicePopupImageProp = settingsProp.FindPropertyRelative("choicePopupImage"); // 추가
+    SerializedProperty alternativeInteractionProp = settingsProp.FindPropertyRelative("alternativeInteraction");
 
-            // 이 인터랙션 타입을 활성화하기 위한 플래그
-            isVariousChoiceProp.boolValue = true;
+    // 이 인터랙션 타입을 활성화하기 위한 플래그
+    isVariousChoiceProp.boolValue = true;
 
-            // 기본 설정
-            EditorGUILayout.LabelField("다양한 선택 설정", subheaderStyle);
-            EditorGUILayout.PropertyField(choiceQuestionTextProp, new GUIContent("질문 텍스트", "선택 팝업에 표시될 질문 텍스트"));
+    // 기본 설정
+    EditorGUILayout.LabelField("다양한 선택 설정", subheaderStyle);
+    EditorGUILayout.PropertyField(choiceQuestionTextProp, new GUIContent("질문 텍스트", "선택 팝업에 표시될 질문 텍스트"));
+    
+    // 이미지 설정 추가
+    EditorGUILayout.PropertyField(choicePopupImageProp, new GUIContent("팝업 이미지", "선택 팝업에 표시될 이미지"));
 
-            // 대체 인터랙션 설정
-            EditorGUILayout.PropertyField(alternativeInteractionProp, new GUIContent("대체 인터랙션", "'예' 버튼 클릭 시 실행할 인터랙션"));
+    // 대체 인터랙션 설정
+    EditorGUILayout.PropertyField(alternativeInteractionProp, new GUIContent("대체 인터랙션", "'예' 버튼 클릭 시 실행할 인터랙션"));
 
             // 인터랙션 데이터 찾기 버튼
             EditorGUILayout.BeginHorizontal();

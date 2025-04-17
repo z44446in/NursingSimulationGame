@@ -102,34 +102,49 @@ public class ConfirmationPopup : BasePopup
     /// <summary>
     /// VariousChoice 타입을 위한 커스텀 설정 메서드
     /// </summary>
-    public void SetupForVariousChoice(string message, Action onConfirm, Action onCancel)
+    /// <summary>
+/// VariousChoice 타입을 위한 커스텀 설정 메서드
+/// </summary>
+public void SetupForVariousChoice(string message, Sprite popupImage, Action onConfirm, Action onCancel)
+{
+    // 버튼 텍스트 설정
+    if (confirmButtonText != null) confirmButtonText.text = "예";
+    if (cancelButtonText != null) cancelButtonText.text = "아니오";
+
+    // 메시지 설정
+    if (messageText != null)
     {
-        // 버튼 텍스트 설정
-        if (confirmButtonText != null) confirmButtonText.text = "예";
-        if (cancelButtonText != null) cancelButtonText.text = "아니오";
-
-        // 메시지 설정
-        if (messageText != null)
-        {
-            messageText.text = message;
-        }
-
-        // 이미지 오브젝트를 숨김 (VariousChoice에서는 이미지가 불필요)
-        if (itemImage != null)
-            itemImage.gameObject.SetActive(false);
-
-        // 아이템 이름도 숨김 (필요 없음)
-        if (itemNameText != null)
-            itemNameText.gameObject.SetActive(false);
-
-        // 버튼 이벤트 설정
-        onConfirmAction = onConfirm;
-        onCancelAction = onCancel;
-
-        confirmButton.onClick.RemoveAllListeners();
-        cancelButton.onClick.RemoveAllListeners();
-
-        confirmButton.onClick.AddListener(OnConfirmClicked);
-        cancelButton.onClick.AddListener(OnCancelClicked);
+        messageText.text = message;
     }
+
+    // 이미지 설정 - 이미지가 제공된 경우에만 표시
+    if (itemImage != null)
+    {
+        if (popupImage != null)
+        {
+            itemImage.sprite = popupImage;
+            itemImage.preserveAspect = true;
+            itemImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            itemImage.gameObject.SetActive(false);
+        }
+    }
+
+    // 아이템 이름 숨김 (필요 없음)
+    if (itemNameText != null)
+        itemNameText.gameObject.SetActive(false);
+
+    // 버튼 이벤트 설정
+    onConfirmAction = onConfirm;
+    onCancelAction = onCancel;
+
+    confirmButton.onClick.RemoveAllListeners();
+    cancelButton.onClick.RemoveAllListeners();
+
+    confirmButton.onClick.AddListener(OnConfirmClicked);
+    cancelButton.onClick.AddListener(OnCancelClicked);
+}
+    
 }

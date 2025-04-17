@@ -127,7 +127,7 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       startMiniGame: 1
-      miniGamePrefab: {fileID: 0}
+      miniGamePrefab: {fileID: 583369615469730027, guid: 419d49a5ecca54c8082d8cf3734c74a1, type: 3}
       isVariousChoice: 0
       choiceQuestionText: 
       alternativeInteraction: {fileID: 0}

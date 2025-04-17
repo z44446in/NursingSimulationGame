@@ -57,6 +57,9 @@ public class HandSanitizerMiniGame : MonoBehaviour, Nursing.Managers.MiniGameCon
     {
         // 초기화
         currentProgress = 0f;
+        // progressBar가 있는지 확인하고 명시적으로 0으로 설정
+   
+    
         UpdateProgressBar();
         
         if (statusText != null)

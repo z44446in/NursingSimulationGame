@@ -168,6 +168,7 @@ namespace Nursing.Interaction
         [Header("다양한 선택")]
         public bool isVariousChoice;
         public string choiceQuestionText;
+        public Sprite choicePopupImage; // 추가: 팝업에 표시될 이미지
         public InteractionData alternativeInteraction; // 'Yes' 버튼 클릭 시 실행할 대체 인터랙션
     }
 
