@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Nursing.Interaction;
 using Nursing.Penalty;
+using DG.Tweening;
 using Nursing.UI;
 
 namespace Nursing.Managers
@@ -219,51 +220,64 @@ namespace Nursing.Managers
         /// 다양한 선택 인터랙션을 설정합니다.
         /// </summary>
         private void SetupVariousChoice()
+{
+    var settings = currentStage.settings;
+
+    if (settings == null)
+    {
+        Debug.LogError("다양한 선택 인터랙션 설정이 없습니다.");
+        AdvanceToNextStage();
+        return;
+    }
+
+    if (confirmationPopupPrefab == null)
+    {
+        Debug.LogError("확인 팝업 프리팹이 설정되지 않았습니다.");
+        AdvanceToNextStage();
+        return;
+    }
+
+    // 인터랙션 진행 중 표시 (딜레이 중에도 다른 인터랙션 막기)
+    interactionInProgress = true;
+
+    // ⏱ 2초 딜레이 후 팝업 생성
+    DOVirtual.DelayedCall(2f, () =>
+    {
+        GameObject popupObj = Instantiate(confirmationPopupPrefab, mainCanvas.transform);
+        ConfirmationPopup popup = popupObj.GetComponent<ConfirmationPopup>();
+
+        if (popup == null)
         {
-            var settings = currentStage.settings;
-
-            if (settings == null)
-            {
-                Debug.LogError("다양한 선택 인터랙션 설정이 없습니다.");
-                AdvanceToNextStage();
-                return;
-            }
-
-            // confirmationPopupPrefab 필요
-            if (confirmationPopupPrefab == null)
-            {
-                Debug.LogError("확인 팝업 프리팹이 설정되지 않았습니다.");
-                AdvanceToNextStage();
-                return;
-            }
-
-            // 팝업 생성
-            GameObject popupObj = Instantiate(confirmationPopupPrefab, mainCanvas.transform);
-            ConfirmationPopup popup = popupObj.GetComponent<ConfirmationPopup>();
-
-            if (popup == null)
-            {
-                Debug.LogError("확인 팝업 프리팹에 ConfirmationPopup 컴포넌트가 없습니다.");
-                Destroy(popupObj);
-                AdvanceToNextStage();
-                return;
-            }
-
-            // 질문 텍스트 설정
-            string questionText = !string.IsNullOrEmpty(settings.choiceQuestionText)
-                ? settings.choiceQuestionText
-                : "다른 방법으로 진행하시겠습니까?";
-
-            // VariousChoice 전용 설정 메서드 사용
-            popup.SetupForVariousChoice(
-                questionText,
-                () => OnVariousChoiceConfirm(settings.alternativeInteraction),
-                () => OnVariousChoiceCancel()
-            );
-
-            // 인터랙션 진행 중 표시
-            interactionInProgress = true;
+            Debug.LogError("확인 팝업 프리팹에 ConfirmationPopup 컴포넌트가 없습니다.");
+            Destroy(popupObj);
+            AdvanceToNextStage();
+            return;
         }
+
+        // 질문 텍스트 설정
+        string questionText = !string.IsNullOrEmpty(settings.choiceQuestionText)
+            ? settings.choiceQuestionText
+            : "다른 방법으로 진행하시겠습니까?";
+
+        // 설정
+        popup.SetupForVariousChoice(
+            questionText,
+            () => OnVariousChoiceConfirm(settings.alternativeInteraction),
+            () => OnVariousChoiceCancel()
+        );
+
+        // 💫 부드러운 페이드 인 (캔버스 그룹 필요)
+        CanvasGroup cg = popupObj.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            cg = popupObj.AddComponent<CanvasGroup>();
+        }
+
+        cg.alpha = 0f;
+        cg.DOFade(1f, 0.5f).SetEase(Ease.OutQuad);
+    });
+}
+
 
         /// <summary>
         /// 다양한 선택에서 '예' 버튼 클릭 처리
@@ -1012,155 +1026,157 @@ namespace Nursing.Managers
 
         // 다중 드래그 처리 (각 손가락 독립적으로)
         private void HandleMultiDragInteraction()
+{
+    var settings = currentStage.settings;
+    if (settings == null || settings.fingerSettings.Count == 0)
+        return;
+
+    // 손가락 상태 초기화 및 화살표 생성
+    for (int i = 0; i < settings.fingerSettings.Count; i++)
+    {
+        if (!fingerDragStatus.ContainsKey(i))
+            fingerDragStatus[i] = new FingerDragStatus();
+
+        var fingerSetting = settings.fingerSettings[i];
+        if (fingerSetting.haveDirection && fingerSetting.requiredDragDirection && fingerSetting.showDirectionArrows)
         {
-            var settings = currentStage.settings;
-            if (settings == null || settings.fingerSettings.Count == 0)
-                return;
-
-            // 필요한 손가락 수만큼 상태 초기화
-            for (int i = 0; i < settings.fingerSettings.Count; i++)
+            if (!fingerArrows.ContainsKey(i) || fingerArrows[i].Count == 0)
             {
-                if (!fingerDragStatus.ContainsKey(i))
-                    fingerDragStatus[i] = new FingerDragStatus();
+                CreateDirectionArrows(fingerSetting.arrowStartPosition, fingerSetting.arrowDirection, i);
+            }
+        }
+    }
 
-                // 초기 화살표 표시
-                var fingerSetting = settings.fingerSettings[i];
-                if (fingerSetting.haveDirection && fingerSetting.requiredDragDirection && fingerSetting.showDirectionArrows)
+    if (Input.touchCount < settings.fingerSettings.Count)
+        return;
+
+    // 터치 정렬
+    List<Touch> sortedTouches = new List<Touch>();
+    for (int i = 0; i < Input.touchCount && i < settings.fingerSettings.Count; i++)
+    {
+        sortedTouches.Add(Input.GetTouch(i));
+    }
+    sortedTouches.Sort((a, b) => a.position.x.CompareTo(b.position.x)); // 왼쪽 → 오른쪽
+
+    // 터치 처리 (Began, Moved, Ended)
+    for (int i = 0; i < sortedTouches.Count && i < settings.fingerSettings.Count; i++)
+    {
+        Touch touch = sortedTouches[i];
+        int fingerIndex = i;
+
+        var fingerSetting = settings.fingerSettings[fingerIndex];
+        var status = fingerDragStatus[fingerIndex];
+
+        switch (touch.phase)
+        {
+            case TouchPhase.Began:
+                PointerEventData eventData = new PointerEventData(EventSystem.current)
                 {
-                    if (!fingerArrows.ContainsKey(i) || fingerArrows[i].Count == 0)
+                    position = touch.position
+                };
+                List<RaycastResult> results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(eventData, results);
+
+                foreach (var result in results)
+                {
+                    if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
                     {
-                        CreateDirectionArrows(fingerSetting.arrowStartPosition, fingerSetting.arrowDirection, i);
+                        status.startPosition = touch.position;
+                        status.draggedObject = result.gameObject;
+                        status.isDragging = true;
+                        Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 시작 - 위치: {touch.position}");
+                        break;
                     }
                 }
-            }
+                break;
 
-            // 동시 터치가 2개 미만이면 처리하지 않음
-            if (Input.touchCount < 2)
-               
-                return;
-
-            // 터치를 X좌표 기준으로 정렬
-            List<Touch> sortedTouches = new List<Touch>();
-            for (int i = 0; i < Input.touchCount && i < 2; i++)  // 최대 2개만 처리
-            {
-                sortedTouches.Add(Input.GetTouch(i));
-            }
-
-            // X좌표로 정렬 (왼쪽->오른쪽)
-            sortedTouches.Sort((a, b) => a.position.x.CompareTo(b.position.x));
-
-            // 정렬된 터치 처리
-            for (int i = 0; i < sortedTouches.Count && i < 2; i++)
-            {
-                Touch touch = sortedTouches[i];
-                int fingerIndex = i;  // 정렬 후의 인덱스 사용 (0: 왼쪽, 1: 오른쪽)
-
-                // 해당 인덱스가 범위를 벗어나면 건너뜀
-                if (fingerIndex >= settings.fingerSettings.Count)
-                    continue;
-
-                var fingerSetting = settings.fingerSettings[fingerIndex];
-                var status = fingerDragStatus[fingerIndex];
-
-                switch (touch.phase)
+            case TouchPhase.Moved:
+                if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
                 {
-                    case TouchPhase.Began:
-                        PointerEventData eventData = new PointerEventData(EventSystem.current)
-                        {
-                            position = touch.position
-                        };
-                        List<RaycastResult> results = new List<RaycastResult>();
-                        EventSystem.current.RaycastAll(eventData, results);
-
-                        foreach (var result in results)
-                        {
-                            if (result.gameObject.CompareTag(fingerSetting.targetObjectTag))
-                            {
-                                status.startPosition = touch.position;
-                                status.draggedObject = result.gameObject;
-                                status.isDragging = true;
-
-                                
-
-                                Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 시작 - 위치: {touch.position}");
-                                break;
-                            }
-                        }
-                        break;
-
-                    case TouchPhase.Moved:
-                        if (status.isDragging && status.draggedObject != null && fingerSetting.followDragMovement)
-                        {
-                            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
-                            status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
-                        }
-                        break;
-
-                    case TouchPhase.Ended:
-                        if (status.isDragging && status.draggedObject != null)
-                        {
-                            Vector2 endPos = touch.position;
-                            Vector2 dragDir = (endPos - status.startPosition).normalized;
-                            float dragDist = Vector2.Distance(endPos, status.startPosition);
-
-                            bool valid = true;
-                            if (fingerSetting.requiredDragDirection && fingerSetting.haveDirection)
-                            {
-                                Vector2 required = fingerSetting.arrowDirection.normalized;
-                                float dot = Vector2.Dot(dragDir, required);
-                                float angleTolerance = fingerSetting.dragDirectionTolerance;
-                                float minDot = Mathf.Cos(angleTolerance * Mathf.Deg2Rad);
-
-                                if (dot < minDot)
-                                {
-                                    valid = false;
-                                   
-
-                                    
-                                }
-                            }
-                            Debug.Log(valid);
-
-                            // 드래그 거리 제한 확인
-                            if (fingerSetting.dragDistanceLimit > 0 && dragDist > fingerSetting.dragDistanceLimit)
-                            {
-                                valid = false;
-                                if (fingerSetting.OverDrag != null)
-                                {
-                                    ApplyPenalty(fingerSetting.OverDrag);
-                                }
-                            }
-
-                            // 드래그 후 오브젝트 처리
-                            if (fingerSetting.deactivateObjectAfterDrag && valid)
-                            {
-                                Destroy(status.draggedObject);
-                            }
-
-                            if (valid)
-                            {
-                                status.isComplete = true;
-                                Debug.Log($"[MultiDrag] 손가락 {fingerIndex} 드래그 완료");
-                            }
-
-                            status.isDragging = false;
-                            status.draggedObject = null;
-                        }
-                        break;
-                    case TouchPhase.Canceled:
-                        Debug.Log("먹힌다고?");
-                        break;
+                    Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
+                    status.draggedObject.transform.position = new Vector3(worldPos.x, worldPos.y, status.draggedObject.transform.position.z);
                 }
-            }
+                break;
 
-            // 모든 필요한 손가락 동작이 완료되었는지 확인
-            if (AllMultiDragCompleted(settings.fingerSettings.Count))
-            {
-                AdvanceToNextStage();
-            }
-
-            interactionInProgress = true;
+            case TouchPhase.Ended:
+            case TouchPhase.Canceled:
+                // 무시: 우리는 동시에 판정할 거라 여기선 처리 안 함
+                break;
         }
+    }
+
+    // 🧠 동시 판정 로직 (이 부분이 핵심!)
+    bool allValid = true;
+
+    for (int i = 0; i < settings.fingerSettings.Count; i++)
+    {
+        if (!fingerDragStatus.ContainsKey(i) || i >= Input.touchCount)
+        {
+            allValid = false;
+            break;
+        }
+
+        var status = fingerDragStatus[i];
+        var setting = settings.fingerSettings[i];
+        var touch = sortedTouches[i];
+
+        if (!status.isDragging || status.draggedObject == null)
+        {
+            allValid = false;
+            break;
+        }
+
+        Vector2 dragDir = (touch.position - status.startPosition).normalized;
+        float dragDist = Vector2.Distance(touch.position, status.startPosition);
+
+        if (setting.requiredDragDirection && setting.haveDirection)
+        {
+            Vector2 requiredDir = setting.arrowDirection.normalized;
+            float dot = Vector2.Dot(dragDir, requiredDir);
+            float minDot = Mathf.Cos(setting.dragDirectionTolerance * Mathf.Deg2Rad);
+
+            if (dot < minDot)
+            {
+                allValid = false;
+                break;
+            }
+        }
+
+        if (setting.dragDistanceLimit > 0 && dragDist > setting.dragDistanceLimit)
+        {
+            allValid = false;
+            if (setting.OverDrag != null)
+                ApplyPenalty(setting.OverDrag);
+            break;
+        }
+    }
+
+    if (allValid)
+    {
+        for (int i = 0; i < settings.fingerSettings.Count; i++)
+        {
+            var status = fingerDragStatus[i];
+            var setting = settings.fingerSettings[i];
+
+            if (!status.isComplete)
+            {
+                if (setting.deactivateObjectAfterDrag)
+                    Destroy(status.draggedObject);
+
+                status.isDragging = false;
+                status.draggedObject = null;
+                status.isComplete = true;
+
+                Debug.Log($"[MultiDrag] 손가락 {i} 드래그 완료 (동시)");
+            }
+        }
+
+        AdvanceToNextStage(); // 🎉 한 번에 진행!
+    }
+
+    interactionInProgress = true;
+}
+        
         private bool AllMultiDragCompleted(int requiredCount)
         {
             for (int i = 0; i < requiredCount; i++)

@@ -16,457 +16,10 @@ MonoBehaviour:
   displayName: "\uB2E4\uD68C\uC6A9 \uACB8\uC790(\uD3F4\uB9AC\uAEBC\uB0BC\uB54C)"
   description: "\uD3F4\uB9AC \uBE44\uB2D0 \uB72F\uC73C\uBA74 \uBC14\uB85C \uC2DC\uC791 "
   stages:
-  - id: ForcepReuse_open_stage_7
-    name: "\uC791\uC740 \uBE44\uB2D0 \uC7A1\uACE0 \uC788\uB294 \uC190 \uC0DD"
-    StageNum: 0
-    guideMessage: 
-    interactionType: 2
-    settings:
-      isDragInteraction: 1
-      showDirectionArrows: 0
-      haveDirection: 0
-      arrowStartPosition: {x: 0, y: 0}
-      arrowDirection: {x: 0, y: 0}
-      requireTwoFingerDrag: 0
-      requiredDragDirection: 0
-      dragDirectionTolerance: 0
-      targetObjectTag: 
-      deactivateObjectAfterDrag: 0
-      followDragMovement: 0
-      dragDistanceLimit: 0
-      boundaryObjectTag: 
-      collisionZoneTag: 
-      OverDrag:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      CollideDrag:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      fingerSettings: []
-      targetZoneTag: 
-      requireReachTargetZone: 0
-      minOverlapPercentage: 0
-      detectTouchCollision: 0
-      noTouchZoneTag: 
-      touchCollisionPenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      multiDragSyncThreshold: 0
-      createObject: 1
-      objectToCreate:
-      - {fileID: 1620158221825356620, guid: d611c13542b54d44b890fc8d7f1ead56, type: 3}
-      isConditionalClick: 0
-      validClickTags: []
-      invalidClickTags: []
-      conditionalClickPenalties: []
-      destroyValidClickedObject: 0
-      isSustainedClick: 0
-      sustainedClickDuration: 0
-      earlyReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      lateReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      sustainedClickTargetTag: 
-      deleteObject: 1
-      objectToDeleteTag:
-      - Hand
-      moveObject: 0
-      objectToMoveTag: 
-      moveDirection: {x: 0, y: 0}
-      moveSpeed: 0
-      movePath: []
-      showTextQuizPopup: 0
-      textQuizQuestionText: 
-      textQuizOptions: []
-      textQuizCorrectAnswerIndex: 0
-      textQuizTimeLimit: 0
-      textQuizWrongAnswer:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      showImageQuizPopup: 0
-      imageQuizQuestionText: 
-      imageQuizOptions: []
-      imageQuizCorrectAnswerIndex: 0
-      imageQuizTimeLimit: 0
-      imageQuizWrongAnswer:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      startMiniGame: 0
-      miniGamePrefab: {fileID: 0}
-      isVariousChoice: 0
-      choiceQuestionText: 
-      alternativeInteraction: {fileID: 0}
-    requireSpecificOrder: 0
-    requiredPreviousStageIds: []
-    incorrectOrderPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-    incorrectInteractionPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-  - id: ForcepReuse_open_stage_8
-    name: "\uB4DC\uB798\uADF8\uB85C \uC5F4\uAE30 "
-    StageNum: 1
-    guideMessage: "\uB4DC\uB798\uADF8\uB85C \uC5F4\uC5B4\uC8FC\uC138\uC694"
-    interactionType: 1
-    settings:
-      isDragInteraction: 1
-      showDirectionArrows: 0
-      haveDirection: 0
-      arrowStartPosition: {x: 0, y: 0}
-      arrowDirection: {x: 0, y: 0}
-      requireTwoFingerDrag: 0
-      requiredDragDirection: 0
-      dragDirectionTolerance: 0
-      targetObjectTag: 
-      deactivateObjectAfterDrag: 0
-      followDragMovement: 0
-      dragDistanceLimit: 0
-      boundaryObjectTag: 
-      collisionZoneTag: 
-      OverDrag:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      CollideDrag:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      fingerSettings:
-      - name: "\uC67C\uCABD\uC190 "
-        showDirectionArrows: 0
-        haveDirection: 1
-        arrowStartPosition: {x: 747, y: 293}
-        arrowDirection: {x: -1, y: 0}
-        requiredDragDirection: 1
-        dragDirectionTolerance: 12.5
-        targetObjectTag: Vynl
-        deactivateObjectAfterDrag: 0
-        followDragMovement: 0
-        dragDistanceLimit: 0
-        boundaryObjectTag: 
-        collisionZoneTag: 
-        OverDrag:
-          penaltyType: 0
-          penaltyScore: 0
-          speaker: 0
-          penaltyMessage: 
-          databaseMessage: 
-          flashRedScreen: 0
-          flashCount: 0
-      - name: "\uC624\uB978\uCABD\uC190 "
-        showDirectionArrows: 0
-        haveDirection: 1
-        arrowStartPosition: {x: 949, y: 293}
-        arrowDirection: {x: 1, y: 0}
-        requiredDragDirection: 1
-        dragDirectionTolerance: 18.9
-        targetObjectTag: Vynl
-        deactivateObjectAfterDrag: 0
-        followDragMovement: 0
-        dragDistanceLimit: 0
-        boundaryObjectTag: 
-        collisionZoneTag: 
-        OverDrag:
-          penaltyType: 0
-          penaltyScore: 0
-          speaker: 0
-          penaltyMessage: 
-          databaseMessage: 
-          flashRedScreen: 0
-          flashCount: 0
-      targetZoneTag: 
-      requireReachTargetZone: 0
-      minOverlapPercentage: 0
-      detectTouchCollision: 0
-      noTouchZoneTag: 
-      touchCollisionPenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      multiDragSyncThreshold: 0
-      createObject: 1
-      objectToCreate:
-      - {fileID: 1620158221825356620, guid: d611c13542b54d44b890fc8d7f1ead56, type: 3}
-      isConditionalClick: 0
-      validClickTags: []
-      invalidClickTags: []
-      conditionalClickPenalties: []
-      destroyValidClickedObject: 0
-      isSustainedClick: 0
-      sustainedClickDuration: 0
-      earlyReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      lateReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      sustainedClickTargetTag: 
-      deleteObject: 1
-      objectToDeleteTag:
-      - Hand
-      moveObject: 0
-      objectToMoveTag: 
-      moveDirection: {x: 0, y: 0}
-      moveSpeed: 0
-      movePath: []
-      showTextQuizPopup: 0
-      textQuizQuestionText: 
-      textQuizOptions: []
-      textQuizCorrectAnswerIndex: 0
-      textQuizTimeLimit: 0
-      textQuizWrongAnswer:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      showImageQuizPopup: 0
-      imageQuizQuestionText: 
-      imageQuizOptions: []
-      imageQuizCorrectAnswerIndex: 0
-      imageQuizTimeLimit: 0
-      imageQuizWrongAnswer:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      startMiniGame: 0
-      miniGamePrefab: {fileID: 0}
-      isVariousChoice: 0
-      choiceQuestionText: 
-      alternativeInteraction: {fileID: 0}
-    requireSpecificOrder: 0
-    requiredPreviousStageIds: []
-    incorrectOrderPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-    incorrectInteractionPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-  - id: ForcepReuse_open_stage_9
-    name: "\uC791\uC740\uBE44\uB2D0 \uC190 \uC0AD\uC81C "
-    StageNum: 2
-    guideMessage: 
-    interactionType: 5
-    settings:
-      isDragInteraction: 1
-      showDirectionArrows: 0
-      haveDirection: 0
-      arrowStartPosition: {x: 0, y: 0}
-      arrowDirection: {x: 0, y: 0}
-      requireTwoFingerDrag: 0
-      requiredDragDirection: 0
-      dragDirectionTolerance: 0
-      targetObjectTag: 
-      deactivateObjectAfterDrag: 0
-      followDragMovement: 0
-      dragDistanceLimit: 0
-      boundaryObjectTag: 
-      collisionZoneTag: 
-      OverDrag:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      CollideDrag:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      fingerSettings: []
-      targetZoneTag: 
-      requireReachTargetZone: 0
-      minOverlapPercentage: 0
-      detectTouchCollision: 0
-      noTouchZoneTag: 
-      touchCollisionPenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      multiDragSyncThreshold: 0
-      createObject: 1
-      objectToCreate:
-      - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
-      isConditionalClick: 0
-      validClickTags: []
-      invalidClickTags: []
-      conditionalClickPenalties: []
-      destroyValidClickedObject: 0
-      isSustainedClick: 0
-      sustainedClickDuration: 0
-      earlyReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      lateReleasePenalty:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      sustainedClickTargetTag: 
-      deleteObject: 1
-      objectToDeleteTag:
-      - Vynl
-      moveObject: 0
-      objectToMoveTag: 
-      moveDirection: {x: 0, y: 0}
-      moveSpeed: 0
-      movePath: []
-      showTextQuizPopup: 0
-      textQuizQuestionText: 
-      textQuizOptions: []
-      textQuizCorrectAnswerIndex: 0
-      textQuizTimeLimit: 0
-      textQuizWrongAnswer:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      showImageQuizPopup: 0
-      imageQuizQuestionText: 
-      imageQuizOptions: []
-      imageQuizCorrectAnswerIndex: 0
-      imageQuizTimeLimit: 0
-      imageQuizWrongAnswer:
-        penaltyType: 0
-        penaltyScore: 0
-        speaker: 0
-        penaltyMessage: 
-        databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
-      startMiniGame: 0
-      miniGamePrefab: {fileID: 0}
-      isVariousChoice: 0
-      choiceQuestionText: 
-      alternativeInteraction: {fileID: 0}
-    requireSpecificOrder: 0
-    requiredPreviousStageIds: []
-    incorrectOrderPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
-    incorrectInteractionPenalty:
-      penaltyType: 0
-      penaltyScore: 0
-      speaker: 0
-      penaltyMessage: 
-      databaseMessage: 
-      flashRedScreen: 0
-      flashCount: 0
   - id: ForcepReuse_stage_0
     name: "\uC0B4\uC9DD \uBC97\uAE34 \uC190\uACFC \uACB8\uC790 \uB4E4\uACE0 \uC788\uB294
       \uC190 \uC0DD\uC131 "
-    StageNum: 3
+    StageNum: 0
     guideMessage: 
     interactionType: 2
     settings:
@@ -601,7 +154,7 @@ MonoBehaviour:
       flashCount: 0
   - id: ForcepReuse_stage_1
     name: "\uD3F4\uB9AC \uB4DC\uB798\uADF8\uD558\uC5EC \uAEBC\uB0C4 "
-    StageNum: 4
+    StageNum: 1
     guideMessage: "\uACB8\uC790\uB85C \uC7A1\uACE0 \uC774\uB3D9\uC2DC\uD0A4\uACE0
       \uC2F6\uC740 \uBB3C\uAC74\uC744 \uD130\uCE58\uD574\uC11C \uB4DC\uB798\uADF8\uD558\uC138\uC694 "
     interactionType: 0
@@ -741,7 +294,7 @@ MonoBehaviour:
       flashCount: 0
   - id: 'ForcepReuse_stage_2 '
     name: "\uD3F4\uB9AC \uC7A1\uC190, \uACB8\uC790\uC7A1\uC190 \uB458\uB2E4\uC0AD\uC81C"
-    StageNum: 5
+    StageNum: 2
     guideMessage: 
     interactionType: 5
     settings:
@@ -876,7 +429,7 @@ MonoBehaviour:
       flashCount: 0
   - id: ForcepReuse_stage_3
     name: "\uACB8\uC790\uB85C \uD3F4\uB9AC \uC7A1 \uC190 \uC0DD\uC131 "
-    StageNum: 6
+    StageNum: 3
     guideMessage: 
     interactionType: 2
     settings:
@@ -1010,7 +563,7 @@ MonoBehaviour:
       flashCount: 0
   - id: ForcepReuse_stage_4
     name: "\uD3F4\uB9AC \uB458 \uACF3 \uD130\uCE58 "
-    StageNum: 7
+    StageNum: 4
     guideMessage: "\uACB8\uC790\uB85C \uAEBC\uB0B8 Foley Catheter\uB97C \uB458 \uACF3\uC744
       \uD130\uCE58\uD558\uC138\uC694 "
     interactionType: 3
@@ -1202,7 +755,7 @@ MonoBehaviour:
       flashCount: 0
   - id: ForcepReuse_stage_5
     name: "\uD2B8\uB808\uC774\uC5D0 \uD3F4\uB9AC \uC0DD\uC131! "
-    StageNum: 8
+    StageNum: 5
     guideMessage: 
     interactionType: 2
     settings:
@@ -1336,7 +889,7 @@ MonoBehaviour:
       flashCount: 0
   - id: ForcepReuse_stage_6
     name: "\uD3F4\uB9AC \uB4E4\uACE0 \uC788\uB294 \uC190 \uC0AD\uC81C "
-    StageNum: 9
+    StageNum: 6
     guideMessage: 
     interactionType: 5
     settings:

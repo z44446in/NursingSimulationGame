@@ -150,10 +150,10 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: CatheterOpen_stage_1
-    name: "\uBE44\uB2D0 \uB4DC\uB798\uADF8\uB85C \uC5F4"
+  - id: ITR_Catheter Open_stage_88
+    name: "\uBA40\uD2F0\uB4DC\uB798\uADF8\uB85C \uC5F4"
     StageNum: 1
-    guideMessage: "\uC591\uCABD\uC73C\uB85C \uB4DC\uB798\uADF8\uD558\uC5EC \uC5F4\uC5B4\uC8FC\uC138\uC694 "
+    guideMessage: 
     interactionType: 1
     settings:
       isDragInteraction: 1
@@ -187,14 +187,14 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       fingerSettings:
-      - name: "\uC67C\uCABD \uC190 "
-        showDirectionArrows: 1
+      - name: "\uC190\uAC00\uB77D 1"
+        showDirectionArrows: 0
         haveDirection: 1
-        arrowStartPosition: {x: 747, y: 293}
+        arrowStartPosition: {x: 0, y: 0}
         arrowDirection: {x: -1, y: 0}
         requiredDragDirection: 1
-        dragDirectionTolerance: 17.3
-        targetObjectTag: 'Vynl '
+        dragDirectionTolerance: 45.6
+        targetObjectTag: Vynl
         deactivateObjectAfterDrag: 0
         followDragMovement: 0
         dragDistanceLimit: 0
@@ -208,14 +208,14 @@ MonoBehaviour:
           databaseMessage: 
           flashRedScreen: 0
           flashCount: 0
-      - name: "\uC624\uB978\uCABD \uC190 "
-        showDirectionArrows: 1
+      - name: "\uC190\uAC00\uB77D 2"
+        showDirectionArrows: 0
         haveDirection: 1
-        arrowStartPosition: {x: 949, y: 293}
+        arrowStartPosition: {x: 0, y: 0}
         arrowDirection: {x: 1, y: 0}
         requiredDragDirection: 1
-        dragDirectionTolerance: 14.1
-        targetObjectTag: 'Vynl '
+        dragDirectionTolerance: 33.4
+        targetObjectTag: Vynl
         deactivateObjectAfterDrag: 0
         followDragMovement: 0
         dragDistanceLimit: 0
@@ -243,8 +243,9 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       multiDragSyncThreshold: 0
-      createObject: 0
-      objectToCreate: []
+      createObject: 1
+      objectToCreate:
+      - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -325,8 +326,8 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-  - id: CatheterOpen_stage_1_5
-    name: "\uBE44\uB2D0\uC774\uB791 \uC190 \uC0AD\uC81C"
+  - id: CatheterOpen_stage_7
+    name: "\uB4E4\uACE0\uC787\uB5A4 \uAC70 \uC0AD"
     StageNum: 2
     guideMessage: 
     interactionType: 5
@@ -376,8 +377,9 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       multiDragSyncThreshold: 0
-      createObject: 0
-      objectToCreate: []
+      createObject: 1
+      objectToCreate:
+      - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -404,7 +406,7 @@ MonoBehaviour:
       sustainedClickTargetTag: 
       deleteObject: 1
       objectToDeleteTag:
-      - 'Vynl '
+      - Vynl
       moveObject: 0
       objectToMoveTag: 
       moveDirection: {x: 0, y: 0}

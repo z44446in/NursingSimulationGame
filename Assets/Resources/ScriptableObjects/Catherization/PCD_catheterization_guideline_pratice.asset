@@ -196,6 +196,78 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
+  - id: step_5
+    name: "\uC2A4\uD15D 5"
+    guideMessage: 
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: FoleyCatheter16
+      interactionDataId: ITR_Catheter Open
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    isRepeatable: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: step_6
+    name: "\uC2A4\uD15D 6"
+    guideMessage: 
+    stepType: 0
+    settings:
+      isItemClick: 1
+      itemId: Syringe1
+      interactionDataId: ITR_Syringe
+      isActionButtonClick: 0
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 0
+      validInteractionTags: []
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    isRepeatable: 0
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
   requiredItems:
   - item: {fileID: 11400000, guid: 660647ea4e38cee49b14b1b99b0a2ca0, type: 2}
     isOptional: 0
@@ -332,7 +404,7 @@ MonoBehaviour:
     needReason: 
     optionalReason: 
   - item: {fileID: 11400000, guid: ab075d613fcbbb3499e56bcd1e8e9644, type: 2}
-    isOptional: 1
+    isOptional: 0
     needReason: 
     optionalReason: 
   - item: {fileID: 11400000, guid: 7f9d5a6c2d64ba149adc97a382152db4, type: 2}
