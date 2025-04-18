@@ -10,6 +10,9 @@ namespace Nursing.Managers
 {
     public class ProcedureManager : MonoBehaviour
     {
+        public static ProcedureManager Instance { get; private set; }
+   
+
         [Header("참조")]
         [SerializeField] private InteractionManager interactionManager;
         [SerializeField] private PenaltyManager penaltyManager;
@@ -46,6 +49,14 @@ namespace Nursing.Managers
 
         private void Awake()
         {
+            // ② 기존 Awake 로직보다 위에 싱글톤 초기화
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // 중복 인스턴스 제거
+            return;
+        }
+        Instance = this;
+
             if (interactionManager == null)
                 interactionManager = FindObjectOfType<InteractionManager>();
                 
@@ -415,6 +426,7 @@ break;
                     break;
                 }
             }
+            
 
             if (allRequiredStepsCompleted)
             {
@@ -493,9 +505,25 @@ break;
             var step = currentProcedure.steps.Find(s => s.id == stepId);
             if (step != null)
             {
+                completedStepIds.Add(step.id);
+                // 가용 스텝 업데이트
+                UpdateAvailableSteps();
+                // 모든 스텝 완료 체크
                 CheckProcedureCompletion();
-                SetupStepBasedOnType(step);
                 Instep = false;
+                 if (step.isAutoNext && !string.IsNullOrEmpty(step.autoNextStepId))
+                {
+                    // 지정한 스텝 ID로 바로 이동
+                var next = currentProcedure.steps.Find(s => s.id == step.autoNextStepId);
+                if (next != null)
+                    ProcessStep(next);
+                else
+                Debug.LogWarning($"자동 다음 스텝 ID '{step.autoNextStepId}'를 찾을 수 없습니다.");
+                }
+                    else
+                    {
+                    Instep = false;
+                    }
 
             }
             else

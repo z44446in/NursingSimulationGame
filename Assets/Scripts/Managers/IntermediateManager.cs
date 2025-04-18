@@ -241,8 +241,7 @@ public void PickupItem(Item item)
         // 항상—성공 여부 상관없이—카트 UI는 현재 requiredPickedItems 기준으로 다시 그려줌
         cartUI.ClearCart();
         foreach (var picked in requiredPickedItems)
-            {Debug.Log(picked.itemId); // Debug.Log 추가
-                cartUI.AddItemToCart(picked);
+               { cartUI.AddItemToCart(picked);
                 cartUI.UpdateCartDisplay();}
 
         currentHeldItem = null;

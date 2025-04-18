@@ -21,6 +21,8 @@ TagManager:
   - Cotton
   - SpawnRT
   - Catheter
+  - CountPovidone
+  - Button
   layers:
   - Default
   - TransparentFX

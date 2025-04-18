@@ -17,6 +17,8 @@ public class PovidoneCheckButton : MonoBehaviour
     private void Awake()
     {
         button = GetComponent<Button>();
+         procedureManager = ProcedureManager.Instance;
+        penaltyManager   = PenaltyManager.Instance;
         if (button == null)
         {
             Debug.LogError("PovidoneCheckButton: Button 컴포넌트가 없습니다.");
@@ -31,15 +33,17 @@ public class PovidoneCheckButton : MonoBehaviour
 
     private void OnButtonClicked()
     {
-        int povidoneCount = GameObject.FindGameObjectsWithTag("Povidone").Length;
+        int povidoneCount = GameObject.FindGameObjectsWithTag("CountPovidone").Length;
         if (povidoneCount >= 5)
         {
             procedureManager.ForceCompleteStepById(stepId);
+            Debug.Log("스텝완료 작동안해");
         }
         else
         {
             if (insufficientPovidonePenalty != null)
-                penaltyManager.ApplyPenalty(insufficientPovidonePenalty);
+                {penaltyManager.ApplyPenalty(insufficientPovidonePenalty);
+                Debug.Log("패널티 시스템 작동안해");}
         }
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ITR_Povidone_takeout_first
   m_EditorClassIdentifier: 
   id: ITR_Povidone_takeout_first
-  displayName: "\uB2E4\uD68C\uC6A9 \uD3EC\uC148\uC73C\uB85C \uD3EC\uBE44\uB3C8 \uAEBC\uB0B4"
+  displayName: "\uAC10\uC790\uB85C \uD3EC\uBE44\uB3C8\uAEBC\uB0B4\uB294 \uAC70 \uCCAB\uBC88\uC9F8 "
   description: 
   stages:
   - id: ForcepReuse_povideone_stage_0
@@ -784,6 +784,7 @@ MonoBehaviour:
       - Tray
       - Trash
       - Untagged
+      - Bottle
       conditionalClickPenalties:
       - penaltyType: 0
         penaltyScore: 5
@@ -806,6 +807,14 @@ MonoBehaviour:
         penaltyScore: 5
         speaker: 4
         penaltyMessage: "\uC7A5\uB09C\uCE58\uC9C0 \uB9C8."
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 1
+      - penaltyType: 0
+        penaltyScore: 5
+        speaker: 0
+        penaltyMessage: "\uC81C\uB300\uB85C \uD3EC\uBE44\uB3C8\uC744 \uC9D1\uC5B4\uC57C\uC9C0!
+          \uD1B5\uC774 \uC544\uB2C8\uB77C!"
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1

@@ -284,10 +284,10 @@ MonoBehaviour:
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
-    canBeSkipped: 0
+    canBeSkipped: 1
     isRepeatable: 1
-    isAutoNext: 0
-    autoNextStepId: 
+    isAutoNext: 1
+    autoNextStepId: Catheterization_guideline_pratice_step_9
     incorrectActionPenalty:
       penaltyType: 0
       penaltyScore: 0
@@ -351,6 +351,46 @@ MonoBehaviour:
       validInteractionTags: []
       isInteractionOnly: 1
       OnlyinteractionDataId: ITR_Povidone_takeout_Next
+    requireSpecificOrder: 0
+    requiredPreviousStepIds: []
+    previousStepPenalties: []
+    restrictNextSteps: 0
+    allowedNextStepIds: []
+    invalidNextStepPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+    canBeSkipped: 0
+    isRepeatable: 0
+    isAutoNext: 0
+    autoNextStepId: 
+    incorrectActionPenalty:
+      penaltyType: 0
+      penaltyScore: 0
+      speaker: 0
+      penaltyMessage: 
+      databaseMessage: 
+      flashRedScreen: 0
+      flashCount: 0
+  - id: Catheterization_guideline_pratice_step_9
+    name: "\uD3EC\uBE44\uB3C8 \uC644\uB8CC\uD574\uC11C \uB2E4 \uC0AD\uC81C"
+    guideMessage: 
+    stepType: 3
+    settings:
+      isItemClick: 1
+      itemId: Hand Wash
+      interactionDataId: ITR_HandWash
+      isActionButtonClick: 1
+      correctButtonIds: []
+      requireAllButtons: 0
+      isPlayerInteraction: 1
+      validInteractionTags: []
+      isInteractionOnly: 1
+      OnlyinteractionDataId: ITR_Povidone_Move_Done
     requireSpecificOrder: 0
     requiredPreviousStepIds: []
     previousStepPenalties: []

@@ -7,6 +7,10 @@ namespace Nursing.Managers
 {
     public class PenaltyManager : MonoBehaviour
     {
+
+         public static PenaltyManager Instance { get; private set; }
+    
+
         [Header("패널티 UI 요소")]
         [SerializeField] private Image redScreenFlash;
         [SerializeField] private GameObject smallDialoguePrefab;
@@ -22,6 +26,14 @@ namespace Nursing.Managers
 
         private void Awake()
         {
+            // ② 기존 Awake 로직보다 위에 싱글톤 초기화
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // 중복 인스턴스 제거
+            return;
+        }
+        Instance = this;
+        
             dialogueManager = FindObjectOfType<DialogueManager>();
             penaltyDatabase = FindObjectOfType<PenaltyDatabase>();
             
