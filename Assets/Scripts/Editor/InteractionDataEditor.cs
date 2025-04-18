@@ -707,15 +707,28 @@ namespace Nursing.Editor
         
         private void DrawObjectCreationSettings(SerializedProperty settingsProp)
         {
-            SerializedProperty createObjectProp = settingsProp.FindPropertyRelative("createObject");
-            SerializedProperty objectToCreateProp = settingsProp.FindPropertyRelative("objectToCreate");
-            
-            // 이 인터랙션 타입을 활성화하기 위한 플래그
+            SerializedProperty createObjectProp         = settingsProp.FindPropertyRelative("createObject");
+            SerializedProperty objectToCreateProp       = settingsProp.FindPropertyRelative("objectToCreate");
+            SerializedProperty randomizeSpawnProp       = settingsProp.FindPropertyRelative("randomizeSpawnPosition");
+            SerializedProperty spawnAreaTagProp         = settingsProp.FindPropertyRelative("spawnAreaTag");
+
+            // 인터랙션 타입 활성화
             createObjectProp.boolValue = true;
-            
-            // 기본 설정
-            EditorGUILayout.PropertyField(objectToCreateProp, new GUIContent("생성할 오브젝트 태그", "활성화할 오브젝트의 태그 배열"));
+
+            EditorGUILayout.LabelField("오브젝트 생성 설정", subheaderStyle);
+
+            // 생성할 오브젝트 배열
+            EditorGUILayout.PropertyField(objectToCreateProp, new GUIContent("생성할 오브젝트", "생성할 프리팹 리스트"));
+
+            // 랜덤 스폰 옵션
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(randomizeSpawnProp, new GUIContent("랜덤 스폰 활성화", "특정 구역 내에서 랜덤 생성 여부"));
+            if (randomizeSpawnProp.boolValue)
+            {
+                EditorGUILayout.PropertyField(spawnAreaTagProp, new GUIContent("스폰 영역 태그", "랜덤 위치를 결정할 UI 영역 태그"));
+            }
         }
+
         
         private void DrawConditionalClickSettings(SerializedProperty settingsProp)
         {

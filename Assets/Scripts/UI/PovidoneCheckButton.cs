@@ -4,8 +4,7 @@ using Nursing.Managers;
 using Nursing.Penalty;
 
 
-namespace Nursing.Managers  // 혹은 전역(namespace 생략)이어도 OK
-{
+
 public class PovidoneCheckButton : MonoBehaviour
 {
     [HideInInspector] public ProcedureManager procedureManager;
@@ -43,5 +42,4 @@ public class PovidoneCheckButton : MonoBehaviour
                 penaltyManager.ApplyPenalty(insufficientPovidonePenalty);
         }
     }
-}
 }

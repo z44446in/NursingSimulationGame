@@ -292,6 +292,35 @@ namespace Nursing.Managers
                     // 특별한 설정이 필요하면 여기에 추가
                     break;
 
+                case ProcedureStepType.InteractionOnly:
+                // 바로 InteractionData 실행하고 완료 콜백으로 CompleteStep 호출
+                Instep = true;
+                var onlyId = step.settings.OnlyinteractionDataId;
+                if (!string.IsNullOrEmpty(onlyId) && interactionManager != null)
+                {
+                    var data = FindInteractionDataById(onlyId);
+                    if (data != null)
+                    {
+                        void OnComplete(bool success)
+                        {
+                            interactionManager.OnInteractionComplete -= OnComplete;
+                            if (success) CompleteStep(step);
+                        }
+                        interactionManager.OnInteractionComplete += OnComplete;
+                        interactionManager.StartInteraction(data);
+                    }
+                    else
+                   {
+                        Debug.LogWarning($"InteractionOnly: '{onlyId}' 못 찾음");
+                        CompleteStep(step);
+                    }
+                }
+                else
+                {
+                    CompleteStep(step);
+                }
+                break;
+
                 default:
                     Debug.LogWarning("지원하지 않는 스텝 타입입니다: " + step.stepType);
                     // 지원하지 않는 타입은 건너뛰고 완료 처리
@@ -352,9 +381,26 @@ namespace Nursing.Managers
             SetupStepBasedOnType(step);
             return;
              }
-
-            Instep = false;
+            // 자동 다음 스텝 분기
+                if (step.isAutoNext && !string.IsNullOrEmpty(step.autoNextStepId))
+            {
+                    // 지정한 스텝 ID로 바로 이동
+                var next = currentProcedure.steps.Find(s => s.id == step.autoNextStepId);
+                if (next != null)
+                    ProcessStep(next);
+                else
+                Debug.LogWarning($"자동 다음 스텝 ID '{step.autoNextStepId}'를 찾을 수 없습니다.");
+                }
+                    else
+                    {
+                    Instep = false;
+                    }
+            
+            
         }
+
+        
+
 
         // 프로시저 완료 체크
         private void CheckProcedureCompletion()
@@ -448,7 +494,10 @@ namespace Nursing.Managers
             var step = currentProcedure.steps.Find(s => s.id == stepId);
             if (step != null)
             {
-                CompleteStep(step);
+                CheckProcedureCompletion();
+                SetupStepBasedOnType(step);
+                Instep = false;
+
             }
             else
             {

@@ -70,6 +70,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 8990867428318011977, guid: 0a3bd020b2aec4771a6b826a60d495ea, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -204,6 +206,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Povidone
@@ -349,6 +353,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -489,6 +495,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -626,6 +634,8 @@ MonoBehaviour:
       objectToCreate:
       - {fileID: 732470107888164063, guid: addf192b3ade349358273da03d85b5bb, type: 3}
       - {fileID: 7731301906828676633, guid: d9290d33119a94f75831a36044fb885d, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -760,6 +770,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Bowl
@@ -921,7 +933,10 @@ MonoBehaviour:
         flashCount: 0
       multiDragSyncThreshold: 0
       createObject: 1
-      objectToCreate: []
+      objectToCreate:
+      - {fileID: 3425592540579633994, guid: 52cc55c52abf76f4ab2c5d83cca38394, type: 3}
+      randomizeSpawnPosition: 1
+      spawnAreaTag: SpawnRT
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1058,6 +1073,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1195,6 +1212,8 @@ MonoBehaviour:
       objectToCreate:
       - {fileID: 7731301906828676633, guid: d9290d33119a94f75831a36044fb885d, type: 3}
       - {fileID: 8990867428318011977, guid: 0a3bd020b2aec4771a6b826a60d495ea, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1330,6 +1349,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 1093599903030399271, guid: 6885a16e5fb5c459db53a99a409cdf49, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []

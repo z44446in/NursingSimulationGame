@@ -392,10 +392,22 @@ namespace Nursing.Editor
 
         
                 // 반복 설정 섹션 추가
-                EditorGUILayout.LabelField("반복 설정", subheaderStyle);
+             
                 EditorGUILayout.PropertyField(isRepeatableProp, new GUIContent("반복 가능", "이 스텝이 반복적으로 수행될 수 있는지 여부"));
                 
                 EditorGUILayout.Space();
+              // 자동 다음 스텝 설정
+               SerializedProperty isAutoNextProp    = stepProperty.FindPropertyRelative("isAutoNext");
+               SerializedProperty autoNextStepIdProp = stepProperty.FindPropertyRelative("autoNextStepId");
+               
+               EditorGUILayout.PropertyField(isAutoNextProp, new GUIContent("자동 이동 사용", "이 스텝 완료 후 자동으로 다음 스텝으로 이동할지 여부"));
+               if (isAutoNextProp.boolValue)
+               {
+                   EditorGUILayout.PropertyField(autoNextStepIdProp, new GUIContent("다음 스텝 ID", "자동으로 넘어갈 스텝의 ID"));
+                   // ID 선택 도우미 버튼
+                  if (GUILayout.Button("스텝 ID 선택"))
+                       ShowStepSelectionMenu(autoNextStepIdProp);
+               }
 
                 // 패널티 설정
                 EditorGUILayout.PropertyField(incorrectActionPenaltyProp, new GUIContent("잘못된 행동 패널티", "잘못된 행동을 했을 때 적용할 패널티"));
@@ -409,64 +421,22 @@ namespace Nursing.Editor
 
 
         // 스텝 ID 선택 메뉴 표시
-        private void ShowStepSelectionMenu(SerializedProperty stepIdsProperty)
-        {
-            // 현재 프로시저 데이터 가져오기
-            ProcedureData procedureData = target as ProcedureData;
-            if (procedureData == null || procedureData.steps == null)
-                return;
+         private void ShowStepSelectionMenu(SerializedProperty singleStringProp)
+{
+    ProcedureData data = target as ProcedureData;
+    var menu = new GenericMenu();
+    foreach (var step in data.steps)
+    {
+        bool on = singleStringProp.stringValue == step.id;
+        menu.AddItem(new GUIContent($"{step.name} ({step.id})"), on, () => {
+            serializedObject.Update();
+            singleStringProp.stringValue = step.id;
+            serializedObject.ApplyModifiedProperties();
+        });
+    }
+    menu.ShowAsContext();
+}
 
-            GenericMenu menu = new GenericMenu();
-
-            // 현재 선택된 스텝 ID 목록 가져오기
-            List<string> selectedIds = new List<string>();
-            for (int i = 0; i < stepIdsProperty.arraySize; i++)
-            {
-                selectedIds.Add(stepIdsProperty.GetArrayElementAtIndex(i).stringValue);
-            }
-
-            // 모든 스텝에 대해 메뉴 항목 추가
-            for (int i = 0; i < procedureData.steps.Count; i++)
-            {
-                ProcedureStep step = procedureData.steps[i];
-                string itemText = $"{i}: {step.name} ({step.id})";
-                bool isSelected = selectedIds.Contains(step.id);
-
-                menu.AddItem(
-                    new GUIContent(itemText),
-                    isSelected,
-                    (object userData) => {
-                        string stepId = (string)userData;
-                        serializedObject.Update();
-
-                        if (selectedIds.Contains(stepId))
-                        {
-                            // 이미 선택된 경우, 제거
-                            for (int j = 0; j < stepIdsProperty.arraySize; j++)
-                            {
-                                if (stepIdsProperty.GetArrayElementAtIndex(j).stringValue == stepId)
-                                {
-                                    stepIdsProperty.DeleteArrayElementAtIndex(j);
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // 선택되지 않은 경우, 추가
-                            int newIndex = stepIdsProperty.arraySize;
-                            stepIdsProperty.arraySize++;
-                            stepIdsProperty.GetArrayElementAtIndex(newIndex).stringValue = stepId;
-                        }
-
-                        serializedObject.ApplyModifiedProperties();
-                    },
-                    step.id
-                );
-            }
-
-            menu.ShowAsContext();
-        }
         private void DrawStepSettings(SerializedProperty settingsProp, ProcedureStepType stepType)
         {
             switch (stepType)
@@ -482,9 +452,73 @@ namespace Nursing.Editor
                 case ProcedureStepType.PlayerInteraction:
                     DrawPlayerInteractionSettings(settingsProp);
                     break;
+                // 여기에 추가
+                case ProcedureStepType.InteractionOnly:
+                    DrawInteractionOnlySettings(settingsProp);
+                    break;
+
+                    
+
             }
         }
         
+        private void DrawInteractionOnlySettings(SerializedProperty settingsProp)
+{
+    // InteractionOnly 타입 활성화 플래그
+    var isInteractionOnlyProp = settingsProp.FindPropertyRelative("isInteractionOnly");
+    isInteractionOnlyProp.boolValue = true;
+
+    // 연동할 InteractionData ID
+    var onlyIdProp = settingsProp.FindPropertyRelative("OnlyinteractionDataId");
+    EditorGUILayout.PropertyField(
+        onlyIdProp,
+        new GUIContent("InteractionData ID", "실행할 InteractionData 에셋의 ID")
+    );
+
+    // “인터랙션 데이터 찾기” 버튼
+    EditorGUILayout.BeginHorizontal();
+    GUILayout.FlexibleSpace();
+    if (GUILayout.Button("인터랙션 데이터 찾기", GUILayout.Width(150)))
+    {
+        // 프로젝트 내 모든 InteractionData 에셋 검색
+        string[] guids = AssetDatabase.FindAssets("t:InteractionData");
+        if (guids.Length > 0)
+        {
+            var menu = new GenericMenu();
+            foreach (var guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                var data = AssetDatabase.LoadAssetAtPath<InteractionData>(path);
+                if (data != null)
+                {
+                    bool selected = onlyIdProp.stringValue == data.id;
+                    menu.AddItem(
+                        new GUIContent($"{data.displayName} ({data.id})"),
+                        selected,
+                        () => {
+                            serializedObject.Update();
+                            onlyIdProp.stringValue = data.id;
+                            serializedObject.ApplyModifiedProperties();
+                        }
+                    );
+                }
+            }
+            menu.ShowAsContext();
+        }
+        else
+        {
+            EditorUtility.DisplayDialog(
+                "인터랙션 데이터 없음",
+                "프로젝트에 InteractionData 에셋이 없습니다.",
+                "확인"
+            );
+        }
+    }
+    GUILayout.FlexibleSpace();
+    EditorGUILayout.EndHorizontal();
+}
+
+
         #region 스텝 타입별 설정 드로잉 메서드
         
         private void DrawItemClickSettings(SerializedProperty settingsProp)

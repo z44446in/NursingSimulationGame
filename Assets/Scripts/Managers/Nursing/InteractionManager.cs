@@ -417,53 +417,50 @@ namespace Nursing.Managers
 
             foreach (var prefab in settings.objectToCreate)
             {
-                if (prefab != null)
+                GameObject instance;
+                var prefabRT = prefab.GetComponent<RectTransform>();
+                
+                        // --- UI 요소인 경우 ---
+                if (prefabRT != null && mainCanvas != null)
                 {
-                    // 캔버스가 있는 경우 캔버스의 자식으로 생성
-                    GameObject instance;
-                    if (mainCanvas != null)
+                    // 캔버스 자식으로 생성
+                    instance = Instantiate(prefab, mainCanvas.transform);
+
+                    var rt = instance.GetComponent<RectTransform>();
+                    // 랜덤 스폰 활성화 + spawnAreaTag 지정된 경우
+                    if (settings.randomizeSpawnPosition && !string.IsNullOrEmpty(settings.spawnAreaTag))
                     {
-                        // UI 요소인지 확인
-                        if (prefab.GetComponent<RectTransform>() != null)
+                        var areaObj = GameObject.FindWithTag(settings.spawnAreaTag);
+                        if (areaObj != null && areaObj.TryGetComponent<RectTransform>(out var areaRT))
                         {
-                            // UI 요소라면 캔버스 아래에 생성
-                            instance = Instantiate(prefab, mainCanvas.transform);
-                            // 원래 프리팹의 RectTransform 설정 유지
-                            RectTransform rectTransform = instance.GetComponent<RectTransform>();
-                            if (rectTransform != null)
-                            {
-                                // UI 요소의 위치를 캔버스 기준으로 조정
-                                rectTransform.anchoredPosition = prefab.GetComponent<RectTransform>().anchoredPosition;
-                            }
+                            Rect area = areaRT.rect;
+                            float x = Random.Range(area.xMin, area.xMax);
+                            float y = Random.Range(area.yMin, area.yMax);
+                            rt.anchoredPosition = new Vector2(x, y);
                         }
                         else
                         {
-                            // UI 요소가 아니라면 월드 공간에 생성
-                            instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
+                            Debug.Log("영역못찾음 ㅠ");
+                            // 영역을 못 찾았으면 원래 위치 유지
+                            rt.anchoredPosition = prefabRT.anchoredPosition;
                         }
                     }
                     else
                     {
-                        // 캔버스가 없으면 원래 위치에 생성
-                        instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
+                        // 랜덤 스폰 꺼졌으면 원래 위치
+                        rt.anchoredPosition = prefabRT.anchoredPosition;
                     }
-
-                    
-
-
-
-                     // → 여기에 주입 코드 추가
-                    var povButton = instance.GetComponent<PovidoneCheckButton>();
-                    if (povButton != null)
-                    {
-                        // Scene에 있는 ProcedureManager, PenaltyManager를 할당
-                        povButton.procedureManager = procedureManager;                 // InteractionManager와 같은 GameObject에 있으면 this 대신 FindObjectOfType 써도 OK
-                        povButton.penaltyManager   = penaltyManager;       // SerializeField로 할당된 페널티 매니저
-                        // stepId, insufficientPovidonePenalty 같은 설정도 미리 할당 가능
-                        
-                    }
-                    Debug.Log($"오브젝트 생성: {instance.name}, 부모: {(instance.transform.parent ? instance.transform.parent.name : "없음")}");
                 }
+                else
+                {
+                    // --- 월드 오브젝트인 경우 ---
+                    instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
+                }
+
+                
+             
+                Debug.Log($"오브젝트 생성: {instance.name}, 부모: {(instance.transform.parent ? instance.transform.parent.name : "없음")}");
+                
             }
 
             AdvanceToNextStage();

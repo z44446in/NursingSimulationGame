@@ -77,9 +77,16 @@ public List<Item> hiddenInIntermediateItems = new List<Item>();
         [Header("반복 설정")]
 public bool isRepeatable; // 이 스텝이 반복 가능한지 여부
 
+        [Header("자동 다음 스텝 설정")]                // 신규
+ public bool isAutoNext;                      // 자동으로 다음 스텝으로 넘어갈지
+public string autoNextStepId;                // 넘어갈 스텝의 id
+
+
         [Header("패널티 설정")]
         
         public PenaltyData incorrectActionPenalty;
+
+
         // 생성자 추가
         public ProcedureStep()
         {
@@ -110,6 +117,10 @@ public bool isRepeatable; // 이 스텝이 반복 가능한지 여부
         [Header("플레이어 상호작용")]
         public bool isPlayerInteraction;
         public List<string> validInteractionTags;
+
+        [Header("Interaction 바로 실행 ")]
+        public bool isInteractionOnly;
+        public string  OnlyinteractionDataId;
     }
 
     public enum ProcedureStepType
@@ -119,7 +130,10 @@ public bool isRepeatable; // 이 스텝이 반복 가능한지 여부
         [Tooltip("액션 버튼 클릭 상호작용")]
         ActionButtonClick,
         [Tooltip("플레이어 직접 상호작용")]
-        PlayerInteraction
+        PlayerInteraction,
+        [Tooltip("Interaction 바로 실행")]
+        InteractionOnly,
+                
     }
 
     
