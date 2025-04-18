@@ -304,8 +304,13 @@ namespace Nursing.Editor
 
     // 기본 설정
     EditorGUILayout.LabelField("다양한 선택 설정", subheaderStyle);
+    // 취소 처리 옵션 추가
+    SerializedProperty treatNoAsFailureProp = settingsProp.FindPropertyRelative("treatNoAsFailure");
+    EditorGUILayout.PropertyField(treatNoAsFailureProp, new GUIContent("'아니오' 선택을 실패로 처리", "체크하면 '아니오' 클릭 시 상호작용 실패로 처리하고 스텝을 취소합니다"));
+
     EditorGUILayout.PropertyField(choiceQuestionTextProp, new GUIContent("질문 텍스트", "선택 팝업에 표시될 질문 텍스트"));
     
+     
     // 이미지 설정 추가
     EditorGUILayout.PropertyField(choicePopupImageProp, new GUIContent("팝업 이미지", "선택 팝업에 표시될 이미지"));
 
@@ -397,7 +402,7 @@ namespace Nursing.Editor
 
             if (haveDirectionProp.boolValue)
             {
-                EditorGUILayout.PropertyField(arrowStartPositionProp, new GUIContent("드래그 시작 위치", "드래그가 표시될 시작 위치"));
+                EditorGUILayout.PropertyField(arrowStartPositionProp, new GUIContent("화살표 시작 위치", "드래그가 표시될 시작 위치"));
 
                 // 드래그 방향 시각적 컨트롤
                 EditorGUILayout.BeginHorizontal();

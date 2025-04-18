@@ -247,41 +247,74 @@ namespace Nursing.Managers
             {
                 case ProcedureStepType.ItemClick:
                     // 아이템 클릭 스텝의 인터랙션 데이터 처리
-                    if (!string.IsNullOrEmpty(step.settings.interactionDataId) && interactionManager != null)
+                    // 인터랙션 데이터 처리 부분 수정
+if (!string.IsNullOrEmpty(step.settings.interactionDataId) && interactionManager != null)
+{
+    InteractionData interactionData = FindInteractionDataById(step.settings.interactionDataId);
+
+    if (interactionData != null)
+    {
+        // 인터랙션 완료 이벤트 구독
+        void OnComplete(bool success)
+        {
+            // 이벤트 구독 해제
+            interactionManager.OnInteractionComplete -= OnComplete;
+
+            if (success)
+            {
+                CompleteStep(step);
+            }
+            else if (interactionManager.WasInteractionFailed && step.stepType == ProcedureStepType.ItemClick)
+            {
+                // 아이템 되돌리기 코드 추가
+                Item pickedItem = FindItemById(step.settings.itemId);
+                if (pickedItem != null && cartUI != null)
+                {
+                    // 카트에 아이템 다시 추가
+                    cartUI.AddItemToCart(pickedItem);
+                    cartUI.UpdateCartDisplay();
+                    
+                    // IntermediateManager 참조가 있으면 그쪽에서도 처리
+                    IntermediateManager intermManager = FindObjectOfType<IntermediateManager>();
+                    if (intermManager != null)
                     {
-                        InteractionData interactionData = FindInteractionDataById(step.settings.interactionDataId);
-                        if (interactionData != null)
+                        // requiredPickedItems에서 아이템 제거 (이미 꺼낸 아이템 목록에서 제거)
+                        if (intermManager.requiredPickedItems.Contains(pickedItem))
                         {
-                            // 완료 처리를 위한 로컬 함수 정의
-                            void OnComplete(bool success)
-                            {
-                                // 이벤트 구독 해제
-                                interactionManager.OnInteractionComplete -= OnComplete;
-
-                                if (success)
-                                {
-                                    CompleteStep(step);
-                                }
-                            }
-
-                            // 인터랙션 완료 이벤트 구독
-                            interactionManager.OnInteractionComplete += OnComplete;
-
-                            // 인터랙션 시작
-                            interactionManager.StartInteraction(interactionData);
-                        }
-                        else
-                        {
-                            Debug.LogWarning("인터랙션 데이터를 찾을 수 없습니다: " + step.settings.interactionDataId);
-                            CompleteStep(step);
+                            intermManager.requiredPickedItems.Remove(pickedItem);
                         }
                     }
-                    else
-                    {
-                        // 인터랙션 데이터 없이 바로 완료
-                        CompleteStep(step);
-                    }
-                    break;
+                    
+                    Debug.Log($"인터랙션 취소로 아이템 '{pickedItem.itemName}'을(를) 카트에 돌려놓았습니다.");
+                }
+                
+                // 스텝 취소 처리 (완료 목록에서 제외)
+                if (completedStepIds.Contains(step.id))
+                {
+                    completedStepIds.Remove(step.id);
+                }
+                
+                // 가용 스텝 업데이트
+                UpdateAvailableSteps();
+                
+                Debug.Log($"VariousChoice '아니오' 선택으로 스텝 '{step.id}' 취소되었습니다.");
+            }
+            else if (step.incorrectActionPenalty != null)
+            {
+                ApplyPenalty(step.incorrectActionPenalty);
+            }
+        }
+
+        interactionManager.OnInteractionComplete += OnComplete;
+        interactionManager.StartInteraction(interactionData);
+    }
+    else
+    {
+        Debug.LogWarning("인터랙션 데이터를 찾을 수 없습니다: " + step.settings.interactionDataId);
+        CompleteStep(step);
+    }
+}
+break;
 
                 case ProcedureStepType.ActionButtonClick:
                     SetupActionButtonClick(step);

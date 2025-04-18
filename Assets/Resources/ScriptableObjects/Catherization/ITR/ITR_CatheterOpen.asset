@@ -70,6 +70,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 1620158221825356620, guid: d611c13542b54d44b890fc8d7f1ead56, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -191,7 +193,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 1"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 0, y: 0}
+        arrowStartPosition: {x: 728, y: 256}
         arrowDirection: {x: -1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 45.6
@@ -212,7 +214,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 2"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 0, y: 0}
+        arrowStartPosition: {x: 945, y: 256}
         arrowDirection: {x: 1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 33.4
@@ -247,6 +249,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -382,6 +386,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -519,6 +525,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 915217090205398633, guid: e92e59f93bf2f449fa99e1ad56ac3f5c, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -653,6 +661,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -788,6 +798,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -923,6 +935,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1058,6 +1072,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []

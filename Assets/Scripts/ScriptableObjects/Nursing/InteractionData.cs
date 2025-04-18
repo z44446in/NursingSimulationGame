@@ -114,7 +114,7 @@ namespace Nursing.Interaction
         public bool createObject;
         public GameObject[] objectToCreate;
         public bool    randomizeSpawnPosition = false;  // 랜덤 스폰 활성화 여부
-public string  spawnAreaTag;                  // 태그로 영역 오브젝트 지정
+        public string  spawnAreaTag;                  // 태그로 영역 오브젝트 지정
         
 
         [Header("조건부 클릭")]
@@ -146,6 +146,7 @@ public string  spawnAreaTag;                  // 태그로 영역 오브젝트 �
         // 새로운 텍스트 퀴즈 설정 추가
         [Header("텍스트 퀴즈 팝업")]
         public bool showTextQuizPopup;
+        [TextArea(3, 5)]
         public string textQuizQuestionText;
         public List<string> textQuizOptions;
         public int textQuizCorrectAnswerIndex;
@@ -155,6 +156,7 @@ public string  spawnAreaTag;                  // 태그로 영역 오브젝트 �
         // 새로운 이미지 퀴즈 설정 추가
         [Header("이미지 퀴즈 팝업")]
         public bool showImageQuizPopup;
+        [TextArea(3, 5)]
         public string imageQuizQuestionText;
         public Sprite[] imageQuizOptions;
         public int imageQuizCorrectAnswerIndex;
@@ -172,6 +174,7 @@ public string  spawnAreaTag;                  // 태그로 영역 오브젝트 �
         public string choiceQuestionText;
         public Sprite choicePopupImage; // 추가: 팝업에 표시될 이미지
         public InteractionData alternativeInteraction; // 'Yes' 버튼 클릭 시 실행할 대체 인터랙션
+        public bool treatNoAsFailure ; // 새로 추가: '아니오' 응답을 실패로 처리할지 여부
     }
 
 

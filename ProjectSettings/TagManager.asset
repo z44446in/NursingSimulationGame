@@ -20,6 +20,7 @@ TagManager:
   - Povidone
   - Cotton
   - SpawnRT
+  - Catheter
   layers:
   - Default
   - TransparentFX

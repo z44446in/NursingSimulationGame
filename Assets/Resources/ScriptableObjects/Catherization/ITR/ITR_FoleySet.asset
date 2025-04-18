@@ -70,6 +70,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 7246886069874315384, guid: 39f60e1ad851a9d4999792462f875537, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -129,6 +131,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -156,7 +163,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 683, y: 460}
+      arrowStartPosition: {x: 611, y: 519}
       arrowDirection: {x: -0.04281784, y: -0.9990829}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -201,6 +208,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 0}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -260,6 +269,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -287,7 +301,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1070, y: 444}
+      arrowStartPosition: {x: 1072, y: 519}
       arrowDirection: {x: -0.04610477, y: -0.99893665}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -332,6 +346,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 0}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -392,6 +408,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -419,7 +440,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 870, y: 607}
+      arrowStartPosition: {x: 866, y: 491}
       arrowDirection: {x: 0.012985918, y: 0.99991566}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -467,6 +488,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 0}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -527,6 +550,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -599,6 +627,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -632,8 +662,8 @@ MonoBehaviour:
       moveSpeed: 0
       movePath: []
       showTextQuizPopup: 1
-      textQuizQuestionText: "\uB2E4\uC74C \uC911 \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4
-        \uB54C \uC633\uC740 \uAC83\uC740? "
+      textQuizQuestionText: "\uD3F4\uB9AC\uC138\uD2B8(Foley Set)\uB97C \uC5F4 \uB54C
+        \n\uB2E4\uC74C \uC911 \uC633\uC740 \uAC83\uC740? "
       textQuizOptions:
       - "\uC544\uC9C1 \uBA78\uADE0\uC5D0 \uC2E0\uACBD\uC4F0\uC9C0 \uC54A\uC544\uB3C4
         \uB41C\uB2E4 "
@@ -644,16 +674,16 @@ MonoBehaviour:
         \uC5F4\uC5B4\uC57C \uD55C\uB2E4."
       - "\uBAA8\uB974\uACA0\uB2E4."
       textQuizCorrectAnswerIndex: 2
-      textQuizTimeLimit: 10
+      textQuizTimeLimit: 15
       textQuizWrongAnswer:
         penaltyType: 2
         penaltyScore: 100
         speaker: 0
         penaltyMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4 \uB54C\uB3C4 \uBA78\uADE0\uC744
-          \uC2E0\uACBD\uC368\uC57C \uD574! 2019-2020 KONIS \uC911\uD658\uC790\uC2E4
+          \uC2E0\uACBD\uC368\uC57C \uD574! \n2019-2020 KONIS \uC911\uD658\uC790\uC2E4
           \uACB0\uACFC\uBCF4\uACE0\uC5D0 \uB530\uB974\uBA74, \uC694\uB85C\uAC10\uC5FC
           \uC911 97%\uAC00 \uC720\uCE58\uB3C4\uB1E8\uAD00 \uAD00\uB828 \uC694\uB85C\uAC10\uC5FC\uC774\uC5C8\uC744
-          \uC815\uB3C4\uB2C8\uAE4C!"
+          \uC815\uB3C4\uB77C\uACE0! "
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 3
@@ -672,6 +702,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -744,6 +779,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 2186942617385095293, guid: 73a208edc25613c4997a06bb1f40ab46, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -804,6 +841,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -831,7 +873,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 867, y: 650}
+      arrowStartPosition: {x: 1001, y: 638}
       arrowDirection: {x: 0.999898, y: 0.014284257}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -879,6 +921,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -939,6 +983,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1011,6 +1060,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 4087813158059038327, guid: 0ef1e246ebe431545aeaf4e8644324b1, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1071,6 +1122,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1098,7 +1154,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 974, y: 659}
+      arrowStartPosition: {x: 747, y: 650}
       arrowDirection: {x: -0.998665, y: -0.051655088}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -1146,6 +1202,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1206,6 +1264,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1278,6 +1341,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 6878524456723974197, guid: 8121d029d5478fa4a8c025581d91ba6d, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1338,6 +1403,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1365,7 +1435,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 864, y: 677}
+      arrowStartPosition: {x: 882, y: 741}
       arrowDirection: {x: -0.0692776, y: -0.99759746}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -1417,6 +1487,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1477,6 +1549,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1549,6 +1626,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 3618483564369749736, guid: 7130a21c71cd6e342b2f1d04b6067b54, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -1609,6 +1688,11 @@ MonoBehaviour:
         flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:

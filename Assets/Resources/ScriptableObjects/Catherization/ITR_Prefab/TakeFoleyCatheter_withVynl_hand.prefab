@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4078093751106378156}
   - component: {fileID: 4850362994491055348}
   m_Layer: 0
-  m_Name: TakeFoley_withVynl_hand
+  m_Name: TakeFoleyCatheter_withVynl_hand
   m_TagString: Hand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

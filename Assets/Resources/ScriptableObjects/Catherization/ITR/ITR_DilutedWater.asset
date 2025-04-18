@@ -53,14 +53,30 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 8368500792721724306, guid: 86bdb50c968b5824ebbe5392a050f643, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -87,22 +103,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -131,7 +163,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1194, y: 431}
+      arrowStartPosition: {x: 1222, y: 427}
       arrowDirection: {x: -0.9994449, y: 0.033314828}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -159,13 +191,29 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -192,22 +240,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_0
@@ -264,13 +328,29 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -295,24 +375,40 @@ MonoBehaviour:
       moveObject: 1
       objectToMoveTag: Bottle
       moveDirection: {x: 0, y: 25}
-      moveSpeed: 15
+      moveSpeed: 20
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -341,7 +437,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1193.0006, y: 441.03333}
+      arrowStartPosition: {x: 1195, y: 448}
       arrowDirection: {x: 0.04540766, y: 0.99896854}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -369,13 +465,29 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
       conditionalClickPenalties: []
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -402,22 +514,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 10}
       moveSpeed: 2
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -474,9 +602,24 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Trash
@@ -531,6 +674,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -558,22 +702,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 10}
       moveSpeed: 2
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -629,10 +789,25 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 9195287308788494162, guid: e17ec11fbe5e755499fd0f0b32aec811, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Intray
@@ -646,6 +821,7 @@ MonoBehaviour:
         databaseMessage: \
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -673,22 +849,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 10}
       moveSpeed: 2
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_5
@@ -746,9 +938,24 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Bowl
@@ -794,6 +1001,7 @@ MonoBehaviour:
         databaseMessage: 
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -821,22 +1029,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 10}
       moveSpeed: 2
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 1
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -892,10 +1116,25 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate:
       - {fileID: 6858606827676977020, guid: d337e4c62465dd64393af27c23652b0c, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Intray
@@ -909,6 +1148,7 @@ MonoBehaviour:
         databaseMessage: \
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -936,22 +1176,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 10}
       moveSpeed: 2
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_5
@@ -1008,9 +1264,24 @@ MonoBehaviour:
         flashRedScreen: 1
         flashCount: 2
       fingerSettings: []
+      targetZoneTag: 
+      requireReachTargetZone: 0
+      minOverlapPercentage: 0.5
+      detectTouchCollision: 0
+      noTouchZoneTag: 
+      touchCollisionPenalty:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       multiDragSyncThreshold: 0.2
       createObject: 1
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Intray
@@ -1024,6 +1295,7 @@ MonoBehaviour:
         databaseMessage: \
         flashRedScreen: 1
         flashCount: 1
+      destroyValidClickedObject: 0
       isSustainedClick: 0
       sustainedClickDuration: 0
       earlyReleasePenalty:
@@ -1051,22 +1323,38 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 10}
       moveSpeed: 2
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_5

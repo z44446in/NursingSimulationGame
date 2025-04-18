@@ -135,6 +135,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -281,6 +282,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -400,9 +402,9 @@ MonoBehaviour:
         flashRedScreen: 0
         flashCount: 0
       showImageQuizPopup: 1
-      imageQuizQuestionText: "\uB2E4\uC74C \uC911 \uC774\uB3D9\uAC10\uC790\uB85C
-        \uD3EC\uBE44\uB3C8\uC744 \uC62E\uAE38 \uB54C \uC9C0\uCF1C\uC57C \uD558\uB294
-        \uC190\uC758 \uAC01\uB3C4\uB85C \uC62C\uBC14\uB978 \uAC83\uC740?"
+      imageQuizQuestionText: "\uC774\uB3D9\uAC10\uC790\uB85C \uD3EC\uBE44\uB3C8\uC744
+        \uC62E\uAE38 \uB54C \uC5B4\uB290 \uC190\uC758 \uAC01\uB3C4\uAC00 \uAC00\uC7A5
+        \uC801\uC808\uD55C\uAC00? "
       imageQuizOptions:
       - {fileID: 235017432, guid: 359dbc38256d24cabafc53d787b91429, type: 3}
       - {fileID: 589267864, guid: 359dbc38256d24cabafc53d787b91429, type: 3}
@@ -424,6 +426,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -561,6 +564,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -699,6 +703,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -863,6 +868,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1002,6 +1008,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1139,6 +1146,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1277,6 +1285,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1414,6 +1423,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:

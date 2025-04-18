@@ -70,6 +70,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 1620158221825356620, guid: d611c13542b54d44b890fc8d7f1ead56, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -101,22 +103,39 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -176,7 +195,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 1"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 747, y: 293}
+        arrowStartPosition: {x: 728, y: 256}
         arrowDirection: {x: -1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 27
@@ -197,7 +216,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 2"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 949, y: 293}
+        arrowStartPosition: {x: 945, y: 256}
         arrowDirection: {x: 1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 33.5
@@ -232,6 +251,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 0}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -263,22 +284,39 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -393,6 +431,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 0}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -425,22 +465,39 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -555,6 +612,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 106877176553327084, guid: bf10e63222ff2524387ccf72a4a94d22, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -587,22 +646,39 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -717,6 +793,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 106877176553327084, guid: bf10e63222ff2524387ccf72a4a94d22, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Tray
@@ -775,22 +853,39 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -905,6 +1000,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 9042463842214316374, guid: ef26fdb2c60517f4aac2ec3e654c9f57, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Tray
@@ -956,22 +1053,39 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1086,6 +1200,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 9042463842214316374, guid: ef26fdb2c60517f4aac2ec3e654c9f57, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Tray
@@ -1137,22 +1253,39 @@ MonoBehaviour:
       moveDirection: {x: 0, y: 0}
       moveSpeed: 0
       movePath: []
-      showQuizPopup: 0
-      questionText: 
-      quizOptions: []
-      correctAnswerIndex: 0
-      optionImages: []
-      timeLimit: 0
-      WrongAnswer:
+      showTextQuizPopup: 0
+      textQuizQuestionText: 
+      textQuizOptions: []
+      textQuizCorrectAnswerIndex: 0
+      textQuizTimeLimit: 0
+      textQuizWrongAnswer:
         penaltyType: 0
         penaltyScore: 0
         speaker: 0
         penaltyMessage: 
         databaseMessage: 
-        flashRedScreen: 0
-        flashCount: 0
+        flashRedScreen: 1
+        flashCount: 2
+      showImageQuizPopup: 0
+      imageQuizQuestionText: 
+      imageQuizOptions: []
+      imageQuizCorrectAnswerIndex: 0
+      imageQuizTimeLimit: 0
+      imageQuizWrongAnswer:
+        penaltyType: 0
+        penaltyScore: 0
+        speaker: 0
+        penaltyMessage: 
+        databaseMessage: 
+        flashRedScreen: 1
+        flashCount: 2
       startMiniGame: 0
       miniGamePrefab: {fileID: 0}
+      isVariousChoice: 0
+      choiceQuestionText: 
+      choicePopupImage: {fileID: 0}
+      alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:

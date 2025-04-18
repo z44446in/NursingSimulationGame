@@ -59,7 +59,9 @@ namespace Nursing.Managers
             public Vector2 startPosition;
             public GameObject draggedObject;
         }
+         private bool interactionFailed = false; // 클래스 상단에 변수 추가
 
+public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할 수 있는 프로퍼티
        
 
 
@@ -95,6 +97,7 @@ namespace Nursing.Managers
             
             currentInteraction = interactionData;
             currentStageIndex = -1;
+            interactionFailed = false; // 상태 초기화
 
             // 이벤트 호출
             OnInteractionStarted?.Invoke();
@@ -307,10 +310,21 @@ namespace Nursing.Managers
         /// <summary>
         /// 다양한 선택에서 '아니오' 버튼 클릭 처리
         /// </summary>
-        private void OnVariousChoiceCancel()
-        {
-            AdvanceToNextStage();
-        }
+        // 다양한 선택에서 '아니오' 버튼 클릭 처리를 수정
+private void OnVariousChoiceCancel()
+{
+    var settings = currentStage.settings;
+    
+    if (settings != null && settings.treatNoAsFailure)
+    {
+        interactionFailed = true; // 실패 표시
+        CompleteInteraction(); // 인터랙션 종료
+    }
+    else
+    {
+        AdvanceToNextStage(); // 기존 동작
+    }
+}
         /// <summary>
         /// 드래그 인터랙션을 설정합니다.
         /// </summary>
@@ -333,6 +347,8 @@ namespace Nursing.Managers
                 {
                     // 화살표 시작 위치 설정
                     Vector2 arrowPos = settings.arrowStartPosition;
+                    Debug.Log($"[ArrowTest] arrowStartPosition = {settings.arrowStartPosition}");
+
 
                     // 화살표 시작 위치가 없으면 대상 오브젝트 대상으로 생성
                     if (settings.arrowStartPosition == Vector2.zero )
@@ -344,6 +360,8 @@ namespace Nursing.Managers
                             settings.arrowStartPosition = arrowPos; // 위치 업데이트
                         }
                     }
+                    Debug.Log($"[ArrowTest] arrowStartPosition = {settings.arrowStartPosition}");
+
 
                     // 화살표 생성
                     CreateDirectionArrows(arrowPos, settings.arrowDirection);
@@ -436,7 +454,7 @@ namespace Nursing.Managers
                             Rect area = areaRT.rect;
                             float x = Random.Range(area.xMin, area.xMax);
                             float y = Random.Range(area.yMin, area.yMax);
-                            rt.anchoredPosition = new Vector2(x, y);
+                            rt.anchoredPosition = areaRT.anchoredPosition + new Vector2(x, y);
                         }
                         else
                         {
@@ -721,7 +739,16 @@ namespace Nursing.Managers
 
             // 화살표 생성
             var arrow = Instantiate(arrowPrefab, mainCanvas.transform);
-            arrow.transform.position = startPosition;
+                        // (Instantiate 이후)
+            var rt = arrow.GetComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.zero;
+            rt.pivot     = Vector2.zero;
+
+            // 이렇게 하면, 앵커·피벗 모두 (0,0)이므로
+            // rt.anchoredPosition == startPosition 이 됩니다.
+            rt.anchoredPosition = startPosition;
+
 
             // 화살표 방향 설정
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -964,7 +991,7 @@ namespace Nursing.Managers
             CleanupCurrentInteraction();
 
             // 인터랙션 완료 이벤트 발생
-            OnInteractionComplete?.Invoke(true);
+            OnInteractionComplete?.Invoke(!interactionFailed);
         }
         
         /// <summary>

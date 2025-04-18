@@ -72,6 +72,8 @@ MonoBehaviour:
       objectToCreate:
       - {fileID: 8990867428318011977, guid: 0a3bd020b2aec4771a6b826a60d495ea, type: 3}
       - {fileID: 915217090205398633, guid: e92e59f93bf2f449fa99e1ad56ac3f5c, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -156,14 +158,14 @@ MonoBehaviour:
   - id: ForcepReuse_stage_1
     name: "\uD3F4\uB9AC \uB4DC\uB798\uADF8\uD558\uC5EC \uAEBC\uB0C4 "
     StageNum: 1
-    guideMessage: "\uACB8\uC790\uB85C \uC7A1\uACE0 \uC774\uB3D9\uC2DC\uD0A4\uACE0
-      \uC2F6\uC740 \uBB3C\uAC74\uC744 \uD130\uCE58\uD574\uC11C \uB4DC\uB798\uADF8\uD558\uC138\uC694 "
+    guideMessage: "\uC774\uB3D9\uAC10\uC790\uB85C \uC774\uB3D9\uC2DC\uD0A4\uACE0
+      \uC2F6\uC740 \uAC83\uC744 \uD130\uCE58\uD574\uC11C \uB4DC\uB798\uADF8\uD558\uC138\uC694  "
     interactionType: 0
     settings:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 712.87463, y: 331.16284}
+      arrowStartPosition: {x: 699, y: 326}
       arrowDirection: {x: 0.69774234, y: 0.7163488}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -213,6 +215,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -347,6 +351,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -484,6 +490,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 4396757620712456093, guid: e0ea537d4e86b40e4b871aa90dca6577, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -619,6 +627,8 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 0
       objectToCreate: []
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 1
       validClickTags:
       - Tray
@@ -812,6 +822,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []
@@ -947,6 +959,8 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 2042916922625327030, guid: 155207cbde28748a6bf800acffe1e7bf, type: 3}
+      randomizeSpawnPosition: 0
+      spawnAreaTag: 
       isConditionalClick: 0
       validClickTags: []
       invalidClickTags: []

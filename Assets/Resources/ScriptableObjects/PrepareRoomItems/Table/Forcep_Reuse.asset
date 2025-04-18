@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Forcep_Reuse
   m_EditorClassIdentifier: 
   itemId: Forcep_Reuse
-  itemName: "\uC774\uB3D9\uACB8\uC790"
+  itemName: "\uC774\uB3D9\uAC10\uC790 "
   itemSprite: {fileID: -787485945, guid: ac93d4373766d41bfbceab17be5d3b4c, type: 3}
   description: 
   functionalGroupId: Forcep
