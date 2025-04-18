@@ -245,7 +245,7 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
     interactionInProgress = true;
 
     // ⏱ 2초 딜레이 후 팝업 생성
-    DOVirtual.DelayedCall(1f, () =>
+    DOVirtual.DelayedCall(0.5f, () =>
     {
         GameObject popupObj = Instantiate(confirmationPopupPrefab, mainCanvas.transform);
         ConfirmationPopup popup = popupObj.GetComponent<ConfirmationPopup>();

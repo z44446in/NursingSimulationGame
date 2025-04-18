@@ -134,7 +134,7 @@ MonoBehaviour:
       choiceQuestionText: "\uD3EC\uBE44\uB3C8 \uD1B5\uC744 \uC5EC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C? "
       choicePopupImage: {fileID: -2083208596, guid: ac93d4373766d41bfbceab17be5d3b4c, type: 3}
       alternativeInteraction: {fileID: 11400000, guid: 7123f6c0da70142efa3972bd9c159c83, type: 2}
-      treatNoAsFailure: 0
+      treatNoAsFailure: 1
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:

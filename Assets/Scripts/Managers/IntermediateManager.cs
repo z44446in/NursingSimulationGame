@@ -38,7 +38,7 @@ public class IntermediateManager : MonoBehaviour
 
     public List<Item> requiredPickedItems = new List<Item>();  // 이미 꺼낸 필수 아이s템들
 
-    // 제외할 아이템은 이제 ProcedureData에서 관리됨
+    // 제외할 아이템은 ProcedureData에서 관리됨
 
 
     [SerializeField] private ProcedureManager procedureManager;
@@ -214,16 +214,39 @@ public void PickupItem(Item item)
     if (item == null) return;
 
          // currentHeldItem 대신 파라미터로 받은 item 사용
-    currentHeldItem = item; // 이 라인 추가
-    
-    if (procedureManager != null) {
+    // Interaction 완료 콜백 구독
+        currentHeldItem = item;
+        InteractionManager im = FindObjectOfType<InteractionManager>();
+        im.OnInteractionComplete += OnPickupInteractionComplete;
+
+        // 실제 상호작용 시작
         procedureManager.HandleItemClick(item.itemId);
-    }
 
     }
 
+    // 상호작용 완료 후에만 아이템을 추가/제거
+    private void OnPickupInteractionComplete(bool success)
+    {
+        InteractionManager im = FindObjectOfType<InteractionManager>();
+        im.OnInteractionComplete -= OnPickupInteractionComplete;
 
-    
+        if (success)
+        {
+            // 성공했을 때만 리스트에 추가
+            if (!requiredPickedItems.Contains(currentHeldItem))
+                requiredPickedItems.Add(currentHeldItem);
+        }
+        // 실패하면 requiredPickedItems는 그대로, UI도 그대로
+
+        // 항상—성공 여부 상관없이—카트 UI는 현재 requiredPickedItems 기준으로 다시 그려줌
+        cartUI.ClearCart();
+        foreach (var picked in requiredPickedItems)
+            {Debug.Log(picked.itemId); // Debug.Log 추가
+                cartUI.AddItemToCart(picked);
+                cartUI.UpdateCartDisplay();}
+
+        currentHeldItem = null;
+    }
 
 
 }

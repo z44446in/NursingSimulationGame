@@ -264,41 +264,7 @@ if (!string.IsNullOrEmpty(step.settings.interactionDataId) && interactionManager
             {
                 CompleteStep(step);
             }
-            else if (interactionManager.WasInteractionFailed && step.stepType == ProcedureStepType.ItemClick)
-            {
-                // 아이템 되돌리기 코드 추가
-                Item pickedItem = FindItemById(step.settings.itemId);
-                if (pickedItem != null && cartUI != null)
-                {
-                    // 카트에 아이템 다시 추가
-                    cartUI.AddItemToCart(pickedItem);
-                    cartUI.UpdateCartDisplay();
-                    
-                    // IntermediateManager 참조가 있으면 그쪽에서도 처리
-                    IntermediateManager intermManager = FindObjectOfType<IntermediateManager>();
-                    if (intermManager != null)
-                    {
-                        // requiredPickedItems에서 아이템 제거 (이미 꺼낸 아이템 목록에서 제거)
-                        if (intermManager.requiredPickedItems.Contains(pickedItem))
-                        {
-                            intermManager.requiredPickedItems.Remove(pickedItem);
-                        }
-                    }
-                    
-                    Debug.Log($"인터랙션 취소로 아이템 '{pickedItem.itemName}'을(를) 카트에 돌려놓았습니다.");
-                }
-                
-                // 스텝 취소 처리 (완료 목록에서 제외)
-                if (completedStepIds.Contains(step.id))
-                {
-                    completedStepIds.Remove(step.id);
-                }
-                
-                // 가용 스텝 업데이트
-                UpdateAvailableSteps();
-                
-                Debug.Log($"VariousChoice '아니오' 선택으로 스텝 '{step.id}' 취소되었습니다.");
-            }
+            
             else if (step.incorrectActionPenalty != null)
             {
                 ApplyPenalty(step.incorrectActionPenalty);
