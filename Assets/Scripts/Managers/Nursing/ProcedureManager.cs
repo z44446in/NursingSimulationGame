@@ -328,11 +328,11 @@ namespace Nursing.Managers
         {
             if (step != null && !string.IsNullOrEmpty(step.id))
             {
-                 // 반복 가능한 스텝이 아닌 경우에만 완료 목록에 추가
-        if (!step.isRepeatable)
-        {
-            completedStepIds.Add(step.id);
-        }
+                        // 반복 가능한 스텝이 아닌 경우에만 완료 목록에 추가
+                if (!step.isRepeatable)
+                {
+                    completedStepIds.Add(step.id);
+                }
             }
 
             // 가용 스텝 업데이트
@@ -340,6 +340,18 @@ namespace Nursing.Managers
 
             // 모든 스텝 완료 체크
             CheckProcedureCompletion();
+
+             if (step.isRepeatable)
+             {
+                Instep = true;  // 아직 “단계 안에(InStep)” 상태 유지
+            // (필요하다면 가이드 메시지도 다시 띄워 줄 수 있음)
+           if (!string.IsNullOrEmpty(step.guideMessage) && dialogueManager != null)
+                dialogueManager.ShowGuideMessage(step.guideMessage);
+
+            // 같은 스텝으로 다시 세팅
+            SetupStepBasedOnType(step);
+            return;
+             }
 
             Instep = false;
         }
@@ -423,7 +435,26 @@ namespace Nursing.Managers
                 Destroy(actionPopup);
             };
         }
-
+        /// <summary>
+        /// 반복 스텝이어도 강제로 완료 처리합니다.
+        /// </summary>
+        public void ForceCompleteStepById(string stepId)
+        {
+            if (currentProcedure == null)
+            {
+                Debug.LogWarning($"Procedure not in progress: cannot complete step {stepId}");
+                return;
+            }
+            var step = currentProcedure.steps.Find(s => s.id == stepId);
+            if (step != null)
+            {
+                CompleteStep(step);
+            }
+            else
+            {
+                Debug.LogWarning($"ForceCompleteStepById: step '{stepId}' not found in current procedure");
+            }
+        }
         /// <summary>
         /// 아이템 클릭을 처리합니다.
         /// </summary>

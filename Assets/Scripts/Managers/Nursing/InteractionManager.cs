@@ -13,6 +13,7 @@ namespace Nursing.Managers
     public class InteractionManager : MonoBehaviour
     {
         [Header("참조")]
+         [SerializeField] private ProcedureManager procedureManager;  // ← 추가
         [SerializeField] private PenaltyManager penaltyManager;
         [SerializeField] private DialogueManager dialogueManager;
         
@@ -403,6 +404,7 @@ namespace Nursing.Managers
                 return;
             }
 
+ 
             // 캔버스가 설정되지 않았다면 현재 씬의 캔버스 찾기
             if (mainCanvas == null)
             {
@@ -445,7 +447,21 @@ namespace Nursing.Managers
                         // 캔버스가 없으면 원래 위치에 생성
                         instance = Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
                     }
+
                     
+
+
+
+                     // → 여기에 주입 코드 추가
+                    var povButton = instance.GetComponent<PovidoneCheckButton>();
+                    if (povButton != null)
+                    {
+                        // Scene에 있는 ProcedureManager, PenaltyManager를 할당
+                        povButton.procedureManager = procedureManager;                 // InteractionManager와 같은 GameObject에 있으면 this 대신 FindObjectOfType 써도 OK
+                        povButton.penaltyManager   = penaltyManager;       // SerializeField로 할당된 페널티 매니저
+                        // stepId, insufficientPovidonePenalty 같은 설정도 미리 할당 가능
+                        
+                    }
                     Debug.Log($"오브젝트 생성: {instance.name}, 부모: {(instance.transform.parent ? instance.transform.parent.name : "없음")}");
                 }
             }
@@ -640,7 +656,7 @@ namespace Nursing.Managers
                 }
 
                 // 퀴즈 완료 후 다음 단계로 진행
-                AdvanceToNextStage();
+                else AdvanceToNextStage();
 
             };
 

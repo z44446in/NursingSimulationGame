@@ -113,6 +113,8 @@ namespace Nursing.Interaction
         [Header("오브젝트 생성")]
         public bool createObject;
         public GameObject[] objectToCreate;
+        public bool    randomizeSpawnPosition = false;  // 랜덤 스폰 활성화 여부
+public string  spawnAreaTag;                  // 태그로 영역 오브젝트 지정
         
 
         [Header("조건부 클릭")]
