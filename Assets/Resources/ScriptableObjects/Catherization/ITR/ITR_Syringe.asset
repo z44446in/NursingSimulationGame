@@ -195,7 +195,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 1"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 728, y: 256}
+        arrowStartPosition: {x: 823, y: 328}
         arrowDirection: {x: -1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 27
@@ -216,7 +216,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 2"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 945, y: 256}
+        arrowStartPosition: {x: 863, y: 202}
         arrowDirection: {x: 1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 33.5

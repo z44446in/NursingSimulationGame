@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79453d67e95704405b087e1a66acb953, type: 3}
   m_Name: BTN_GoToPatient
   m_EditorClassIdentifier: 
-  itemId: 
-  itemName: 
+  itemId: BTN_GoToPatient
+  itemName: "\uBC84\uD2BC_\uD658\uC790\uD55C\uD14C \uAC00\uAE30 "
   itemSprite: {fileID: 0}
   description: 
   functionalGroupId: 

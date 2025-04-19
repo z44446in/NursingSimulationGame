@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BTN_FoleySetClose
   m_EditorClassIdentifier: 
   itemId: BTN_FoleySetClose
-  itemName: 
+  itemName: "\uBC84\uD2BC_\uD3F4\uB9AC\uC138\uD2B8\uB2EB\uAE30 "
   itemSprite: {fileID: 0}
   description: 
   functionalGroupId: 
