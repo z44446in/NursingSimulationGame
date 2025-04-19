@@ -163,7 +163,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 611, y: 519}
+      arrowStartPosition: {x: 543, y: 549}
       arrowDirection: {x: -0.04281784, y: -0.9990829}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -301,7 +301,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1072, y: 519}
+      arrowStartPosition: {x: 1053, y: 549}
       arrowDirection: {x: -0.04610477, y: -0.99893665}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -440,7 +440,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 866, y: 491}
+      arrowStartPosition: {x: 926, y: 370}
       arrowDirection: {x: 0.012985918, y: 0.99991566}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -873,7 +873,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1001, y: 638}
+      arrowStartPosition: {x: 896, y: 577}
       arrowDirection: {x: 0.999898, y: 0.014284257}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -1154,7 +1154,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 747, y: 650}
+      arrowStartPosition: {x: 853, y: 709}
       arrowDirection: {x: -0.998665, y: -0.051655088}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -1435,7 +1435,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 882, y: 741}
+      arrowStartPosition: {x: 823, y: 703}
       arrowDirection: {x: -0.0692776, y: -0.99759746}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1

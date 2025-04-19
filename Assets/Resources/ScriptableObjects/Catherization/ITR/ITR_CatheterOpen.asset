@@ -135,6 +135,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -193,7 +194,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 1"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 728, y: 256}
+        arrowStartPosition: {x: 823, y: 328}
         arrowDirection: {x: -1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 45.6
@@ -214,7 +215,7 @@ MonoBehaviour:
       - name: "\uC190\uAC00\uB77D 2"
         showDirectionArrows: 1
         haveDirection: 1
-        arrowStartPosition: {x: 945, y: 256}
+        arrowStartPosition: {x: 863, y: 202}
         arrowDirection: {x: 1, y: 0}
         requiredDragDirection: 1
         dragDirectionTolerance: 33.4
@@ -314,6 +315,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -452,6 +454,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -590,6 +593,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -727,6 +731,7 @@ MonoBehaviour:
         \uAEBC\uB0B4\uACA0\uC2B5\uB2C8\uAE4C? "
       choicePopupImage: {fileID: -787485945, guid: ac93d4373766d41bfbceab17be5d3b4c, type: 3}
       alternativeInteraction: {fileID: 11400000, guid: ca222d17e204f4d9e87814be63a2eadf, type: 2}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -864,6 +869,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1000,6 +1006,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1137,6 +1144,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:

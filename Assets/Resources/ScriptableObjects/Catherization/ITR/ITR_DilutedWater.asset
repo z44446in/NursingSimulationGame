@@ -135,6 +135,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -163,7 +164,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1222, y: 427}
+      arrowStartPosition: {x: 1259, y: 502}
       arrowDirection: {x: -0.9994449, y: 0.033314828}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -272,6 +273,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_0
@@ -409,6 +411,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -437,7 +440,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 1195, y: 448}
+      arrowStartPosition: {x: 1293, y: 409}
       arrowDirection: {x: 0.04540766, y: 0.99896854}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -546,6 +549,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -734,6 +738,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -881,6 +886,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_5
@@ -1061,6 +1067,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 1
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1208,6 +1215,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_5
@@ -1355,6 +1363,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds:
     - DilutedWater_stage_5

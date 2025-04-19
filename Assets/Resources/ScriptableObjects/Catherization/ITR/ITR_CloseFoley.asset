@@ -26,7 +26,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 866, y: 356}
+      arrowStartPosition: {x: 913, y: 257}
       arrowDirection: {x: 0, y: -1}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -136,6 +136,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -274,6 +275,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -413,6 +415,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -441,7 +444,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 319, y: 752}
+      arrowStartPosition: {x: 227, y: 687}
       arrowDirection: {x: 1, y: 0}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -551,6 +554,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -689,6 +693,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -828,6 +833,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -856,7 +862,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 866, y: 356}
+      arrowStartPosition: {x: 1463, y: 766}
       arrowDirection: {x: -1, y: 0}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -966,6 +972,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1104,6 +1111,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1243,6 +1251,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1271,7 +1280,7 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 866, y: 356}
+      arrowStartPosition: {x: 826, y: 983}
       arrowDirection: {x: 0, y: -1}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
@@ -1381,6 +1390,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1519,6 +1529,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
@@ -1658,6 +1669,7 @@ MonoBehaviour:
       choiceQuestionText: 
       choicePopupImage: {fileID: 0}
       alternativeInteraction: {fileID: 0}
+      treatNoAsFailure: 0
     requireSpecificOrder: 0
     requiredPreviousStageIds: []
     incorrectOrderPenalty:
