@@ -342,6 +342,57 @@ namespace Nursing.Editor
                 if (requireSpecificOrderProp.boolValue)
                 {
                     EditorGUILayout.PropertyField(requiredPreviousStepIdsProp, new GUIContent("필요한 이전 스텝 ID", "이 스텝 전에 완료되어야 하는 스텝 ID 목록"));
+                    // 스텝 ID 선택 버튼 추가
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("스텝 ID 선택", GUILayout.Width(150)))
+                    {
+                        // 현재 ProcedureData에서 스텝 목록 가져오기
+                        ProcedureData procedureData = target as ProcedureData;
+                        if (procedureData != null && procedureData.steps != null)
+                        {
+                            GenericMenu menu = new GenericMenu();
+                            int currentStepIndex = index; // 현재 스텝 인덱스
+                            
+                            for (int i = 0; i < procedureData.steps.Count; i++)
+                            {
+                                if (i != currentStepIndex) // 자기 자신은 제외
+                                {
+                                    ProcedureStep otherStep = procedureData.steps[i];
+                                    // 이미 목록에 있는지 확인
+                                    bool isSelected = false;
+                                    for (int j = 0; j < requiredPreviousStepIdsProp.arraySize; j++)
+                                    {
+                                        string existingId = requiredPreviousStepIdsProp.GetArrayElementAtIndex(j).stringValue;
+                                        if (existingId == otherStep.id)
+                                        {
+                                            isSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    // 메뉴 아이템 추가
+                                    menu.AddItem(
+                                        new GUIContent(otherStep.name + " (" + otherStep.id + ")"),
+                                        isSelected,
+                                        () => {
+                                            if (!isSelected)
+                                            {
+                                                // 목록에 추가
+                                                serializedObject.Update();
+                                                requiredPreviousStepIdsProp.arraySize++;
+                                                requiredPreviousStepIdsProp.GetArrayElementAtIndex(requiredPreviousStepIdsProp.arraySize - 1).stringValue = otherStep.id;
+                                                serializedObject.ApplyModifiedProperties();
+                                            }
+                                        });
+                                }
+                            }
+                            
+                            menu.ShowAsContext();
+                        }
+                    }
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.EndHorizontal();
 
                     // 이전 스텝별 패널티 설정
                     EditorGUILayout.PropertyField(previousStepPenaltiesProp, new GUIContent("이전 스텝별 패널티", "각 이전 스텝이 누락되었을 때 적용될 패널티"));

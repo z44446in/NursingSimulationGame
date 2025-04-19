@@ -287,6 +287,20 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
 }
 
 
+
+        // InteractionManager.cs에 추가
+        public void CancelCurrentInteraction()
+        {
+            // 진행 중인 인터랙션 정리
+            CleanupCurrentInteraction();
+            
+            // 인터랙션 실패로 완료 이벤트 발생
+            OnInteractionComplete?.Invoke(false);
+            
+            interactionInProgress = false;
+        }
+
+
         /// <summary>
         /// 다양한 선택에서 '예' 버튼 클릭 처리
         /// </summary>
@@ -317,6 +331,7 @@ private void OnVariousChoiceCancel()
     
     if (settings != null && settings.treatNoAsFailure)
     {
+        
         interactionFailed = true; // 실패 표시
         CompleteInteraction(); // 인터랙션 종료
     }
@@ -989,7 +1004,7 @@ private void OnVariousChoiceCancel()
             
             // 인터랙션 정리
             CleanupCurrentInteraction();
-
+            Debug.Log(interactionFailed);
             // 인터랙션 완료 이벤트 발생
             OnInteractionComplete?.Invoke(!interactionFailed);
         }

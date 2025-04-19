@@ -46,6 +46,9 @@ public class PolyCatheterCloseButton : MonoBehaviour
             
             // PrepareFinish 상태 변경
             GameManager.Instance.SetPrepareFinished(true);
+
+                // 버튼 자체를 삭제
+        Destroy(gameObject);
         }
         else
         {

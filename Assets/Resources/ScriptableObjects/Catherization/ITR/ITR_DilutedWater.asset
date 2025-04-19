@@ -376,7 +376,7 @@ MonoBehaviour:
       objectToDeleteTag: []
       moveObject: 1
       objectToMoveTag: Bottle
-      moveDirection: {x: 0, y: 25}
+      moveDirection: {x: 0, y: 20}
       moveSpeed: 20
       movePath: []
       showTextQuizPopup: 0

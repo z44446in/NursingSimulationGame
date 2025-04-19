@@ -232,9 +232,9 @@ public void PickupItem(Item item)
 
         if (success)
         {
-            // 성공했을 때만 리스트에 추가
-            if (!requiredPickedItems.Contains(currentHeldItem))
-                requiredPickedItems.Add(currentHeldItem);
+            
+                requiredPickedItems.Remove(currentHeldItem);
+                
         }
         // 실패하면 requiredPickedItems는 그대로, UI도 그대로
 

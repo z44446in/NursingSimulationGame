@@ -502,29 +502,37 @@ break;
                 Debug.LogWarning($"Procedure not in progress: cannot complete step {stepId}");
                 return;
             }
+            
+            // 진행 중인 상호작용 취소
+            if (interactionManager != null)
+            {
+                interactionManager.CancelCurrentInteraction();
+            }
+            
             var step = currentProcedure.steps.Find(s => s.id == stepId);
             if (step != null)
             {
+                // 반복 가능 여부에 상관없이 항상 완료 처리
                 completedStepIds.Add(step.id);
+                
                 // 가용 스텝 업데이트
                 UpdateAvailableSteps();
+                
                 // 모든 스텝 완료 체크
                 CheckProcedureCompletion();
+                
+                // 인터랙션 상태 종료
                 Instep = false;
-                 if (step.isAutoNext && !string.IsNullOrEmpty(step.autoNextStepId))
+                
+                // 자동 다음 스텝 처리
+                if (step.isAutoNext && !string.IsNullOrEmpty(step.autoNextStepId))
                 {
-                    // 지정한 스텝 ID로 바로 이동
-                var next = currentProcedure.steps.Find(s => s.id == step.autoNextStepId);
-                if (next != null)
-                    ProcessStep(next);
-                else
-                Debug.LogWarning($"자동 다음 스텝 ID '{step.autoNextStepId}'를 찾을 수 없습니다.");
-                }
+                    var next = currentProcedure.steps.Find(s => s.id == step.autoNextStepId);
+                    if (next != null)
+                        ProcessStep(next);
                     else
-                    {
-                    Instep = false;
-                    }
-
+                        Debug.LogWarning($"자동 다음 스텝 ID '{step.autoNextStepId}'를 찾을 수 없습니다.");
+                }
             }
             else
             {

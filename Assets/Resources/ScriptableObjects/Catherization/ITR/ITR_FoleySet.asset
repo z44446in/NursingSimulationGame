@@ -70,6 +70,7 @@ MonoBehaviour:
       createObject: 1
       objectToCreate:
       - {fileID: 7246886069874315384, guid: 39f60e1ad851a9d4999792462f875537, type: 3}
+      - {fileID: 3087838276270201595, guid: e8b1d2fb3ddb34a42b8b73e18d8178a9, type: 3}
       randomizeSpawnPosition: 0
       spawnAreaTag: 
       isConditionalClick: 0

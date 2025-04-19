@@ -26,12 +26,12 @@ MonoBehaviour:
       isDragInteraction: 1
       showDirectionArrows: 1
       haveDirection: 1
-      arrowStartPosition: {x: 913, y: 257}
-      arrowDirection: {x: 0, y: -1}
+      arrowStartPosition: {x: 905, y: 239}
+      arrowDirection: {x: 0, y: 1}
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 26.9
-      targetObjectTag: 'min '
+      targetObjectTag: Min
       deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
@@ -348,7 +348,7 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 1
       objectToCreate:
-      - {fileID: 6878524456723974197, guid: 8121d029d5478fa4a8c025581d91ba6d, type: 3}
+      - {fileID: 1027237878670515450, guid: 71db4221f2ca6403baa498f8aa2e0d83, type: 3}
       randomizeSpawnPosition: 0
       spawnAreaTag: 
       isConditionalClick: 1
@@ -449,7 +449,7 @@ MonoBehaviour:
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 26.9
-      targetObjectTag: 'min '
+      targetObjectTag: Min
       deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
@@ -766,7 +766,7 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 1
       objectToCreate:
-      - {fileID: 4087813158059038327, guid: 0ef1e246ebe431545aeaf4e8644324b1, type: 3}
+      - {fileID: 6335167349475551448, guid: e18be26f0eb764ebdaa6b59e3ae86462, type: 3}
       randomizeSpawnPosition: 0
       spawnAreaTag: 
       isConditionalClick: 1
@@ -867,7 +867,7 @@ MonoBehaviour:
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 26.9
-      targetObjectTag: 'min '
+      targetObjectTag: Min
       deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
@@ -1184,7 +1184,7 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 1
       objectToCreate:
-      - {fileID: 2186942617385095293, guid: 73a208edc25613c4997a06bb1f40ab46, type: 3}
+      - {fileID: 1354830859016898533, guid: 364132a93afca4da19bc5418fde788cc, type: 3}
       randomizeSpawnPosition: 0
       spawnAreaTag: 
       isConditionalClick: 1
@@ -1285,7 +1285,7 @@ MonoBehaviour:
       requireTwoFingerDrag: 0
       requiredDragDirection: 1
       dragDirectionTolerance: 26.9
-      targetObjectTag: 'min '
+      targetObjectTag: Min
       deactivateObjectAfterDrag: 0
       followDragMovement: 0
       dragDistanceLimit: 0
@@ -1602,7 +1602,7 @@ MonoBehaviour:
       multiDragSyncThreshold: 0
       createObject: 1
       objectToCreate:
-      - {fileID: 7246886069874315384, guid: 9cf54f48d95cf485eadb75c55b1d8c52, type: 3}
+      - {fileID: 2093417520588696556, guid: b8eeec6feff684ee99eaaab9b9e191f8, type: 3}
       randomizeSpawnPosition: 0
       spawnAreaTag: 
       isConditionalClick: 1

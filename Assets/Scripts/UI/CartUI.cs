@@ -338,7 +338,7 @@ public class CartUI : MonoBehaviour
 
 
 
-    private void RemoveItemFromCart(Item item)
+    public void RemoveItemFromCart(Item item)
     {
         if (PreparationManager.Instance != null)
         {

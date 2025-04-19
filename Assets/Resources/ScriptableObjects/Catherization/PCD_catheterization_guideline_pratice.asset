@@ -31,7 +31,7 @@ MonoBehaviour:
       validInteractionTags: []
       isInteractionOnly: 0
       OnlyinteractionDataId: 
-    requireSpecificOrder: 0
+    requireSpecificOrder: 1
     requiredPreviousStepIds: []
     previousStepPenalties: []
     restrictNextSteps: 0
@@ -463,7 +463,7 @@ MonoBehaviour:
     settings:
       isItemClick: 1
       itemId: BTN_GoToPatient
-      interactionDataId: ITR_None
+      interactionDataId: ITR_BeforGoToPatient
       isActionButtonClick: 1
       correctButtonIds: []
       requireAllButtons: 0
