@@ -241,11 +241,15 @@ namespace Nursing.Managers
         private void ProcessStep(ProcedureStep step)
         {
           
-            // 가이드 메시지 표시
-            if (!string.IsNullOrEmpty(step.guideMessage) && dialogueManager != null)
+             // 가이드 메시지 표시
+            if (dialogueManager != null)
             {
-                dialogueManager.ShowGuideMessage(step.guideMessage);
+                if (!string.IsNullOrEmpty(step.guideMessage))
+                    dialogueManager.ShowGuideMessage(step.guideMessage);
+                else
+                    dialogueManager.HideGuideMessage(); // 가이드 메시지가 없으면 숨기기
             }
+    
 
             // 스텝 설정 - SetupStepBasedOnType 호출
             SetupStepBasedOnType(step);
@@ -372,6 +376,9 @@ break;
                 {
                     completedStepIds.Add(step.id);
                     IsInStep = false;
+                    // 가이드 메시지 숨기기
+                    if (dialogueManager != null)
+                        dialogueManager.HideGuideMessage();
                 }
             }
 

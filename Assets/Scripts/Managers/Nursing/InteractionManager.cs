@@ -99,6 +99,9 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
             currentStageIndex = -1;
             interactionFailed = false; // 상태 초기화
 
+             if (dialogueManager != null)
+            dialogueManager.HideGuideMessage();
+
             // 이벤트 호출
             OnInteractionStarted?.Invoke();
             
@@ -216,6 +219,16 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
                     AdvanceToNextStage(); // 지원하지 않는 타입은 건너뜁니다.
                     break;
             }
+            // 가이드 메시지 업데이트
+            if (dialogueManager != null)
+            {
+                if (!string.IsNullOrEmpty(currentStage.guideMessage))
+                    dialogueManager.ShowGuideMessage(currentStage.guideMessage);
+                else
+                    dialogueManager.HideGuideMessage(); // 가이드 메시지가 없으면 숨기기
+            }
+    
+        
         }
 
         #region 인터랙션 타입별 설정 메서드
@@ -1002,9 +1015,13 @@ private void OnVariousChoiceCancel()
         {
             Debug.Log("인터랙션 완료: " + currentInteraction.displayName);
             
+            // 인터랙션 완료 시 가이드 메시지 숨기기
+            if (dialogueManager != null)
+                dialogueManager.HideGuideMessage();
+            
             // 인터랙션 정리
             CleanupCurrentInteraction();
-            Debug.Log(interactionFailed);
+
             // 인터랙션 완료 이벤트 발생
             OnInteractionComplete?.Invoke(!interactionFailed);
         }
