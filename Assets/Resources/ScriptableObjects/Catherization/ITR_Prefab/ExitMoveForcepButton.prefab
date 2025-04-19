@@ -92,8 +92,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -171,8 +171,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 157, y: 694}
-  m_SizeDelta: {x: 266.0502, y: 131.4865}
+  m_AnchoredPosition: {x: 145.95917, y: 699.5204}
+  m_SizeDelta: {x: 211, y: 104}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6265133939641567119
 CanvasRenderer:
@@ -278,6 +278,9 @@ MonoBehaviour:
     penaltyMessage: "\uC74C.. \uCD5C\uC18C \uBA87\uBC88 \uC74C\uBD80\uB97C \uB2E6\uC544\uC57C
       \uD558\uB294\uC9C0 \uC798 \uC0DD\uAC01\uD574\uBD10. \n\uC9C0\uAE08 \uB108\uBB34
       \uBD80\uC871\uD574!"
-    databaseMessage: 
+    databaseMessage: "\uB300\uC74C\uC21C 2\uBC88, \uC18C\uC74C\uC21C 2\uBC88, \uC694\uB3C4\uAD6C
+      1\uBC88\uC73C\uB85C \uCD5C\uC18C 5\uBC88\uC740 \uB2E6\uC544\uC57C \uD558\uAE30
+      \uB54C\uBB38\uC5D0 \uD3EC\uBE44\uB3C8 \uBCFC\uC740 \uC801\uC5B4\uB3C4 5\uAC1C\uB97C
+      \uD3F4\uB9AC\uC138\uD2B8\uC5D0 \uB123\uC5B4\uC57C \uD569\uB2C8\uB2E4. "
     flashRedScreen: 1
     flashCount: 2

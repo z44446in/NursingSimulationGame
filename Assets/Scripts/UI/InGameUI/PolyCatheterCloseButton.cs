@@ -58,8 +58,7 @@ public class PolyCatheterCloseButton : MonoBehaviour
                 penaltyManager.ApplyPenalty(cartNotEmptyPenalty);
             }
             
-            // 오류 메시지 표시 옵션
-            DialogueManager.Instance.ShowSmallDialogue("카트를 비워야 합니다.");
+           
         }
     }
 

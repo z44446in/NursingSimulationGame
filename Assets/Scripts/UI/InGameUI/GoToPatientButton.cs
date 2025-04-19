@@ -50,8 +50,7 @@ public class GoToPatientButton : MonoBehaviour
                 penaltyManager.ApplyPenalty(notPreparedPenalty);
             }
             
-            // 오류 메시지 표시
-            DialogueManager.Instance.ShowSmallDialogue("준비가 완료되지 않았습니다.");
+            
         }
     }
 

@@ -32,8 +32,20 @@ MonoBehaviour:
       isInteractionOnly: 0
       OnlyinteractionDataId: 
     requireSpecificOrder: 1
-    requiredPreviousStepIds: []
-    previousStepPenalties: []
+    requiredPreviousStepIds:
+    - Catheterization_guideline_pratice_step_2
+    previousStepPenalties:
+    - penaltyType: 0
+      penaltyScore: 5
+      speaker: 0
+      penaltyMessage: "\uC624\uC789? \uD3F4\uB9AC\uC138\uD2B8\uB3C4 \uC548\uC5F4\uACE0
+        \uBB58\uD55C\uB2E4\uB294\uAC70\uC57C! "
+      databaseMessage: "\uBA78\uADE0\uC99D\uB958\uC218\uB294 \uD3F4\uB9AC\uC138\uD2B8
+        \uC548\uC5D0 \uBD80\uC5B4\uC57C \uD558\uAE30 \uB54C\uBB38\uC5D0, \uBA78\uADE0\uC99D\uB958\uC218
+        \uBD93\uAE30 \uC804\uC5D0\uB294 \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4\uC5B4\uC57C
+        \uD569\uB2C8\uB2E4."
+      flashRedScreen: 1
+      flashCount: 1
     restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
@@ -71,9 +83,20 @@ MonoBehaviour:
       validInteractionTags: []
       isInteractionOnly: 0
       OnlyinteractionDataId: 
-    requireSpecificOrder: 0
-    requiredPreviousStepIds: []
-    previousStepPenalties: []
+    requireSpecificOrder: 1
+    requiredPreviousStepIds:
+    - Catheterization_guideline_pratice_step_2
+    previousStepPenalties:
+    - penaltyType: 0
+      penaltyScore: 5
+      speaker: 0
+      penaltyMessage: "\uD3F4\uB9AC\uC138\uD2B8\uC548\uC5F4\uBA74 \uBB50 \uADF8 \uC824\uC740
+        \uC5B4\uB514\uC5D0 \uC9DC\uAC8C? \uADF8\uB0E5 \uC9D1\uC5B4\uBCF8\uAC70\uC57C? "
+      databaseMessage: "\uC724\uD65C\uC81C\uB294 \uD3F4\uB9AC\uC138\uD2B8 \uC548\uC5D0
+        \uC9DC\uC57C\uD558\uAE30 \uB54C\uBB38\uC5D0, \uC724\uD65C\uC81C\uB97C \uC9DC\uAE30
+        \uC804\uC5D0 \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4\uC5B4\uC57C \uD569\uB2C8\uB2E4."
+      flashRedScreen: 0
+      flashCount: 0
     restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
@@ -111,9 +134,22 @@ MonoBehaviour:
       validInteractionTags: []
       isInteractionOnly: 0
       OnlyinteractionDataId: 
-    requireSpecificOrder: 0
-    requiredPreviousStepIds: []
-    previousStepPenalties: []
+    requireSpecificOrder: 1
+    requiredPreviousStepIds:
+    - Catheterization_guideline_pratice_step_8
+    previousStepPenalties:
+    - penaltyType: 2
+      penaltyScore: 100
+      speaker: 4
+      penaltyMessage: "\uC5B4\uB5BB\uAC8C \uC190\uC18C\uB3C5\uC744 \uAE4C\uBA39\uC5B4!!!!
+        \uADF8 \uC138\uADE0\uB369\uC5B4\uB9AC \uC190\uC73C\uB85C \uB3C4\uB300\uCCB4
+        \uBB34\uC2A8 \uBA78\uADE0\uC744 \uC9C0\uD0A4\uACA0\uB2E4\uB294\uAC70\uC57C!"
+      databaseMessage: "\uBAA8\uB4E0 \uC220\uAE30\uC5D0 \uC55E\uC11C \uC190\uC18C\uB3C5\uC740
+        \uD544\uC218\uC785\uB2C8\uB2E4. \uB530\uB77C\uC11C \uD3F4\uB9AC\uC138\uD2B8\uB97C
+        \uC5F4\uAE30 \uC804\uC5D0\uB3C4, \uC190\uC18C\uB3C5\uC744 \uD558\uC5EC\uC57C
+        \uD569\uB2C8\uB2E4. "
+      flashRedScreen: 1
+      flashCount: 3
     restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
@@ -152,8 +188,19 @@ MonoBehaviour:
       isInteractionOnly: 0
       OnlyinteractionDataId: 
     requireSpecificOrder: 1
-    requiredPreviousStepIds: []
-    previousStepPenalties: []
+    requiredPreviousStepIds:
+    - Catheterization_guideline_pratice_step_2
+    previousStepPenalties:
+    - penaltyType: 0
+      penaltyScore: 5
+      speaker: 0
+      penaltyMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB3C4 \uC548\uC5F4\uC5C8\uB294\uB370
+        Syringe\uB97C \uC9D1\uC5B4\uC11C \uBB50\uD574! \uBC14\uBD80\uC57C "
+      databaseMessage: "Syringe(\uC8FC\uC0AC\uAE30)\uB294 \uD3F4\uB9AC\uC138\uD2B8
+        \uC548\uC5D0 \uB123\uC5B4\uC57C \uD558\uAE30 \uB54C\uBB38\uC5D0, \uD3F4\uB9AC\uC138\uD2B8\uB97C
+        \uBA3C\uC800 \uC5F4\uC5B4\uC57C \uD569\uB2C8\uB2E4."
+      flashRedScreen: 1
+      flashCount: 1
     restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
@@ -191,9 +238,20 @@ MonoBehaviour:
       validInteractionTags: []
       isInteractionOnly: 0
       OnlyinteractionDataId: 
-    requireSpecificOrder: 0
-    requiredPreviousStepIds: []
-    previousStepPenalties: []
+    requireSpecificOrder: 1
+    requiredPreviousStepIds:
+    - Catheterization_guideline_pratice_step_2
+    previousStepPenalties:
+    - penaltyType: 0
+      penaltyScore: 5
+      speaker: 0
+      penaltyMessage: "\uD3F4\uB9AC \uC138\uD2B8\uB3C4 \uC548\uC5F4\uACE0 \uD3F4\uB9AC\uCE74\uD14C\uD130\uB97C
+        \uB72F\uC73C\uB824\uACE0 \uD558\uBA74 \uC5B4\uB5A1\uD558\uC790\uB294\uAC70\uC57C~~ "
+      databaseMessage: "\uC720\uCE58\uB3C4\uB1E8\uAD00(Foley Catheter)\uC740 \uD3F4\uB9AC\uC138\uD2B8\uB0B4\uC5D0
+        \uB72F\uC5B4\uC57C \uD558\uAE30\uC5D0, \uC720\uCE58\uB3C4\uB1E8\uAD00\uC744
+        \uC5F4\uAE30 \uC804\uC5D0 \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4\uC5B4\uC57C\uD569\uB2C8\uB2E4."
+      flashRedScreen: 1
+      flashCount: 1
     restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
@@ -231,9 +289,19 @@ MonoBehaviour:
       validInteractionTags: []
       isInteractionOnly: 0
       OnlyinteractionDataId: 
-    requireSpecificOrder: 0
-    requiredPreviousStepIds: []
-    previousStepPenalties: []
+    requireSpecificOrder: 1
+    requiredPreviousStepIds:
+    - Catheterization_guideline_pratice_step_7
+    previousStepPenalties:
+    - penaltyType: 0
+      penaltyScore: 5
+      speaker: 0
+      penaltyMessage: "\uC774\uB3D9\uAC10\uC790\uB9CC \uBA4D\uD558\uB2C8 \uB4E4\uACE0
+        \uBB50\uD574! \uBA3C\uC800 [   ?   ] \uBD80\uD130 \uC5F4\uC5B4\uC57C\uC9C0! "
+      databaseMessage: "\uC774\uB3D9\uAC10\uC790\uB97C \uC7A1\uAE30 \uC804\uC5D0
+        \uD3EC\uBE44\uB3C8 \uD1B5\uBD80\uD130 \uC5F4\uC5B4\uC57C \uD569\uB2C8\uB2E4."
+      flashRedScreen: 1
+      flashCount: 1
     restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
@@ -311,9 +379,19 @@ MonoBehaviour:
       validInteractionTags: []
       isInteractionOnly: 1
       OnlyinteractionDataId: ITR_Povidone_takeout_Next
-    requireSpecificOrder: 0
-    requiredPreviousStepIds: []
-    previousStepPenalties: []
+    requireSpecificOrder: 1
+    requiredPreviousStepIds:
+    - Catheterization_guideline_pratice_step_2
+    previousStepPenalties:
+    - penaltyType: 0
+      penaltyScore: 5
+      speaker: 0
+      penaltyMessage: "\uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4\uACE0 \uD3EC\uBE44\uB3C8
+        \uD1B5\uC744 \uC5EC\uB294 \uAC8C \uB0AB\uC9C0 \uC54A\uC744\uAE4C? \t"
+      databaseMessage: "\uD3EC\uBE44\uB3C8 \uD1B5\uC744 \uC5F4\uAE30\uC804\uC5D0\uB294
+        \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4\uC5B4\uC57C \uD569\uB2C8\uB2E4."
+      flashRedScreen: 1
+      flashCount: 1
     restrictNextSteps: 0
     allowedNextStepIds: []
     invalidNextStepPenalty:
