@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public ProcedureVersionType currentVersionType;
     public ProcedurePlayType currentPlayType;
 
+    public bool isPrepareFinished = false; //중간화면에서 준비 완료 여부 
+
     public enum GameState // 게임 상태 정의
     {
         INIT, // 메인홈
@@ -203,6 +205,12 @@ public class GameManager : MonoBehaviour
         
     }
     
+            // 중간화면 상태 변경 메서드
+        public void SetPrepareFinished(bool value)
+        {
+            isPrepareFinished = value;
+            Debug.Log($"PrepareFinished 상태 변경: {isPrepareFinished}");
+        }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {

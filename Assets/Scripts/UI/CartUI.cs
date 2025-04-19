@@ -43,6 +43,7 @@ public class CartUI : MonoBehaviour
     // 카트 관련
     public List<Item> cartItems = new List<Item>();
 
+    public static CartUI Instance { get; private set; }
 
 
     private void Start()
@@ -51,6 +52,17 @@ public class CartUI : MonoBehaviour
         InitializeUI();
         UpdateCartInstruction();
 
+    }
+
+    private void Awake()
+    {
+        // ② 기존 Awake 로직보다 위에 싱글톤 초기화
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // 중복 인스턴스 제거
+            return;
+        }
+        Instance = this;
     }
 
 
