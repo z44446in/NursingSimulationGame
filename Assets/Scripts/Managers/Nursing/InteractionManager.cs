@@ -130,13 +130,13 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
             currentStageIndex++;
             
             // 모든 스테이지를 완료했는지 확인
-            if (currentInteraction == null 
-                || currentStageIndex >= currentInteraction.stages.Count)
+            if (currentStageIndex >= currentInteraction.stages.Count)
             {
                 CompleteInteraction();
                 return;
             }
-                    currentStage = currentInteraction.stages[currentStageIndex];
+            
+            currentStage = currentInteraction.stages[currentStageIndex];
             
             // 가이드 메시지 업데이트
             if (!string.IsNullOrEmpty(currentStage.guideMessage) && dialogueManager != null)
@@ -215,7 +215,7 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
                     break;
 
                 default:
-                    Debug.Log("없어요");
+                    Debug.Log(".");
                     
                     break;
             }
@@ -227,12 +227,19 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
                 else
                     dialogueManager.HideGuideMessage(); // 가이드 메시지가 없으면 숨기기
             }
-            else Debug.Log(".");
+            else return;
     
         
         }
 
+// InteractionManager.cs에 추가
+public void NotifyInteractionComplete(bool success)
+{
+    // 이벤트 구독자들에게 상호작용 완료 알림
+    OnInteractionComplete?.Invoke(success);
+}
         #region 인터랙션 타입별 설정 메서드
+
 
         /// <summary>
         /// 다양한 선택 인터랙션을 설정합니다.

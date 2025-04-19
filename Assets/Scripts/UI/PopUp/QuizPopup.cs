@@ -38,7 +38,7 @@ namespace Nursing.UI
         private float remainingTime;
         private int correctAnswerIndex;
         private bool isAnswered;
-
+        
         private CanvasGroup canvasGroup;
 
         public event Action<bool> OnQuizComplete;
@@ -358,19 +358,20 @@ namespace Nursing.UI
             {
                 bool isCorrect = isAnswered && correctAnswerIndex >= 0;
 
-                // 정답이었던 경우에만 여기서 이벤트 호출 (오답인 경우는 이미 호출됨)
-                if (isCorrect)
-                {
-                    OnQuizComplete?.Invoke(true);
-                }
-
+                // 페이드 아웃 효과 먼저 시작
                 FadeOut(() => {
+                    // 정답이었던 경우에만 여기서 이벤트 호출 (오답인 경우는 이미 호출됨)
+                    if (isCorrect)
+                    {
+                        // OnQuizComplete 이벤트가 null이 아닌지 확인 후 호출
+                        OnQuizComplete?.Invoke(true);
+                    }
                     
-
+                    // UI 요소 제거
                     Destroy(gameObject);
                 });
             }
-        }
+                }
 
         // 페이드 인 애니메이션 (기존 코드 유지)
         private void FadeIn()

@@ -585,6 +585,15 @@ break;
                         if (completedStep.invalidNextStepPenalty != null)
                         {
                             ApplyPenalty(completedStep.invalidNextStepPenalty);
+
+                                                    // 패널티 적용 후 상호작용 실패 알림
+                            if (interactionManager != null)
+                            {
+                                // 외부에서 호출 가능한 메서드를 통해 이벤트 발생
+                                interactionManager.NotifyInteractionComplete(false);
+                            }
+                            IsInStep = false;
+                                    
                             Debug.LogWarning($"[제한 위반] 스텝 '{stepCandidate.id}'는 스텝 '{completedStep.id}' 이후 허용되지 않은 스텝입니다.");
                             return false;
                         }
@@ -633,11 +642,25 @@ break;
                                     if (i < step.previousStepPenalties.Length && step.previousStepPenalties[i] != null)
                                     {
                                         ApplyPenalty(step.previousStepPenalties[i]);
+                                        if (interactionManager != null)
+                                        {
+                                            // 외부에서 호출 가능한 메서드를 통해 이벤트 발생
+                                            interactionManager.NotifyInteractionComplete(false);
+                                        }
+                                        IsInStep = false;
+                                    
                                     }
                                     else if (step.previousStepPenalties[0] != null)
                                     {
                                         // 기본 패널티 적용
                                         ApplyPenalty(step.previousStepPenalties[0]);
+                                        if (interactionManager != null)
+                                        {
+                                            // 외부에서 호출 가능한 메서드를 통해 이벤트 발생
+                                            interactionManager.NotifyInteractionComplete(false);
+                                        }
+                                        IsInStep = false;
+                                  
                                     }
                                     return false;
                                 }
@@ -667,6 +690,13 @@ break;
                                     if (step.invalidNextStepPenalty != null)
                                     {
                                         ApplyPenalty(step.invalidNextStepPenalty);
+                                        if (interactionManager != null)
+                                        {
+                                            // 외부에서 호출 가능한 메서드를 통해 이벤트 발생
+                                            interactionManager.NotifyInteractionComplete(false);
+                                        }
+                                        IsInStep = false;
+                                  
                                     }
                                     return false; // 스텝 진행 불가
                                 }
@@ -697,8 +727,13 @@ break;
                                     else if (step.incorrectActionPenalty != null)
                                     {
                                         ApplyPenalty(step.incorrectActionPenalty);
+                                        if (interactionManager != null)
+                                        {
+                                            // 외부에서 호출 가능한 메서드를 통해 이벤트 발생
+                                            interactionManager.NotifyInteractionComplete(false);
+                                        }
                                         IsInStep = false; // 패널티 적용 후 초기화
-                                        return;
+                                        return ;
 
                                     }
                                 }
@@ -724,9 +759,15 @@ break;
                     {
                         Debug.Log($"스텝을 찾았지만 현재 실행할 수 없음: {step.id}");
                         ApplyPenalty(step.incorrectActionPenalty);
+                        if (interactionManager != null)
+                                        {
+                                            // 외부에서 호출 가능한 메서드를 통해 이벤트 발생
+                                            interactionManager.NotifyInteractionComplete(false);
+                                        }
                         
                                         IsInStep = false; // 패널티 적용 후 초기화
-                                         return false;
+                                        return false;
+                                        
                     }
                     return true;
                 }
@@ -860,11 +901,18 @@ break;
                                     if (i < step.previousStepPenalties.Length && step.previousStepPenalties[i] != null)
                                     {
                                         ApplyPenalty(step.previousStepPenalties[i]);
+
+                                            // 패널티 적용 후 상호작용 실패 이벤트 발
+                                    IsInStep = false;
+                                    
                                     }
+                                   
                                     else if (step.previousStepPenalties[0] != null)
                                     {
                                         // 기본 패널티 적용
                                         ApplyPenalty(step.previousStepPenalties[0]);
+                                        IsInStep = false;
+                                  
                                     }
                                     return false;
                                 }
@@ -885,7 +933,7 @@ break;
                         Debug.Log($"스텝을 찾았지만 현재 실행할 수 없음: {step.id}");
                         ApplyPenalty(step.incorrectActionPenalty);
                         IsInStep = false; // 패널티 적용 후 초기화
-                                         return false;
+                                       
                     }
                     return true;
                 }
@@ -904,6 +952,8 @@ break;
                                 if (step.invalidNextStepPenalty != null)
                                 {
                                     ApplyPenalty(step.invalidNextStepPenalty);
+                                    IsInStep = false;
+                                    
                                 }
                                 return false;
                             }
