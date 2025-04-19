@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC774\uB3D9\uAC10\uC790 \n\uC0AC\uC6A9 \uC885\uB8CC "
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9ed9d49dee9308a4599efdf883db1b14, type: 2}
-  m_sharedMaterial: {fileID: -4648194824483363617, guid: 9ed9d49dee9308a4599efdf883db1b14, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1007686ed4c2c47f194c5d640381ed8e, type: 2}
+  m_sharedMaterial: {fileID: -1905139258705613650, guid: 1007686ed4c2c47f194c5d640381ed8e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -92,8 +92,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -22.1
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

@@ -130,13 +130,13 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
             currentStageIndex++;
             
             // 모든 스테이지를 완료했는지 확인
-            if (currentStageIndex >= currentInteraction.stages.Count)
+            if (currentInteraction == null 
+                || currentStageIndex >= currentInteraction.stages.Count)
             {
                 CompleteInteraction();
                 return;
             }
-            
-            currentStage = currentInteraction.stages[currentStageIndex];
+                    currentStage = currentInteraction.stages[currentStageIndex];
             
             // 가이드 메시지 업데이트
             if (!string.IsNullOrEmpty(currentStage.guideMessage) && dialogueManager != null)
@@ -215,8 +215,8 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
                     break;
 
                 default:
-                    Debug.LogWarning("지원하지 않는 인터랙션 타입입니다: " + currentStage.interactionType);
-                    AdvanceToNextStage(); // 지원하지 않는 타입은 건너뜁니다.
+                    Debug.Log("없어요");
+                    
                     break;
             }
             // 가이드 메시지 업데이트
@@ -227,6 +227,7 @@ public bool WasInteractionFailed => interactionFailed; // 외부에서 확인할
                 else
                     dialogueManager.HideGuideMessage(); // 가이드 메시지가 없으면 숨기기
             }
+            else Debug.Log(".");
     
         
         }
