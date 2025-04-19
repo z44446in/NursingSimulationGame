@@ -207,15 +207,16 @@ public class IntermediateManager : MonoBehaviour
         }
     }
 
-  
+  private bool pendingItemRemoval = false;
 // 아이템을 픽업할 때 호출되는 메서드
 public void PickupItem(Item item)
 {
     if (item == null) return;
-
-         // currentHeldItem 대신 파라미터로 받은 item 사용
-    // Interaction 완료 콜백 구독
+        
+         // 아직 카트에서 제거하지 않고 대기 상태로 표시
+        pendingItemRemoval = true;
         currentHeldItem = item;
+
         InteractionManager im = FindObjectOfType<InteractionManager>();
         im.OnInteractionComplete += OnPickupInteractionComplete;
 
@@ -229,8 +230,8 @@ public void PickupItem(Item item)
     {
         InteractionManager im = FindObjectOfType<InteractionManager>();
         im.OnInteractionComplete -= OnPickupInteractionComplete;
-
-        if (success)
+        
+        if (success && pendingItemRemoval)
         {
             
                 requiredPickedItems.Remove(currentHeldItem);
@@ -243,7 +244,9 @@ public void PickupItem(Item item)
         foreach (var picked in requiredPickedItems)
                { cartUI.AddItemToCart(picked);
                 cartUI.UpdateCartDisplay();}
-
+        
+        
+        pendingItemRemoval = false;
         currentHeldItem = null;
     }
 

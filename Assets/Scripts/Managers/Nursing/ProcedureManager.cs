@@ -283,6 +283,8 @@ if (!string.IsNullOrEmpty(step.settings.interactionDataId) && interactionManager
             else if (step.incorrectActionPenalty != null)
             {
                 ApplyPenalty(step.incorrectActionPenalty);
+                IsInStep = false; // 패널티 적용 후 초기화
+                                         
             }
         }
 
@@ -495,6 +497,8 @@ break;
                 {
                     // 잘못된 액션 버튼 클릭
                     ApplyPenalty(step.incorrectActionPenalty);
+                    IsInStep = false; // 패널티 적용 후 초기화
+                                     return;
                 }
                 
                 Destroy(actionPopup);
@@ -693,6 +697,9 @@ break;
                                     else if (step.incorrectActionPenalty != null)
                                     {
                                         ApplyPenalty(step.incorrectActionPenalty);
+                                        IsInStep = false; // 패널티 적용 후 초기화
+                                        return;
+
                                     }
                                 }
 
@@ -717,6 +724,9 @@ break;
                     {
                         Debug.Log($"스텝을 찾았지만 현재 실행할 수 없음: {step.id}");
                         ApplyPenalty(step.incorrectActionPenalty);
+                        
+                                        IsInStep = false; // 패널티 적용 후 초기화
+                                         return false;
                     }
                     return true;
                 }
@@ -874,6 +884,8 @@ break;
                     {
                         Debug.Log($"스텝을 찾았지만 현재 실행할 수 없음: {step.id}");
                         ApplyPenalty(step.incorrectActionPenalty);
+                        IsInStep = false; // 패널티 적용 후 초기화
+                                         return false;
                     }
                     return true;
                 }
@@ -953,6 +965,9 @@ break;
                 return;
             
             penaltyManager.ApplyPenalty(penaltyData);
+
+             // 패널티 적용 후 IsInStep 초기화
+            IsInStep = false;
         }
         
         /// <summary>

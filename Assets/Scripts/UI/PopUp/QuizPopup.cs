@@ -356,19 +356,18 @@ namespace Nursing.UI
             // 퀴즈 완료 후에만 닫기 버튼 동작
             if (quizCompleted)
             {
+                Debug.Log(quizCompleted);
                 bool isCorrect = isAnswered && correctAnswerIndex >= 0;
-
+                Debug.Log(isCorrect);
                 // 정답이었던 경우에만 여기서 이벤트 호출 (오답인 경우는 이미 호출됨)
                 if (isCorrect)
                 {
                     OnQuizComplete?.Invoke(true);
                 }
 
-                FadeOut(() => {
-                    
-
+                
                     Destroy(gameObject);
-                });
+                
             }
         }
 

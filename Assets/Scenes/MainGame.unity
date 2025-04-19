@@ -2835,7 +2835,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &899143913
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3900,8 +3900,7 @@ MonoBehaviour:
     penaltyScore: 10
     speaker: 0
     penaltyMessage: "\uC624\uC789? \uBC8C\uC368.. \uD658\uC790\uD55C\uD14C\uB85C
-      \uAC04\uB2E4\uACE0? \uD3F4\uB9AC\uC138\uD2B8\uB3C4 \uC548\uB2EB\uACE0? \uC5F4\uACE0
-      \uAC00\uAC8C? "
+      \uAC04\uB2E4\uACE0? "
     databaseMessage: "\uC900\uBE44\uBB3C\uC744 \uC900\uBE44\uD558\uB294 \uD654\uBA74\uC5D0\uC11C
       \uD574\uC57C \uD560 \uC77C\uB4E4\uC744 \uC804\uBD80 \uC219\uC9C0\uD558\uACE0
       \uC788\uC5B4\uC57C \uD569\uB2C8\uB2E4."
@@ -6608,7 +6607,6 @@ MonoBehaviour:
     flashCount: 2
   canBeSkipped: 0
   procedureInProgress: 0
-  Instep: 0
   cartUI: {fileID: 1356348985}
 --- !u!4 &1835424649
 Transform:

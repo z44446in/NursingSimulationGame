@@ -392,13 +392,15 @@ MonoBehaviour:
         \uD3F4\uB9AC\uC138\uD2B8\uB97C \uC5F4\uC5B4\uC57C \uD569\uB2C8\uB2E4."
       flashRedScreen: 1
       flashCount: 1
-    restrictNextSteps: 0
-    allowedNextStepIds: []
+    restrictNextSteps: 1
+    allowedNextStepIds:
+    - Catheterization_guideline_pratice_step_6
     invalidNextStepPenalty:
       penaltyType: 0
-      penaltyScore: 0
+      penaltyScore: 5
       speaker: 0
-      penaltyMessage: 
+      penaltyMessage: "\uD3EC\uBE44\uB3C8 \uD1B5\uC744 \uACC4\uC18D \uC5F4\uC5B4\uB458
+        \uC21C \uC5C6\uC796\uC544!! "
       databaseMessage: 
       flashRedScreen: 0
       flashCount: 0
