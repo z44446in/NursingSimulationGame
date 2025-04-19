@@ -213,10 +213,9 @@ public void PickupItem(Item item)
 {
     if (item == null) return;
         
-         // 아직 카트에서 제거하지 않고 대기 상태로 표시
-        pendingItemRemoval = true;
+         // currentHeldItem 대신 파라미터로 받은 item 사용
+    // Interaction 완료 콜백 구독
         currentHeldItem = item;
-
         InteractionManager im = FindObjectOfType<InteractionManager>();
         im.OnInteractionComplete += OnPickupInteractionComplete;
 
@@ -230,8 +229,8 @@ public void PickupItem(Item item)
     {
         InteractionManager im = FindObjectOfType<InteractionManager>();
         im.OnInteractionComplete -= OnPickupInteractionComplete;
-        
-        if (success && pendingItemRemoval)
+        Debug.Log(success);
+        if (success)
         {
             
                 requiredPickedItems.Remove(currentHeldItem);
@@ -244,9 +243,7 @@ public void PickupItem(Item item)
         foreach (var picked in requiredPickedItems)
                { cartUI.AddItemToCart(picked);
                 cartUI.UpdateCartDisplay();}
-        
-        
-        pendingItemRemoval = false;
+
         currentHeldItem = null;
     }
 
