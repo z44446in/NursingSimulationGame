@@ -41,7 +41,7 @@ namespace Nursing.Managers
         private List<string> completedStepIds = new List<string>();
         private List<ProcedureStep> availableSteps = new List<ProcedureStep>();
         public bool procedureInProgress = false;
-        public bool Instep = false;
+        public bool IsInStep { get; private set; } = false;
       
 
 
@@ -92,7 +92,7 @@ namespace Nursing.Managers
         {
           if (outlineManager != null)  // null 체크 추가
     {
-        if (!Instep)
+        if (!IsInStep)
         {
             outlineManager.StartBlinking();
         }
@@ -226,7 +226,7 @@ namespace Nursing.Managers
                 if (isMatch)
                 {
                     // 스텝 처리 및 완료
-                   
+                    IsInStep = true; // 스텝 시작 시 설정
                     ProcessStep(step);
                     
                     return true;
@@ -304,7 +304,7 @@ break;
 
                 case ProcedureStepType.InteractionOnly:
                 // 바로 InteractionData 실행하고 완료 콜백으로 CompleteStep 호출
-                Instep = true;
+                IsInStep = true;
                 var onlyId = step.settings.OnlyinteractionDataId;
                 if (!string.IsNullOrEmpty(onlyId) && interactionManager != null)
                 {
@@ -371,6 +371,7 @@ break;
                 if (!step.isRepeatable)
                 {
                     completedStepIds.Add(step.id);
+                    IsInStep = false;
                 }
             }
 
@@ -382,7 +383,7 @@ break;
 
              if (step.isRepeatable)
              {
-                Instep = true;  // 아직 “단계 안에(InStep)” 상태 유지
+                IsInStep = true;  // 아직 “단계 안에(InStep)” 상태 유지
             // (필요하다면 가이드 메시지도 다시 띄워 줄 수 있음)
            if (!string.IsNullOrEmpty(step.guideMessage) && dialogueManager != null)
                 dialogueManager.ShowGuideMessage(step.guideMessage);
@@ -403,7 +404,7 @@ break;
                 }
                     else
                     {
-                    Instep = false;
+                    IsInStep = false;
                     }
             
             
@@ -442,7 +443,7 @@ break;
         /// </summary>
         private void SetupActionButtonClick(ProcedureStep step)
         {
-            Instep = true;
+            IsInStep = true;
             if (actionPopupPrefab == null)
             {
                 Debug.LogError("액션 팝업 프리팹이 없습니다.");
@@ -522,7 +523,7 @@ break;
                 CheckProcedureCompletion();
                 
                 // 인터랙션 상태 종료
-                Instep = false;
+                IsInStep = false;
                 
                 // 자동 다음 스텝 처리
                 if (step.isAutoNext && !string.IsNullOrEmpty(step.autoNextStepId))
@@ -547,7 +548,7 @@ break;
         {
             if (!procedureInProgress)
                 return false;
-            Instep = true;
+            IsInStep = true;
             // ❗❗ 현재 시도하려는 step 먼저 찾기
             ProcedureStep stepCandidate = currentProcedure.steps.Find(s =>
                 s.stepType == ProcedureStepType.ItemClick &&
@@ -768,7 +769,7 @@ break;
         {
             if (!procedureInProgress)
                 return false;
-            Instep = true;
+            IsInStep = true;
             // ❗❗ 현재 시도하려는 step 먼저 찾기
             ProcedureStep stepCandidate = currentProcedure.steps.Find(s =>
                 s.stepType == ProcedureStepType.PlayerInteraction &&
@@ -913,6 +914,7 @@ break;
             
             // 프로시저 정리
             CleanupCurrentProcedure();
+            IsInStep = false; 
             
             // 프로시저 완료 이벤트를 발생시킬 수 있음
             // OnProcedureComplete?.Invoke(currentProcedureType);

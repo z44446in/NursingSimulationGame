@@ -78,6 +78,13 @@ public class CartUI : MonoBehaviour
 
             UpdateCartInstruction();
         }
+
+            // 변수명 업데이트
+        if (cartToggleButton != null && ProcedureManager.Instance != null)
+        {
+            bool shouldDisable = ProcedureManager.Instance.IsInStep;
+            cartToggleButton.interactable = !shouldDisable;
+        }
     }
 
     private void InitializeUI()
@@ -162,6 +169,13 @@ public class CartUI : MonoBehaviour
     // CartUI.cs의 ToggleCart 메서드 수정
     private void ToggleCart()
     {
+            // 인터랙션 중일 때 클릭 방지
+        if (ProcedureManager.Instance != null && ProcedureManager.Instance.IsInStep)
+        {
+            DialogueManager.Instance.ShowSmallDialogue("하던 거 부터 끝까지 해.");
+            return;
+        }
+
         if (cartPanel == null) return;
 
         if (cartPanel.activeSelf && currentScreen == GameManager.GameScreen.INTERMEDIATE)
@@ -192,8 +206,7 @@ public class CartUI : MonoBehaviour
 
             }
 
-
-
+            
         }
 
 
